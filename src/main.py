@@ -191,7 +191,8 @@ def create_app() -> FastAPI:
 app = create_app()
 
 
-if __name__ == "__main__":
+def run():
+    """CLI 入口点 (供 uv run x-rag 调用)"""
     import uvicorn
 
     uvicorn.run(
@@ -201,3 +202,7 @@ if __name__ == "__main__":
         reload=settings.DEBUG,
         log_level="debug",
     )
+
+
+if __name__ == "__main__":
+    run()
