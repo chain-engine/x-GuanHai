@@ -442,7 +442,10 @@ DEEPSEEK_API_KEY=your-deepseek-api-key-here
 ### 启动服务
 
 ```bash
-# 开发模式（热重载）
+# 推荐方式：（热重载，需在 .env 中设置 DEBUG=true）
+uv run x-rag
+
+# 或者直接用 uvicorn
 uv run uvicorn src.main:app --reload
 
 # 或使用脚本
