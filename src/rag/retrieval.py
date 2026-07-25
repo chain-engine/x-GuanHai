@@ -37,6 +37,12 @@ class Retrieval:
     支持多路召回：
     - 稠密向量检索 (Chroma ANN)
     - 稀疏 BM25 检索 (倒排索引)
+
+    支持重排序：
+    - RRF (Reciprocal Rank Fusion) 倒数排名融合 — 融合多路召回结果
+    - MMR (Maximum Marginal Relevance) 多样性重排 — 提升结果覆盖率
+
+    
     """
 
     def __init__(

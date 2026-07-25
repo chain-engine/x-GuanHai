@@ -44,13 +44,13 @@ class VectorRetrievalProvider(BaseRetrievalProvider):
 
 class ChromaVectorRetrieval(VectorRetrievalProvider):
     """
-    Chroma 向量检索
+    Chroma 向量检索召回
 
     使用 Chroma 向量数据库进行 ANN 检索，复用现有的 VectorRepository 实现。
     """
 
     name = "chroma_vector_retrieval"
-    description = "Chroma 向量检索 — 基于 Chroma 的 ANN 检索"
+    description = "Chroma 向量检索召回 — 基于 Chroma 的 ANN 检索"
 
     def __init__(
         self,
@@ -62,7 +62,7 @@ class ChromaVectorRetrieval(VectorRetrievalProvider):
         top_k: int = 10,
     ):
         """
-        初始化 Chroma 向量检索
+        初始化 Chroma 向量检索召回
 
         Args:
             vector_repo: 向量仓库实例（可选）
@@ -141,6 +141,7 @@ class ChromaVectorRetrieval(VectorRetrievalProvider):
         self.initialize()
 
         if isinstance(query, str):
+            # 文本向量化
             query_embedding = self._embedding_model.encode_single(query, normalize=True)
         else:
             query_embedding = query

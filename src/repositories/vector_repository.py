@@ -10,6 +10,8 @@ from typing import Any
 
 from .base_repository import BaseRepository
 from infras.vector_store.chroma import ChromaVectorStore
+from utils.similarity import SimilaritySearchEngine
+from constants.rag import DistanceType
 from core.logger import logger
 
 
@@ -27,7 +29,18 @@ class VectorRepository(BaseRepository):
             collection_name=collection_name,
             distance_type=distance_type,
         )
+        self._distance_type = self._parse_distance_type(distance_type)
+        self._similarity_engine = SimilaritySearchEngine(distance_type=self._distance_type)
         self._initialized = False
+
+    def _parse_distance_type(self, distance_type: str) -> DistanceType:
+        """解析距离类型字符串"""
+        mapping = {
+            "cosine": DistanceType.COSINE,
+            "euclidean": DistanceType.EUCLIDEAN,
+            "dot": DistanceType.DOT,
+        }
+        return mapping.get(distance_type.lower(), DistanceType.COSINE)
 
     def initialize(self) -> None:
         """初始化向量存储"""
@@ -105,12 +118,26 @@ class VectorRepository(BaseRepository):
             include=["documents", "metadatas", "distances"],
         )
 
-        # 转换结果格式
+        # 转换结果格式，并使用 SimilaritySearchEngine 计算相似度
         for result in results:
             distance = result.pop("distance", 0.0)
-            # 将距离转换为相似度分数
-            if distance is not None:
-                result["score"] = 1.0 / (1.0 + distance)
+            embedding = result.get("embedding")
+
+            # 如果有原始向量，使用 SimilaritySearchEngine 计算准确相似度
+            if embedding is not None and isinstance(embedding, (list, tuple)):
+                result["score"] = self._similarity_engine.compute(
+                    query_vector=query_embedding,
+                    doc_vector=embedding,
+                    distance_type=self._distance_type,
+                )
+            elif distance is not None:
+                # fallback: 根据距离类型转换
+                if self._distance_type == DistanceType.COSINE:
+                    result["score"] = 1.0 / (1.0 + distance)
+                elif self._distance_type == DistanceType.EUCLIDEAN:
+                    result["score"] = 1.0 / (1.0 + distance)
+                else:
+                    result["score"] = distance
             else:
                 result["score"] = 0.0
 
