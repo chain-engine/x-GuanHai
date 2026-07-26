@@ -171,7 +171,7 @@ class DocumentService(BaseService):
             ]
             self._vector_repo.add(ids, embeddings, chunk_texts, metadatas)
 
-            # 构建 BM25 稀疏索引
+            # 存储文本和元数据（构建 BM25 稀疏索引）
             logger.info(f"Document {document_id}: building BM25 sparse index...")
             self._bm25_repo.add(ids, chunk_texts, metadatas)
             logger.info(f"Document {document_id}: BM25 index built")
