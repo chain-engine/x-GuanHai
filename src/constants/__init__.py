@@ -92,7 +92,6 @@ from .log import (
 from .server import (
     DEFAULT_HOST,
     DEFAULT_PORT,
-    API_V1_PREFIX,
     API_PREFIX,
     API_TITLE,
     API_VERSION,
@@ -177,7 +176,6 @@ __all__ = [
     # Server
     "DEFAULT_HOST",
     "DEFAULT_PORT",
-    "API_V1_PREFIX",
     "API_PREFIX",
     "API_TITLE",
     "API_VERSION",
