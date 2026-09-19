@@ -50,7 +50,7 @@ class ServerConfig:
 class LoggingConfig:
     """日志配置"""
     level: str = "INFO"
-    file_path: str = "./logs/x-rag-{time:YYYYMMDDHHmmss}.log"
+    file_path: str = "./logs/x-GuanHai-{time:YYYYMMDDHHmmss}.log"
     rotation: str = "1 day"
     retention: str = "7 days"
 
@@ -77,8 +77,8 @@ class CORSConfig:
 class APIConfig:
     """API配置"""
     prefix: str = "/api/v1"
-    title: str = "x-rag API"
-    description: str = "RAG学习和实训项目API"
+    title: str = "x-GuanHai API"
+    description: str = "RAG一体化工程框架API"
     version: str = "1.0.0"
 
 
@@ -178,7 +178,7 @@ class Settings:
             },
             "logging": {
                 "level": "INFO",
-                "file_path": "./logs/x-rag-{time:YYYYMMDDHHmmss}.log",
+                "file_path": "./logs/x-GuanHai-{time:YYYYMMDDHHmmss}.log",
                 "rotation": "1 day",
                 "retention": "7 days",
             },
@@ -196,8 +196,8 @@ class Settings:
             },
             "api": {
                 "prefix": "/api/v1",
-                "title": "x-rag API",
-                "description": "RAG学习和实训项目API",
+                "title": "x-GuanHai API",
+                "description": "RAG一体化工程框架API",
                 "version": "1.0.0",
             },
             "embedding": {

@@ -1,4 +1,4 @@
-# Start the x-rag application
+# Start the x-GuanHai application
 
 $ErrorActionPreference = "Stop"
 

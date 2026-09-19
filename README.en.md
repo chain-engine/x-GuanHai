@@ -1,4 +1,4 @@
-# x-rag: Production-Ready RAG Learning Project
+# x-GuanHai: Production-Ready RAG Learning Project
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
@@ -8,7 +8,7 @@
 
 ## Project Overview
 
-x-rag is a **production-grade RAG (Retrieval-Augmented Generation) learning and training project**, following backend industry-standard engineering practices with a clear layered, modular, highly extensible, and maintainable architecture.
+x-GuanHai is a **production-grade RAG (Retrieval-Augmented Generation) integrated engineering framework**, following backend industry-standard engineering practices with a clear layered, modular, highly extensible, and maintainable architecture.
 
 ### Core Values
 
@@ -33,7 +33,7 @@ x-rag is a **production-grade RAG (Retrieval-Augmented Generation) learning and 
 ## Project Structure
 
 ```
-x-rag/
+x-GuanHai/
 ├── src/                          # Core source code
 │   ├── api/                      # API interface layer
 │   │   ├── router.py             # Route registration
@@ -415,13 +415,13 @@ graph TD
 ### Clone Project
 
 ```bash
-git clone https://github.com/yeyushilai/x-rag.git
-cd x-rag
+git clone https://github.com/chain-engine/x-GuanHai.git
+cd x-GuanHai
 ```
 
 ### Install Dependencies
 
-```bash
+```cmd
 # Using uv (recommended)
 uv sync
 
@@ -456,7 +456,7 @@ After starting, access:
 
 ### Docker Deployment
 
-```bash
+```cmd
 # Build and start
 docker-compose up -d
 
@@ -466,7 +466,7 @@ docker-compose logs -f
 
 ## Common Commands
 
-```bash
+```cmd
 # Run tests
 uv run pytest tests/
 
@@ -559,7 +559,11 @@ GET /api/v1/rag/stats
 ## Retrieval Subsystem Usage Guide
 
 For detailed usage instructions and algorithm principles, see [Retrieval Pipeline Documentation](./docs/retrieval-pipeline.md).
+**Typical Configuration**:
 
+- Stage 1 (Query Understanding): `QueryPreprocessor` → `IntentClassifier` → `EntityExtractor` → `SynonymExpander`
+- Stage 2 (Candidate Retrieval): `ChromaVectorRetrieval` (Dense) + `BM25RetrievalProvider` (Sparse), multi-path parallel
+- Stage 3 (Ranking & Filtering): `RRFReranker` (Fusion) → `MMRReranker` (Diversity) → `ScoreFilter` (Threshold Filtering)
 **Typical configuration**:
 - Stage 1 (Query Understanding): `QueryPreprocessor` → `IntentClassifier` → `EntityExtractor` → `SynonymExpander`
 - Stage 2 (Candidate Retrieval): `ChromaVectorRetrieval` (dense) + `BM25RetrievalProvider` (sparse), multi-source parallel

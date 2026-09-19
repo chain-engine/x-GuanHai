@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Start the x-rag application
+# Start the x-GuanHai application
 
 set -e
 

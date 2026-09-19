@@ -80,8 +80,8 @@ async def get_version() -> dict[str, Any]:
     """版本信息接口"""
     data = {
         "version": "1.0.0",
-        "name": "x-rag",
-        "description": "A production-ready RAG learning and training project",
+        "name": "x-GuanHai",
+        "description": "A production-ready RAG integrated engineering framework",
         "python_version": "3.11",
     }
     return ResponseModel(data=data).model_dump()

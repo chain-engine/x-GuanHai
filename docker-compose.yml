@@ -1,10 +1,10 @@
 services:
-  x-rag:
+  x-GuanHai:
     build:
       context: .
       dockerfile: Dockerfile
       target: production
-    container_name: x-rag
+    container_name: x-GuanHai
     ports:
       - "8000:8000"
     volumes:

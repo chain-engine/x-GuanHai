@@ -36,7 +36,7 @@ from api.router import api_router
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """应用生命周期管理"""
-    logger.info("Starting x-rag application...")
+    logger.info("Starting x-GuanHai application...")
 
     try:        
         # 初始化文档存储 Repository层
@@ -102,7 +102,7 @@ async def lifespan(app: FastAPI):
         logger.error(f"Failed to initialize application: {e}")
         raise
     finally:
-        logger.info("Shutting down x-rag application...")
+        logger.info("Shutting down x-GuanHai application...")
 
         # 关闭服务
         rag_service = getattr(app.state, "rag_service", None)
@@ -178,9 +178,9 @@ def create_app() -> FastAPI:
     async def root():
         """根路径"""
         return {
-            "name": "x-rag",
+            "name": "x-GuanHai",
             "version": "1.0.0",
-            "description": "A production-ready RAG learning and training project",
+            "description": "A production-ready RAG integrated engineering framework",
             "docs": "/docs",
             "redoc": "/redoc",
         }
@@ -192,7 +192,7 @@ app = create_app()
 
 
 def run():
-    """CLI 入口点 (供 uv run x-rag 调用)"""
+    """CLI 入口点 (供 uv run x-GuanHai 调用)"""
     import uvicorn
 
     uvicorn.run(

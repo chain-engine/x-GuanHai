@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 基础RAG使用示例
-演示如何使用x-rag进行文档上传、索引构建、查询检索和生成回答
+演示如何使用x-GuanHai进行文档上传、索引构建、查询检索和生成回答
 """
 
 import asyncio
@@ -14,7 +14,7 @@ async def main():
     base_url = "http://localhost:8000/api/v1"
 
     print("=" * 60)
-    print("x-rag 基础示例")
+    print("x-GuanHai 基础示例")
     print("=" * 60)
 
     # 1. 健康检查
@@ -160,7 +160,7 @@ async def main():
 
 
 if __name__ == "__main__":
-    print("请确保x-rag服务已启动: python src/main.py")
+    print("请确保x-GuanHai服务已启动: python src/main.py")
     print("按Enter键继续或Ctrl+C取消...")
 
     try:
@@ -171,6 +171,6 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"\n发生错误: {e}")
         print("\n请确保:")
-        print("1. x-rag服务已启动 (python src/main.py)")
+        print("1. x-GuanHai服务已启动 (python src/main.py)")
         print("2. 所有依赖已安装 (pip install -r requirements.txt)")
         print("3. 端口8000未被占用")

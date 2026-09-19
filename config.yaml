@@ -13,7 +13,7 @@ server:
 # ====================================
 logging:
   level: INFO
-  file_path: ../logs/x-rag-{time:YYYYMMDDHHmmss}.log
+  file_path: ../logs/x-GuanHai-{time:YYYYMMDDHHmmss}.log
   rotation: 1 day
   retention: 7 days
 
@@ -98,8 +98,8 @@ llm_providers:
 # ====================================
 api:
   prefix: /api/v1
-  title: x-rag API
-  description: RAG学习和实训项目API
+  title: x-GuanHai API
+  description: RAG一体化工程框架API
   version: 1.0.0
 
 # ====================================

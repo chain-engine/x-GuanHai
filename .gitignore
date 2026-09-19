@@ -83,7 +83,7 @@ cython_debug/
 # uv lock file (commit if needed)
 # uv.lock
 
-# x-rag project specific
+# x-GuanHai project specific
 data/
 logs/
 *.log

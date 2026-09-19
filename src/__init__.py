@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-x-rag
+x-GuanHai
 
-A production-ready RAG (Retrieval-Augmented Generation) learning and training project.
+A production-ready RAG (Retrieval-Augmented Generation) integrated engineering framework.
 """
 
 __version__ = "0.2.0"

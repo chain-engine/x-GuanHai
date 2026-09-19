@@ -6,9 +6,9 @@ build-backend = "hatchling.build"
 packages = ["src"]
 
 [project]
-name = "x-rag"
+name = "x-GuanHai"
 version = "0.1.0"
-description = "A production-ready RAG learning and training project"
+description = "A production-ready RAG integrated engineering framework"
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [
@@ -62,12 +62,12 @@ dev = [
 ]
 
 [project.scripts]
-x-rag = "src.main:run"
+x-GuanHai = "src.main:run"
 
 [project.urls]
-Homepage = "https://github.com/yeyushilai/x-rag"
-Repository = "https://github.com/yeyushilai/x-rag"
-Documentation = "https://github.com/yeyushilai/x-rag#readme"
+Homepage = "https://github.com/chain-engine/x-GuanHai"
+Repository = "https://github.com/chain-engine/x-GuanHai"
+Documentation = "https://github.com/chain-engine/x-GuanHai#readme"
 
 [tool.black]
 line-length = 100
