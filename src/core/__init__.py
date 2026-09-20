@@ -28,16 +28,6 @@ from core.exceptions import (
     DatabaseError,
     ConfigurationError,
 )
-from core.container import (
-    Container,
-    container,
-    inject,
-    singleton,
-    transient,
-    provides,
-    scoped_container,
-    get_container,
-)
 
 __all__ = [
     # Config
@@ -62,13 +52,4 @@ __all__ = [
     "GenerationError",
     "DatabaseError",
     "ConfigurationError",
-    # Container
-    "Container",
-    "container",
-    "inject",
-    "singleton",
-    "transient",
-    "provides",
-    "scoped_container",
-    "get_container",
 ]
