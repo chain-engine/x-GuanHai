@@ -77,9 +77,9 @@ class CORSConfig:
 class APIConfig:
     """API配置"""
     prefix: str = "/api/v1"
-    title: str = "x-GuanHai API"
-    description: str = "RAG一体化工程框架API"
-    version: str = "1.0.0"
+    title: str = "观海（GuanHai）"
+    description: str = "一个 RAG 一体化工程框架"
+    version: str = "0.1.0"
 
 
 @dataclass
@@ -196,9 +196,9 @@ class Settings:
             },
             "api": {
                 "prefix": "/api/v1",
-                "title": "x-GuanHai API",
-                "description": "RAG一体化工程框架API",
-                "version": "1.0.0",
+                "title": "观海（GuanHai）",
+                "description": "一个 RAG 一体化工程框架",
+                "version": "0.1.0",
             },
             "embedding": {
                 "model": DEFAULT_EMBEDDING_MODEL,
