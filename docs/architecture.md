@@ -72,8 +72,8 @@ x-GuanHai 是一个**生产级 RAG（检索增强生成）一体化工程框架*
 |------|------|------|----------|
 | API 层 | `api/` | 接收请求、参数校验、路由分发 | → Service 层 |
 | 业务层 | `services/` | 业务逻辑编排、事务管理 | → Repository / RAG |
-| RAG 层 | `rag/` | RAG 核心流程编排 | → Retrieval / LLMs |
-| 检索层 | `retrieval/` | 三阶段检索流水线 | → Repository / LLMs |
+| RAG 层 | `rag/` | RAG 核心流程编排 | → Retrieval / Infras |
+| 检索层 | `retrieval/` | 三阶段检索流水线 | → Repository / Infras |
 | 数据层 | `repositories/` | 数据访问封装 | → Infras 层 |
 | 基础设施层 | `infras/` | 底层存储、模型封装 | 无业务依赖 |
 | 核心支撑层 | `core/` | 配置、日志、异常、中间件 | 无业务依赖 |
