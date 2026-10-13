@@ -1,28 +1,78 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-BGE Embedding Model Module
+Embedding Module
 
-BGE嵌入模型实现
+嵌入模型基础设施：抽象基类 + BGE-M3 实现
 """
 
 from __future__ import annotations
 
 import os
+from abc import ABC, abstractmethod
 
 # 使用 HuggingFace 镜像加速下载
 os.environ.setdefault("HF_ENDPOINT", "https://hf-mirror.com")
 
 from sentence_transformers import SentenceTransformer
 
-from infras.embedding.base import EmbeddingModelBase
 from core.logger import logger
 from core.exceptions import EmbeddingError
-from constants.embedding import (
+from constants import (
     DEFAULT_EMBEDDING_MODEL,
     DEFAULT_EMBEDDING_DEVICE,
     DEFAULT_EMBEDDING_BATCH_SIZE,
 )
+
+
+class EmbeddingModelBase(ABC):
+    """嵌入模型基类
+
+    定义嵌入模型的标准接口
+    """
+
+    @property
+    @abstractmethod
+    def dimension(self) -> int:
+        """获取向量维度"""
+        pass
+
+    @property
+    @abstractmethod
+    def model_name(self) -> str:
+        """获取模型名称"""
+        pass
+
+    @abstractmethod
+    def encode(self, texts: list[str], normalize: bool = True) -> list[list[float]]:
+        """编码文本列表为向量
+
+        Args:
+            texts: 文本列表
+            normalize: 是否归一化
+
+        Returns:
+            list[list[float]]: 向量列表
+        """
+        pass
+
+    @abstractmethod
+    def encode_single(self, text: str, normalize: bool = True) -> list[float]:
+        """编码单个文本为向量
+
+        Args:
+            text: 文本
+            normalize: 是否归一化
+
+        Returns:
+            list[float]: 向量
+        """
+        pass
+
+    @abstractmethod
+    def shutdown(self) -> None:
+        """关闭模型"""
+        pass
 
 
 class BGEEmbeddingModel(EmbeddingModelBase):
@@ -115,3 +165,9 @@ class BGEEmbeddingModel(EmbeddingModelBase):
             except Exception as e:
                 logger.error(f"Failed to load embedding model: {e}")
                 raise EmbeddingError(f"Failed to load model: {e}") from e
+
+
+__all__ = [
+    "EmbeddingModelBase",
+    "BGEEmbeddingModel",
+]

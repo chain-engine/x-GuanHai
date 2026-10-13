@@ -27,7 +27,6 @@ x-GuanHai is a **production-grade RAG (Retrieval-Augmented Generation) integrate
 - **RRF + MMR Ranking**: RRF fuses multi-source recall results, then MMR diversifies the final ranking — balancing relevance and diversity
 - **Flexible Splitting**: Multiple text splitting strategies — character, word, sentence, paragraph, and semantic levels via LangChain / LlamaIndex
 - **Multi-LLM Support**: DeepSeek, Doubao, Aliyun (Qwen), Xiaomi Mimo, and other major LLM providers
-- **Dependency Injection**: Built-in universal IOC container with singleton/transient support
 - **Middleware Support**: CORS, rate limiting, request tracing, unified exception handling
 
 ## Project Structure
@@ -67,43 +66,48 @@ x-GuanHai/
 │   │       ├── semantic.py     # Semantic reranking
 │   │       └── score_filter.py # Score threshold filtering
 │   ├── llms/                    # LLM providers
-│   │   ├── providers.py        # Multi-provider registry (DeepSeek/Doubao/Aliyun/Mimo)
-│   │   └── prompts.py          # Prompt template management
+│   │   └── providers.py        # Multi-provider registry (DeepSeek/Doubao/Aliyun/Mimo)
 │   ├── chunking/                # Text splitting
 │   │   ├── base.py            # Splitting abstract base class
 │   │   ├── langchain_provider.py   # LangChain splitting
 │   │   └── llama_index_provider.py  # LlamaIndex splitting
+│   ├── services/                # Business service layer
+│   │   ├── base_service.py     # Base service class
+│   │   ├── rag_service.py      # RAG service
+│   │   └── document_service.py # Document service
 │   ├── repositories/            # Data access layer
 │   │   ├── base_repository.py  # Base repository class
 │   │   ├── vector_repository.py    # Vector repository
 │   │   ├── bm25_repository.py      # BM25 repository
 │   │   └── document_repository.py  # Document repository
 │   ├── models/                  # ORM entity layer
+│   │   ├── base.py             # Entity base class
 │   │   ├── document.py        # Document entity
 │   │   └── vector.py          # Vector record
 │   ├── infras/                 # Infrastructure layer
-│   │   ├── vector_store/       # Vector store (Chroma)
-│   │   ├── document_store/     # Document store (JSON)
-│   │   └── embedding/          # Embedding model (BGE-M3)
+│   │   ├── storage.py         # Document store (abstract base + JSON impl)
+│   │   ├── embedding.py       # Embedding model (abstract base + BGE-M3 impl)
+│   │   ├── vector.py          # Vector store (abstract base + Chroma impl)
+│   │   └── bm25.py            # BM25 sparse index store
 │   ├── core/                   # Core support layer
 │   │   ├── config.py          # Configuration center
 │   │   ├── logger.py         # Logging module
 │   │   ├── exceptions.py      # Exception definitions
-│   │   └── container.py      # DI container
+│   │   └── middleware.py      # Middleware (CORS/rate limit/tracing)
 │   ├── schemas/                 # Data models (Pydantic)
+│   │   ├── base.py            # Schema base class
 │   │   ├── rag.py            # RAG schemas
 │   │   ├── document.py       # Document schemas
-│   │   └── health.py         # Health schemas
+│   │   ├── health.py         # Health schemas
+│   │   └── responses.py      # Unified response format
 │   ├── constants/               # Constants
-│   │   ├── rag.py            # RAG constants
-│   │   ├── generation.py      # Generation constants
-│   │   ├── understanding.py   # Query understanding constants (intent/entity types, patterns)
-│   │   └── ...
+│   │   ├── base.py            # Enum base classes (BaseEnum/StrBaseEnum/IntBaseEnum/FloatBaseEnum)
+│   │   ├── enums.py           # Enum definitions
+│   │   └── constants.py       # Constant definitions
 │   ├── utils/                   # Utilities
 │   │   ├── similarity.py      # Similarity search engine
 │   │   ├── filters.py        # Metadata filter engine
-│   │   ├── index_optimizer.py  # Vector index optimizer
-│   │   └── text_splitter.py  # Text splitting utilities
+│   │   └── index_optimizer.py  # Vector index optimizer
 │   └── main.py                 # Application entry
 ├── tests/                        # Test cases
 ├── examples/                     # Example code
@@ -217,7 +221,6 @@ graph TB
 
     subgraph "LLM Layer (llms)"
         LLM1["providers.py<br/>Multi-Provider"]
-        LLM2["prompts.py<br/>Prompt Templates"]
     end
 
     subgraph "Chunking Layer (chunking)"
@@ -229,12 +232,12 @@ graph TB
         C1["config.py"]
         C2["logger.py"]
         C3["exceptions.py"]
-        C4["container.py"]
+        C4["middleware.py"]
     end
 
     subgraph "Constants Layer (constants)"
-        CON1["rag.py<br/>RAG Constants"]
-        CON2["understanding.py<br/>Understanding Constants"]
+        CON1["enums.py<br/>Enum Definitions"]
+        CON2["constants.py<br/>Constant Definitions"]
     end
 
     A2 --> SVC1
@@ -491,7 +494,6 @@ uv run pre-commit install
 | LLM | DeepSeek / Doubao / Aliyun (Qwen) / Xiaomi Mimo |
 | Text Chunking | LangChain / LlamaIndex |
 | Logging | Loguru |
-| DI Container | Custom IOC Container |
 | Utilities | Pydantic, httpx, rank-bm25 |
 | Containerization | Docker, docker-compose |
 | CI/CD | GitHub Actions |

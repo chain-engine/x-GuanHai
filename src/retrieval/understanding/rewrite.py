@@ -16,7 +16,7 @@ from retrieval.understanding.base import (
     BaseQueryUnderstandingProvider,
     QueryUnderstandingResult,
 )
-from llms.providers import get_llm_provider, BaseLLMProvider
+from infras.llm import get_llm_provider, BaseLLMProvider
 from core.logger import logger
 
 

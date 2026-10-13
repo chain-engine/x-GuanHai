@@ -9,7 +9,7 @@ BM25 稀疏索引仓库 — 管理倒排索引的生命周期
 from typing import Any, Optional
 
 from .base_repository import BaseRepository
-from infras.vector_store.bm25_store import BM25IndexStore
+from infras.bm25 import BM25IndexStore
 from core.logger import logger
 
 

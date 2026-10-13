@@ -12,7 +12,7 @@ from typing import List, Optional
 import numpy as np
 
 from core.exceptions import RetrievalError
-from constants.rag import (
+from constants import (
     DISTANCE_COSINE,
     DISTANCE_EUCLIDEAN,
     DISTANCE_DOT,

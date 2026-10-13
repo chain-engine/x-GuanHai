@@ -11,7 +11,7 @@ from core.logger import logger
 from core.exceptions import RetrievalError
 from repositories.vector_repository import VectorRepository
 from repositories.bm25_repository import BM25Repository
-from infras.embedding.bge_model import BGEEmbeddingModel
+from infras.embedding import BGEEmbeddingModel
 from retrieval.pipeline import RetrievalPipeline
 from retrieval.candidate.vector_retrieval import ChromaVectorRetrieval
 from retrieval.candidate.bm25_retrieval import BM25RetrievalProvider

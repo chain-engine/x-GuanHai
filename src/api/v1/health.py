@@ -12,6 +12,7 @@ from fastapi import APIRouter, Depends, Request
 
 from schemas.responses import ResponseModel
 from core.logger import logger
+from core.config import settings
 from services.rag_service import RAGService
 from services.document_service import DocumentService
 
@@ -62,7 +63,7 @@ async def health_check(
 
     data = {
         "status": "healthy",
-        "version": "1.0.0",
+        "version": settings.API_VERSION,
         "timestamp": datetime.utcnow().isoformat(),
         "checks": checks,
     }
@@ -79,7 +80,7 @@ async def health_check(
 async def get_version() -> dict[str, Any]:
     """版本信息接口"""
     data = {
-        "version": "1.0.0",
+        "version": settings.API_VERSION,
         "name": "x-GuanHai",
         "description": "A production-ready RAG integrated engineering framework",
         "python_version": "3.11",

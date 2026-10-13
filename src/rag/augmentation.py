@@ -8,7 +8,7 @@ Augmentation Module
 import re
 from typing import Any
 
-from constants.rag import DEFAULT_SYSTEM_PROMPT, DEFAULT_USER_PROMPT_TEMPLATE
+from constants import DEFAULT_SYSTEM_PROMPT, DEFAULT_USER_PROMPT_TEMPLATE
 from core.logger import logger
 
 # 中文停用词集合（常见的无意义词汇，压缩时不作为关键词）

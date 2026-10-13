@@ -9,7 +9,7 @@ Document repository
 from typing import Any
 
 from .base_repository import BaseRepository
-from infras.document_store.json_store import JSONDocumentStore
+from infras.storage import JSONDocumentStore
 from core.logger import logger
 
 

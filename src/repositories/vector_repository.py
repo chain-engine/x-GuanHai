@@ -9,9 +9,9 @@ Vector store repository
 from typing import Any
 
 from .base_repository import BaseRepository
-from infras.vector_store.chroma import ChromaVectorStore
+from infras.vector import ChromaVectorStore
 from utils.similarity import SimilaritySearchEngine
-from constants.rag import DistanceType
+from constants import DistanceType
 from core.logger import logger
 
 

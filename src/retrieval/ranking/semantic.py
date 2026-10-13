@@ -15,7 +15,7 @@ from typing import Any, Optional
 from langchain_core.messages import HumanMessage, SystemMessage
 
 from retrieval.ranking.base import BaseRerankingProvider
-from llms.providers import get_llm_provider, BaseLLMProvider
+from infras.llm import get_llm_provider, BaseLLMProvider
 from core.logger import logger
 
 

@@ -9,12 +9,10 @@ RAG相关接口的请求和响应模型
 from typing import Any
 from pydantic import BaseModel, Field, ConfigDict
 
-from constants.rag import (
+from constants import (
     DEFAULT_TOP_K,
     DEFAULT_SIMILARITY_THRESHOLD,
     DEFAULT_MMR_LAMBDA,
-)
-from constants.generation import (
     DEFAULT_TEMPERATURE,
     DEFAULT_MAX_TOKENS,
     DEFAULT_TIMEOUT,

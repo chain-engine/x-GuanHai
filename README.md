@@ -27,7 +27,6 @@ x-GuanHai（观海）是**一个生产级 RAG（检索增强生成）一体化�
 - **RRF + MMR 排序**：RRF 融合多路召回结果后，再经 MMR 多样性重排，兼顾相关性与多样性
 - **灵活切分**：提供字符级、单词级、句子级、段落级、语义级等多种文本切分策略
 - **多 LLM 支持**：支持 DeepSeek、豆包、阿里云百炼、小米 Mimo 等主流 LLM 提供商
-- **依赖注入**：内置通用 IOC 容器，支持单例/多例模式
 - **中间件支持**：CORS、限流、请求追踪、统一异常处理
 
 ### 适配场景
@@ -216,47 +215,47 @@ x-GuanHai/
 │   │       ├── rrf.py          # RRF 排名融合
 │   │       ├── semantic.py     # 语义重排
 │   │       └── score_filter.py # 分值阈值过滤
-│   ├── llms/                    # LLM 提供者
-│   │   ├── providers.py        # 多提供商注册（DeepSeek/豆包/阿里/Mimo）
-│   │   └── prompts.py          # 提示词模板管理
 │   ├── chunking/                # 文本切分
 │   │   ├── base.py            # 切分抽象基类
 │   │   ├── langchain_provider.py  # LangChain 切分
 │   │   └── llama_index_provider.py  # LlamaIndex 切分
 │   ├── services/                # 业务逻辑层
+│   │   ├── base_service.py      # 服务基类
 │   │   ├── rag_service.py      # RAG 服务
 │   │   └── document_service.py  # 文档服务
 │   ├── repositories/            # 数据访问层
-│   │   ├── base_repository.py # 基础仓库类
-│   │   ├── vector_repository.py   # 向量仓库
-│   │   ├── bm25_repository.py     # BM25 仓库
+│   │   ├── base_repository.py   # 基础仓库类
+│   │   ├── vector_repository.py # 向量仓库
+│   │   ├── bm25_repository.py   # BM25 仓库
 │   │   └── document_repository.py # 文档仓库
 │   ├── models/                  # ORM 实体层
+│   │   ├── base.py            # 实体基类
 │   │   ├── document.py        # 文档实体
 │   │   └── vector.py          # 向量记录
 │   ├── infras/                 # 基础设施层
-│   │   ├── vector_store/       # 向量存储（Chroma）
-│   │   ├── document_store/     # 文档存储（JSON）
-│   │   └── embedding/          # 嵌入模型（BGE-M3）
+│   │   ├── storage.py         # 文档存储（抽象基类 + JSON实现）
+│   │   ├── embedding.py       # 嵌入模型（抽象基类 + BGE-M3实现）
+│   │   ├── vector.py          # 向量存储（抽象基类 + Chroma实现）
+│   │   └── bm25.py            # BM25 稀疏索引存储
 │   ├── core/                   # 核心支撑层
 │   │   ├── config.py          # 配置中心
-│   │   ├── logger.py         # 日志模块
+│   │   ├── logger.py          # 日志模块
 │   │   ├── exceptions.py      # 异常定义
-│   │   └── container.py      # 依赖注入容器
+│   │   └── middleware.py      # 中间件（CORS/限流/追踪）
 │   ├── schemas/                 # 数据模型（Pydantic）
+│   │   ├── base.py            # Schema 基类
 │   │   ├── rag.py            # RAG 相关 Schema
 │   │   ├── document.py       # 文档相关 Schema
-│   │   └── health.py         # 健康检查 Schema
+│   │   ├── health.py         # 健康检查 Schema
+│   │   └── responses.py      # 统一响应格式
 │   ├── constants/               # 常量定义
-│   │   ├── rag.py            # RAG 常量
-│   │   ├── generation.py      # 生成常量
-│   │   ├── understanding.py   # 查询理解常量（意图类型/实体类型/识别模式）
-│   │   └── ...
+│   │   ├── base.py            # 枚举基类族（BaseEnum/StrBaseEnum/IntBaseEnum/FloatBaseEnum）
+│   │   ├── enums.py           # 枚举定义
+│   │   └── constants.py       # 常量定义
 │   ├── utils/                   # 工具函数
 │   │   ├── similarity.py      # 相似度计算引擎
 │   │   ├── filters.py        # 元数据过滤引擎
-│   │   ├── index_optimizer.py  # 向量索引优化
-│   │   └── text_splitter.py  # 文本切分工具
+│   │   └── index_optimizer.py  # 向量索引优化
 │   └── main.py                 # 应用入口
 ├── tests/                        # 测试用例
 ├── examples/                     # 示例代码
@@ -318,11 +317,7 @@ graph TB
         I1["ChromaVectorStore<br/>向量存储"]
         I2["JSONDocumentStore<br/>文档存储"]
         I3["BGEEmbeddingModel<br/>嵌入模型"]
-    end
-
-    subgraph "LLM 层 (llms)"
-        LLM1["providers.py<br/>多提供商"]
-        LLM2["prompts.py<br/>提示词模板"]
+        I4["BaseLLMProvider<br/>LLM 提供者"]
     end
 
     subgraph "切分层 (chunking)"
@@ -334,12 +329,12 @@ graph TB
         C1["config.py<br/>配置中心"]
         C2["logger.py<br/>日志模块"]
         C3["exceptions.py<br/>异常定义"]
-        C4["container.py<br/>依赖注入"]
+        C4["middleware.py<br/>中间件"]
     end
 
     subgraph "常量层 (constants)"
-        CON1["rag.py<br/>RAG 常量"]
-        CON2["understanding.py<br/>查询理解常量"]
+        CON1["enums.py<br/>枚举定义"]
+        CON2["constants.py<br/>常量定义"]
     end
 
     A2 --> SVC1
@@ -468,10 +463,6 @@ graph LR
             RET["retrieval/<br/>检索子系统"]
         end
 
-        subgraph "llms/"
-            LLMS["llms/<br/>LLM 提供者"]
-        end
-
         subgraph "chunking/"
             CHK["chunking/<br/>文本切分"]
         end
@@ -570,7 +561,6 @@ graph TD
 | **LLM** | DeepSeek / 豆包 / 阿里云百炼 / 小米 Mimo |
 | **文本切分** | LangChain / LlamaIndex |
 | **日志** | Loguru |
-| **依赖注入** | 自研 IOC 容器 |
 | **核心工具库** | Pydantic、httpx、rank-bm25 |
 | **容器化** | Docker、docker-compose |
 | **CI/CD** | GitHub Actions |

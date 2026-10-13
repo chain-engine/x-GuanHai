@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-LLM 提供者模块
+LLM Provider Module
 
-提供统一的 LLM 接口，支持多种模型提供者：
+LLM 提供者基础设施：抽象基类 + 多提供商实现。
 - DeepSeek
 - 豆包 (Doubao)
 - 阿里云百炼 (Alibaba Cloud)
+- 小米 Mimo
+- Mock（测试用）
 """
 
 from __future__ import annotations
@@ -18,7 +20,7 @@ from langchain_openai import ChatOpenAI
 
 from core.logger import logger
 from core.config import Settings
-from constants.generation import LLMProviderType
+from constants import LLMProviderType
 
 
 class BaseLLMProvider(ABC):
@@ -377,7 +379,6 @@ def list_providers() -> list[str]:
 
 
 __all__ = [
-    "LLMProviderType",
     "BaseLLMProvider",
     "DeepSeekProvider",
     "DoubaoProvider",

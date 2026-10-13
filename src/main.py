@@ -118,9 +118,9 @@ async def lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     """创建FastAPI应用"""
     app = FastAPI(
-        title=settings.API_TITLE,
-        description=settings.API_DESCRIPTION,
-        version=settings.API_VERSION,
+        title=settings.APP_NAME,
+        description=settings.APP_DESCRIPTION,
+        version=settings.APP_VERSION,
         docs_url="/docs",
         redoc_url="/redoc",
         openapi_url="/openapi.json",
@@ -179,10 +179,11 @@ def create_app() -> FastAPI:
         """根路径"""
         return {
             "name": "x-GuanHai",
-            "version": "1.0.0",
+            "version": settings.API_VERSION,
             "description": "A production-ready RAG integrated engineering framework",
             "docs": "/docs",
             "redoc": "/redoc",
+            "openapi": "/openapi.json"
         }
 
     return app

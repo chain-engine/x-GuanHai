@@ -10,7 +10,7 @@ BM25 稀疏检索召回
 from typing import Any, Optional
 
 from retrieval.candidate.base import BaseRetrievalProvider
-from infras.vector_store.bm25_store import BM25IndexStore
+from infras.bm25 import BM25IndexStore
 from repositories.bm25_repository import BM25Repository
 from core.logger import logger
 

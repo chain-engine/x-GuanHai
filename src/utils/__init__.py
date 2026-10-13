@@ -10,7 +10,7 @@ Utils Package
 from .similarity import (
     SimilaritySearchEngine,
 )
-from constants.rag import DistanceType
+from constants import DistanceType
 
 # 过滤器
 from .filters import (

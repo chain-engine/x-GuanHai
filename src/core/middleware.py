@@ -17,7 +17,7 @@ from slowapi.errors import RateLimitExceeded
 
 from core.logger import logger
 from core.config import settings
-from constants.common import HeaderType
+from constants import HeaderType
 
 
 # 限流器实例

@@ -55,10 +55,10 @@ x-GuanHai 是一个**生产级 RAG（检索增强生成）一体化工程框架*
                                       ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                           基础设施层 (infras/)                              │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                       │
-│  │vector_store/│  │ embedding/  │  │document_   │                       │
-│  │             │  │             │  │store/      │                       │
-│  └─────────────┘  └─────────────┘  └─────────────┘                       │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐       │
+│  │  vector.py  │  │  bm25.py    │  │embedding.py │  │ storage.py  │       │
+│  │  (Chroma)   │  │   (BM25)    │  │  (BGE-M3)   │  │   (JSON)    │       │
+│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘       │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -76,7 +76,7 @@ x-GuanHai 是一个**生产级 RAG（检索增强生成）一体化工程框架*
 | 检索层 | `retrieval/` | 三阶段检索流水线 | → Repository / LLMs |
 | 数据层 | `repositories/` | 数据访问封装 | → Infras 层 |
 | 基础设施层 | `infras/` | 底层存储、模型封装 | 无业务依赖 |
-| 核心支撑层 | `core/` | 配置、日志、异常、IOC | 无业务依赖 |
+| 核心支撑层 | `core/` | 配置、日志、异常、中间件 | 无业务依赖 |
 | 常量层 | `constants/` | 枚举类型、模式配置 | 无业务依赖 |
 
 ### 各层职责
@@ -174,9 +174,10 @@ class VectorRepository(BaseRepository):
 - 硬件/平台相关逻辑
 
 **组件**：
-- `vector_store/`: Chroma 向量存储
-- `embedding/`: BGE 嵌入模型
-- `document_store/`: JSON 文档存储
+- `vector.py`: 向量存储抽象基类 + Chroma 实现（后续可扩展其他向量数据库）
+- `bm25.py`: BM25 稀疏索引存储
+- `embedding.py`: 嵌入模型抽象基类 + BGE-M3 实现
+- `storage.py`: 文档存储抽象基类 + JSON 实现
 
 #### 7. 核心支撑层 (`core/`)
 
@@ -184,7 +185,7 @@ class VectorRepository(BaseRepository):
 - 配置管理
 - 日志记录
 - 异常定义
-- 依赖注入容器
+- 中间件支持
 
 **特点**：
 - 不依赖任何业务层
@@ -197,9 +198,9 @@ class VectorRepository(BaseRepository):
 - 消除代码中的魔法字符串和魔法数字
 
 **包含**：
-- `rag.py`: 文档状态、距离类型、默认参数
-- `generation.py`: LLM 提供商、温度等
-- `understanding.py`: 意图类型、实体类型、识别模式、停用词表
+- `enums.py`: 全部枚举定义（状态/类型/意图/实体等）
+- `constants.py`: 全部常量定义（默认参数/模式/停用词等）
+- `base.py`: 枚举基类族（BaseEnum / StrBaseEnum / IntBaseEnum / FloatBaseEnum）
 
 ```python
 from constants import IntentType, EntityType, INTENT_PATTERNS
@@ -209,33 +210,7 @@ from constants import IntentType, EntityType, INTENT_PATTERNS
 
 ## 核心模块设计
 
-### 1. 依赖注入容器
-
-使用自研 IOC 容器，支持单例/多例模式：
-
-```python
-# core/container.py
-class Container:
-    def register(self, service_type, factory=None, is_singleton=True):
-        ...
-
-    def resolve(self, service_type):
-        ...
-```
-
-**装饰器支持**：
-
-```python
-@singleton
-class MyService:
-    ...
-
-@inject(MyDep)
-def my_func():
-    ...
-```
-
-### 2. 配置中心
+### 1. 配置中心
 
 三层配置优先级：
 
@@ -252,7 +227,7 @@ class Settings:
         # 3. 合并环境变量
 ```
 
-### 3. 异常体系
+### 2. 异常体系
 
 统一异常继承链：
 
@@ -268,7 +243,7 @@ AppException
     └── VectorStoreError
 ```
 
-### 4. LLM Provider 模式
+### 3. LLM Provider 模式
 
 使用抽象基类 + 注册表模式：
 
@@ -290,7 +265,7 @@ def get_llm_provider(name: str) -> BaseLLMProvider:
     return _PROVIDER_REGISTRY[name]()
 ```
 
-### 5. 三阶段检索流水线
+### 4. 三阶段检索流水线
 
 采用策略模式 + 责任链模式：
 

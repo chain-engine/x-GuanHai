@@ -16,23 +16,24 @@ from dataclasses import dataclass, field
 import yaml
 from dotenv import load_dotenv
 
-from constants.rag import (
-    DEFAULT_TOP_K,
-    DEFAULT_SIMILARITY_THRESHOLD,
-    DEFAULT_MMR_LAMBDA,
-    DEFAULT_CHUNK_SIZE,
+from constants import (
+    API_PREFIX,
+    APP_DESCRIPTION,
+    APP_NAME,
+    APP_VERSION,
     DEFAULT_CHUNK_OVERLAP,
-)
-from constants.generation import (
-    DEFAULT_TEMPERATURE,
-    DEFAULT_MAX_TOKENS,
-    DEFAULT_TIMEOUT,
-)
-from constants.embedding import (
-    DEFAULT_EMBEDDING_MODEL,
-    DEFAULT_EMBEDDING_DEVICE,
+    DEFAULT_CHUNK_SIZE,
+    DEFAULT_CONFIG_FILE,
     DEFAULT_EMBEDDING_BATCH_SIZE,
     DEFAULT_EMBEDDING_CACHE_SIZE,
+    DEFAULT_EMBEDDING_DEVICE,
+    DEFAULT_EMBEDDING_MODEL,
+    DEFAULT_MAX_TOKENS,
+    DEFAULT_MMR_LAMBDA,
+    DEFAULT_SIMILARITY_THRESHOLD,
+    DEFAULT_TEMPERATURE,
+    DEFAULT_TIMEOUT,
+    DEFAULT_TOP_K,
 )
 
 
@@ -76,10 +77,10 @@ class CORSConfig:
 @dataclass
 class APIConfig:
     """API配置"""
-    prefix: str = "/api/v1"
-    title: str = "观海（GuanHai）"
-    description: str = "一个 RAG 一体化工程框架"
-    version: str = "0.1.0"
+    prefix: str = API_PREFIX
+    title: str = APP_NAME
+    description: str = APP_DESCRIPTION
+    version: str = APP_VERSION
 
 
 @dataclass
@@ -158,7 +159,7 @@ class Settings:
     优先级：环境变量 > YAML配置文件 > 默认配置
     """
 
-    CONFIG_FILE_PATH: Final[str] = "config.yaml"
+    CONFIG_FILE_PATH: Final[str] = DEFAULT_CONFIG_FILE
 
     def __init__(self) -> None:
         """初始化配置"""
@@ -553,6 +554,19 @@ class Settings:
 
     @property
     def API_VERSION(self) -> str:
+        return self.api.version
+
+    # 应用信息（App 语义别名，对应 constants.APP_NAME/APP_DESCRIPTION/APP_VERSION）
+    @property
+    def APP_NAME(self) -> str:
+        return self.api.title
+
+    @property
+    def APP_DESCRIPTION(self) -> str:
+        return self.api.description
+
+    @property
+    def APP_VERSION(self) -> str:
         return self.api.version
 
     @property

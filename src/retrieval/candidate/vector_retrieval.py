@@ -11,7 +11,7 @@ from typing import Any, Optional
 
 from retrieval.candidate.base import BaseRetrievalProvider
 from repositories.vector_repository import VectorRepository
-from infras.embedding.bge_model import BGEEmbeddingModel
+from infras.embedding import BGEEmbeddingModel
 from core.logger import logger
 
 

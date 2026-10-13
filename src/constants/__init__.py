@@ -1,109 +1,52 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Constants Package
 
-统一管理项目中的常量，避免魔法数值和硬编码字符串
+统一管理项目中的常量，避免魔法数值和硬编码字符串。
+枚举定义统一收敛于 enums.py，常量定义统一收敛于 constants.py，
+枚举基类族保留在 base.py。
 """
 
 from .base import BaseEnum
-
-from .common import (
-    # HTTP Status Enum
-    HttpStatus,
-    # Response Messages Enum
-    ResponseMsg,
-    # Date/Time Formats
-    DATE_FORMAT,
-    DATETIME_FORMAT,
-    ISO_DATETIME_FORMAT,
-    # Pagination
-    DEFAULT_PAGE_SIZE,
-    MAX_PAGE_SIZE,
-    # Timeouts
-    SHORT_TIMEOUT,
-    MEDIUM_TIMEOUT,
-    LONG_TIMEOUT,
-    # Regex
-    EMAIL_REGEX,
-    PHONE_REGEX,
-    # Headers Enum
-    HeaderType,
-)
-
-from .env import (
-    Environment,
-)
-
-from .rag import (
-    # Document Status Enum
-    DocStatus,
-    # Document Types Enum
-    DocType,
-    SUPPORTED_DOC_TYPES,
-    # Distance Types
-    DISTANCE_COSINE,
-    DISTANCE_EUCLIDEAN,
-    DISTANCE_DOT,
-    # Default Values
-    DEFAULT_TOP_K,
-    DEFAULT_SIMILARITY_THRESHOLD,
-    DEFAULT_MMR_LAMBDA,
-    DEFAULT_CHUNK_SIZE,
+from .constants import (
+    API_PREFIX,
+    APP_DESCRIPTION,
+    APP_NAME,
+    APP_VERSION,
     DEFAULT_CHUNK_OVERLAP,
-    # Prompt Templates
-    DEFAULT_SYSTEM_PROMPT,
-    DEFAULT_USER_PROMPT_TEMPLATE,
-    # Enums
-    DistanceType,
-    RerankingProviderName,
-)
-
-from .embedding import (
-    DEFAULT_EMBEDDING_MODEL,
-    DEFAULT_EMBEDDING_DEVICE,
+    DEFAULT_CHUNK_SIZE,
+    DEFAULT_CONFIG_FILE,
     DEFAULT_EMBEDDING_BATCH_SIZE,
     DEFAULT_EMBEDDING_CACHE_SIZE,
-)
-
-from .vector_store import (
-    VectorStoreType,
-    DEFAULT_COLLECTION_NAME,
-    DEFAULT_DISTANCE,
-)
-
-from .generation import (
-    LLMProviderType,
-    DEFAULT_TEMPERATURE,
-    DEFAULT_MAX_TOKENS,
-    DEFAULT_TIMEOUT,
-    SUPPORTED_LLM_PROVIDERS,
-)
-
-from .rate_limit import (
-    DEFAULT_REQUESTS_PER_MINUTE,
-    DEFAULT_REQUESTS_PER_HOUR,
-)
-
-from .log import (
-    LogLevel,
-)
-
-from .server import (
-    DEFAULT_HOST,
-    DEFAULT_PORT,
-    API_PREFIX,
-    API_TITLE,
-    API_VERSION,
-)
-
-from .understanding import (
-    IntentType,
-    EntityType,
-    INTENT_PATTERNS,
-    ENTITY_PATTERNS,
+    DEFAULT_EMBEDDING_DEVICE,
+    DEFAULT_EMBEDDING_MODEL,
     DEFAULT_INTENT_MIN_CONFIDENCE,
+    DEFAULT_MAX_TOKENS,
+    DEFAULT_MMR_LAMBDA,
     DEFAULT_QUERY_STOPWORDS,
+    DEFAULT_SIMILARITY_THRESHOLD,
+    DEFAULT_SYSTEM_PROMPT,
+    DEFAULT_TEMPERATURE,
+    DEFAULT_TIMEOUT,
+    DEFAULT_TOP_K,
+    DEFAULT_USER_PROMPT_TEMPLATE,
+    DISTANCE_COSINE,
+    DISTANCE_DOT,
+    DISTANCE_EUCLIDEAN,
+    ENTITY_PATTERNS,
+    INTENT_PATTERNS,
+    SUPPORTED_DOC_TYPES,
+)
+from .enums import (
+    DistanceType,
+    DocStatus,
+    DocType,
+    EntityType,
+    HeaderType,
+    HttpStatus,
+    IntentType,
+    LLMProviderType,
+    RerankingProviderName,
 )
 
 __all__ = [
@@ -111,26 +54,8 @@ __all__ = [
     "BaseEnum",
     # HTTP Status
     "HttpStatus",
-    # Response Messages
-    "ResponseMsg",
-    # Date/Time Formats
-    "DATE_FORMAT",
-    "DATETIME_FORMAT",
-    "ISO_DATETIME_FORMAT",
-    # Pagination
-    "DEFAULT_PAGE_SIZE",
-    "MAX_PAGE_SIZE",
-    # Timeouts
-    "SHORT_TIMEOUT",
-    "MEDIUM_TIMEOUT",
-    "LONG_TIMEOUT",
-    # Regex
-    "EMAIL_REGEX",
-    "PHONE_REGEX",
     # Headers
     "HeaderType",
-    # Environment
-    "Environment",
     # Document Status
     "DocStatus",
     # Document Types
@@ -140,6 +65,7 @@ __all__ = [
     "DISTANCE_COSINE",
     "DISTANCE_EUCLIDEAN",
     "DISTANCE_DOT",
+    "DistanceType",
     # RAG Defaults
     "DEFAULT_TOP_K",
     "DEFAULT_SIMILARITY_THRESHOLD",
@@ -150,35 +76,24 @@ __all__ = [
     "DEFAULT_SYSTEM_PROMPT",
     "DEFAULT_USER_PROMPT_TEMPLATE",
     # RAG Enums
-    "DistanceType",
     "RerankingProviderName",
     # LLM Providers
     "LLMProviderType",
-    "SUPPORTED_LLM_PROVIDERS",
     # Embedding
     "DEFAULT_EMBEDDING_MODEL",
     "DEFAULT_EMBEDDING_DEVICE",
     "DEFAULT_EMBEDDING_BATCH_SIZE",
     "DEFAULT_EMBEDDING_CACHE_SIZE",
-    # Vector Store
-    "VectorStoreType",
-    "DEFAULT_COLLECTION_NAME",
-    "DEFAULT_DISTANCE",
     # Generation
     "DEFAULT_TEMPERATURE",
     "DEFAULT_MAX_TOKENS",
     "DEFAULT_TIMEOUT",
-    # Rate Limit
-    "DEFAULT_REQUESTS_PER_MINUTE",
-    "DEFAULT_REQUESTS_PER_HOUR",
-    # Log Levels
-    "LogLevel",
     # Server
-    "DEFAULT_HOST",
-    "DEFAULT_PORT",
     "API_PREFIX",
-    "API_TITLE",
-    "API_VERSION",
+    "APP_NAME",
+    "APP_DESCRIPTION",
+    "APP_VERSION",
+    "DEFAULT_CONFIG_FILE",
     # Understanding
     "IntentType",
     "EntityType",

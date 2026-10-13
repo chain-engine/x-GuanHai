@@ -3,18 +3,18 @@
 """
 Generation Module
 
-生成模块 - 基于 llms 模块的统一 LLM 调用封装
+生成模块 - 基于 infras.llm 模块的统一 LLM 调用封装
 """
 
 from typing import Any, AsyncIterator
 
 from core.logger import logger
 from core.exceptions import GenerationError
-from llms import get_llm_provider, BaseLLMProvider
+from infras.llm import get_llm_provider, BaseLLMProvider
 
 
 class LLMGeneration:
-    """LLM生成器 - 基于 llms 模块的统一调用"""
+    """LLM生成器 - 基于 infras.llm 的统一调用"""
 
     def __init__(
         self,
@@ -75,7 +75,7 @@ class LLMGeneration:
             self._provider = get_llm_provider(target_provider)
 
         try:
-            # 调用 llms 模块
+            # 调用 infras.llm 模块
             response = self._provider.invoke(
                 messages=[{"role": "user", "content": prompt}],
                 temperature=temperature or self._default_temperature,

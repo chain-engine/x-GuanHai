@@ -12,7 +12,7 @@ from typing import Any
 from retrieval.ranking.base import BaseRerankingProvider
 from utils.similarity import SimilaritySearchEngine, DistanceType
 from core.logger import logger
-from infras.embedding.base import EmbeddingModelBase
+from infras.embedding import EmbeddingModelBase
 
 
 class MMRReranker(BaseRerankingProvider):

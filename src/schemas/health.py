@@ -25,7 +25,7 @@ class HealthCheckRequest(BaseModel):
 class HealthCheckResponse(BaseModel):
     """健康检查响应"""
     status: str = Field(..., description="服务状态", examples=["healthy"])
-    version: str = Field(..., description="版本号", examples=["1.0.0"])
+    version: str = Field(..., description="版本号", examples=["0.1.0"])
     timestamp: datetime = Field(..., description="时间戳")
     checks: dict[str, Any] = Field(
         default_factory=dict,
@@ -36,7 +36,7 @@ class HealthCheckResponse(BaseModel):
         json_schema_extra={
             "example": {
                 "status": "healthy",
-                "version": "1.0.0",
+                "version": "0.1.0",
                 "timestamp": "2024-01-01T00:00:00.000000Z",
                 "checks": {
                     "database": "healthy",
@@ -57,7 +57,7 @@ class VersionResponse(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "version": "1.0.0",
+                "version": "0.1.0",
                 "name": "x-GuanHai",
                 "description": "A production-ready RAG integrated engineering framework",
                 "python_version": "3.11",

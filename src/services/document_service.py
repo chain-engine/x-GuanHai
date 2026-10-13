@@ -19,8 +19,8 @@ from repositories.bm25_repository import BM25Repository
 from core.logger import logger
 from core.exceptions import DocumentError
 from chunking import get_chunking_provider
-from infras.embedding.bge_model import BGEEmbeddingModel
-from constants.rag import DocStatus
+from infras.embedding import BGEEmbeddingModel
+from constants import DocStatus
 
 
 class DocumentService(BaseService):

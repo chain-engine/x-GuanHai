@@ -17,7 +17,7 @@ from retrieval.understanding.base import (
 )
 from retrieval.candidate.base import BaseRetrievalProvider
 from retrieval.ranking.base import BaseRerankingProvider, BaseFilterProvider
-from constants.rag import (
+from constants import (
     RerankingProviderName,
     DEFAULT_TOP_K,
     DEFAULT_SIMILARITY_THRESHOLD,
@@ -25,8 +25,8 @@ from constants.rag import (
     DISTANCE_COSINE,
     DISTANCE_EUCLIDEAN,
 )
-from infras.embedding.base import EmbeddingModelBase
-from llms.providers import BaseLLMProvider
+from infras.embedding import EmbeddingModelBase
+from infras.llm import BaseLLMProvider
 from utils.filters import MetadataFilterEngine
 from utils.similarity import SimilaritySearchEngine, DistanceType
 
