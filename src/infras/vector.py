@@ -16,22 +16,6 @@ from core.logger import logger
 from core.exceptions import VectorStoreError
 
 
-class VectorRecord:
-    """向量记录"""
-
-    def __init__(
-        self,
-        id: str,
-        text: str,
-        vector: list[float],
-        metadata: dict[str, Any] | None = None,
-    ):
-        self.id = id
-        self.text = text
-        self.vector = vector
-        self.metadata = metadata or {}
-
-
 class VectorStoreBase(ABC):
     """向量存储基类
 
@@ -288,7 +272,6 @@ class ChromaVectorStore(VectorStoreBase):
 
 
 __all__ = [
-    "VectorRecord",
     "VectorStoreBase",
     "ChromaVectorStore",
 ]

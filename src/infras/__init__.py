@@ -11,7 +11,7 @@ llm.py（LLM 提供者抽象基类 + 多提供商实现）。
 
 from infras.storage import DocumentStoreBase, JSONDocumentStore
 from infras.embedding import EmbeddingModelBase, BGEEmbeddingModel
-from infras.vector import VectorStoreBase, VectorRecord, ChromaVectorStore
+from infras.vector import VectorStoreBase, ChromaVectorStore
 from infras.bm25 import BM25IndexStore
 from infras.llm import (
     BaseLLMProvider,
@@ -31,7 +31,6 @@ __all__ = [
     "EmbeddingModelBase",
     "BGEEmbeddingModel",
     "VectorStoreBase",
-    "VectorRecord",
     "ChromaVectorStore",
     "BM25IndexStore",
     "BaseLLMProvider",

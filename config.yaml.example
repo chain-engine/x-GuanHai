@@ -1,0 +1,122 @@
+# x-GuanHai 配置文件模板
+# 将此文件复制为 config.yaml 并填入你的配置值
+
+# ====================================
+# 服务配置
+# ====================================
+server:
+  host: 0.0.0.0
+  port: 8000
+  debug: true
+  workers: 4
+  environment: development
+
+# ====================================
+# 日志配置
+# ====================================
+logging:
+  level: INFO
+  file_path: ../logs/x-GuanHai-{time:YYYYMMDDHHmmss}.log
+  rotation: 1 day
+  retention: 7 days
+
+# ====================================
+# 向量嵌入配置
+# ====================================
+embedding:
+  model: BAAI/bge-m3
+  device: cpu
+  batch_size: 32
+  cache_size: 1000
+  normalize: true
+
+# ====================================
+# 向量存储配置
+# ====================================
+vector_store:
+  type: chroma
+  persist_directory: ./data/chroma
+  collection_name: documents
+  distance: cosine
+
+# ====================================
+# 文本切分配置
+# ====================================
+text_splitter:
+  provider: langchain  # langchain | llamaindex
+  strategy: recursive  # recursive | character | token | semantic（langchain）/ sentence | token | semantic | markdown（llamaindex）
+  chunk_size: 512
+  chunk_overlap: 50
+  separators:
+    - "\n\n"
+    - "\n"
+    - "。"
+    - "！"
+    - "？"
+    - " "
+    - ""
+
+# ====================================
+# 检索配置
+# ====================================
+retrieval:
+  top_k: 5
+  similarity_threshold: 0.7
+  use_mmr: false
+  mmr_lambda: 0.5
+
+# ====================================
+# 生成配置
+# ====================================
+generation:
+  provider: deepseek
+  model: deepseek-chat
+  temperature: 0.7
+  max_tokens: 2000
+  timeout: 30
+
+# ====================================
+# LLM 提供商配置
+# ====================================
+llm_providers:
+  # DeepSeek
+  deepseek_api_key: your-deepseek-api-key
+  deepseek_api_base: https://api.deepseek.com/v1
+  deepseek_model_name: deepseek-chat
+  # 豆包 (字节跳动)
+  doubao_api_key: your-doubao-api-key
+  doubao_api_base: https://ark.cn-beijing.volces.com/api/v3
+  doubao_model_name: doubao-pro-32k
+  # 阿里云百炼 (通义千问)
+  aliyun_api_key: your-aliyun-api-key
+  aliyun_api_base: https://dashscope.aliyuncs.com/compatible-mode/v1
+  aliyun_model_name: qwen-plus
+  # 小米 Mimo
+  mimo_api_key: your-mimo-api-key
+  mimo_api_base: https://api.xiaomi.com
+  mimo_model_name: mimo-v2.5-pro
+
+# ====================================
+# 限流配置
+# ====================================
+rate_limit:
+  enabled: true
+  requests_per_minute: 60
+  requests_per_hour: 1000
+
+# ====================================
+# CORS 配置
+# ====================================
+cors:
+  enabled: true
+  allow_origins:
+    - "http://localhost:3000"
+    - "http://localhost:8080"
+  allow_methods:
+    - GET
+    - POST
+    - PUT
+    - DELETE
+    - OPTIONS
+  allow_headers:
+    - "*"

@@ -18,6 +18,7 @@ DEFAULT_CONFIG_FILE: str = "config.yaml"
 # ====================================
 # 应用信息
 # ====================================
+APP_ID: str = "x-GuanHai"
 APP_NAME: str = "观海（GuanHai）"
 APP_DESCRIPTION: str = "一个生产级 RAG（检索增强生成）一体化工程框架"
 APP_VERSION: str = "0.1.0"

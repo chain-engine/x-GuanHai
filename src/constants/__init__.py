@@ -11,6 +11,7 @@ from .base import BaseEnum
 from .constants import (
     API_PREFIX,
     APP_DESCRIPTION,
+    APP_ID,
     APP_NAME,
     APP_VERSION,
     DEFAULT_CHUNK_OVERLAP,
@@ -90,6 +91,7 @@ __all__ = [
     "DEFAULT_TIMEOUT",
     # Server
     "API_PREFIX",
+    "APP_ID",
     "APP_NAME",
     "APP_DESCRIPTION",
     "APP_VERSION",

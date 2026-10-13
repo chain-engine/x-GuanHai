@@ -19,6 +19,7 @@ from dotenv import load_dotenv
 from constants import (
     API_PREFIX,
     APP_DESCRIPTION,
+    APP_ID,
     APP_NAME,
     APP_VERSION,
     DEFAULT_CHUNK_OVERLAP,
@@ -71,16 +72,6 @@ class CORSConfig:
     allow_origins: list[str] = field(default_factory=lambda: ["*"])
     allow_methods: list[str] = field(default_factory=lambda: ["GET", "POST", "PUT", "DELETE", "OPTIONS"])
     allow_headers: list[str] = field(default_factory=lambda: ["*"])
-    allow_credentials: bool = False
-
-
-@dataclass
-class APIConfig:
-    """API配置"""
-    prefix: str = API_PREFIX
-    title: str = APP_NAME
-    description: str = APP_DESCRIPTION
-    version: str = APP_VERSION
 
 
 @dataclass
@@ -193,13 +184,6 @@ class Settings:
                 "allow_origins": ["*"],
                 "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                 "allow_headers": ["*"],
-                "allow_credentials": False,
-            },
-            "api": {
-                "prefix": "/api/v1",
-                "title": "观海（GuanHai）",
-                "description": "一个 RAG 一体化工程框架",
-                "version": "0.1.0",
             },
             "embedding": {
                 "model": DEFAULT_EMBEDDING_MODEL,
@@ -286,6 +270,8 @@ class Settings:
             "PORT": ("server", "port", int),
             "SERVER_PORT": ("server", "port", int),
             "SERVER_HOST": ("server", "host", str),
+            "SERVER_WORKERS": ("server", "workers", int),
+            "SERVER_ENVIRONMENT": ("server", "environment", str),
             "LOG_LEVEL": ("logging", "level", str),
             "LOG_FILE_PATH": ("logging", "file_path", str),
             "LOG_ROTATION": ("logging", "rotation", str),
@@ -294,6 +280,8 @@ class Settings:
             "EMBEDDING_DEVICE": ("embedding", "device", str),
             "EMBEDDING_BATCH_SIZE": ("embedding", "batch_size", int),
             "EMBEDDING_NORMALIZE": ("embedding", "normalize", lambda v: v.lower() == "true"),
+            "EMBEDDING_CACHE_SIZE": ("embedding", "cache_size", int),
+            "VECTOR_STORE_TYPE": ("vector_store", "type", str),
             "VECTOR_STORE_PERSIST_DIR": ("vector_store", "persist_directory", str),
             "VECTOR_STORE_COLLECTION_NAME": ("vector_store", "collection_name", str),
             "VECTOR_STORE_DISTANCE": ("vector_store", "distance", str),
@@ -326,12 +314,13 @@ class Settings:
             "MIMO_API_KEY": ("llm_providers", "mimo_api_key", str),
             "MIMO_API_BASE": ("llm_providers", "mimo_api_base", str),
             "MIMO_MODEL_NAME": ("llm_providers", "mimo_model_name", str),
-            "API_PREFIX": ("api", "prefix", str),
             "RATE_LIMIT_ENABLED": ("rate_limit", "enabled", lambda v: v.lower() == "true"),
             "RATE_LIMIT_REQUESTS_PER_MINUTE": ("rate_limit", "requests_per_minute", int),
             "RATE_LIMIT_REQUESTS_PER_HOUR": ("rate_limit", "requests_per_hour", int),
             "CORS_ENABLED": ("cors", "enabled", lambda v: v.lower() == "true"),
             "CORS_ALLOW_ORIGINS": ("cors", "allow_origins", str),
+            "CORS_ALLOW_METHODS": ("cors", "allow_methods", str),
+            "CORS_ALLOW_HEADERS": ("cors", "allow_headers", str),
         }
 
         for env_key, (section, field_key, converter) in env_mappings.items():
@@ -348,7 +337,6 @@ class Settings:
         self.logging = LoggingConfig(**self._config["logging"])
         self.rate_limit = RateLimitConfig(**self._config["rate_limit"])
         self.cors = CORSConfig(**self._config["cors"])
-        self.api = APIConfig(**self._config["api"])
         self.embedding = EmbeddingConfig(**self._config["embedding"])
         self.vector_store = VectorStoreConfig(**self._config["vector_store"])
         self.text_splitter = TextSplitterConfig(**self._config["text_splitter"])
@@ -413,6 +401,10 @@ class Settings:
     @property
     def EMBEDDING_NORMALIZE(self) -> bool:
         return self.embedding.normalize
+
+    @property
+    def EMBEDDING_CACHE_SIZE(self) -> int:
+        return self.embedding.cache_size
 
     @property
     def VECTOR_STORE_PERSIST_DIR(self) -> str:
@@ -542,32 +534,24 @@ class Settings:
 
     @property
     def API_PREFIX(self) -> str:
-        return self.api.prefix
+        return API_PREFIX
 
+    # 应用信息（对应 constants.APP_ID/APP_NAME/APP_DESCRIPTION/APP_VERSION，不再从配置读取）
     @property
-    def API_TITLE(self) -> str:
-        return self.api.title
+    def APP_ID(self) -> str:
+        return APP_ID
 
-    @property
-    def API_DESCRIPTION(self) -> str:
-        return self.api.description
-
-    @property
-    def API_VERSION(self) -> str:
-        return self.api.version
-
-    # 应用信息（App 语义别名，对应 constants.APP_NAME/APP_DESCRIPTION/APP_VERSION）
     @property
     def APP_NAME(self) -> str:
-        return self.api.title
+        return APP_NAME
 
     @property
     def APP_DESCRIPTION(self) -> str:
-        return self.api.description
+        return APP_DESCRIPTION
 
     @property
     def APP_VERSION(self) -> str:
-        return self.api.version
+        return APP_VERSION
 
     @property
     def RATE_LIMIT_ENABLED(self) -> bool:
@@ -599,10 +583,6 @@ class Settings:
     def CORS_ALLOW_HEADERS(self) -> list[str]:
         return self.cors.allow_headers
 
-    @property
-    def CORS_ALLOW_CREDENTIALS(self) -> bool:
-        return self.cors.allow_credentials
-
 
 # 创建全局配置实例
 settings: Final[Settings] = Settings()
@@ -612,7 +592,6 @@ __all__ = [
     "LoggingConfig",
     "RateLimitConfig",
     "CORSConfig",
-    "APIConfig",
     "EmbeddingConfig",
     "VectorStoreConfig",
     "TextSplitterConfig",

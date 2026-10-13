@@ -10,6 +10,8 @@ from datetime import datetime
 from typing import Any
 from pydantic import BaseModel, Field, ConfigDict
 
+from core.config import settings
+
 
 class HealthCheckRequest(BaseModel):
     """健康检查请求"""
@@ -57,9 +59,9 @@ class VersionResponse(BaseModel):
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
-                "version": "0.1.0",
-                "name": "x-GuanHai",
-                "description": "A production-ready RAG integrated engineering framework",
+                "version": settings.APP_VERSION,
+                "name": settings.APP_ID,
+                "description": settings.APP_DESCRIPTION,
                 "python_version": "3.11",
             }
         },

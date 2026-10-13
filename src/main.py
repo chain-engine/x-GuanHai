@@ -178,9 +178,9 @@ def create_app() -> FastAPI:
     async def root():
         """根路径"""
         return {
-            "name": "x-GuanHai",
-            "version": settings.API_VERSION,
-            "description": "A production-ready RAG integrated engineering framework",
+            "name": settings.APP_ID,
+            "version": settings.APP_VERSION,
+            "description": settings.APP_DESCRIPTION,
             "docs": "/docs",
             "redoc": "/redoc",
             "openapi": "/openapi.json"

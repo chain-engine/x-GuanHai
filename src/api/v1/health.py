@@ -63,7 +63,7 @@ async def health_check(
 
     data = {
         "status": "healthy",
-        "version": settings.API_VERSION,
+        "version": settings.APP_VERSION,
         "timestamp": datetime.utcnow().isoformat(),
         "checks": checks,
     }
@@ -80,10 +80,9 @@ async def health_check(
 async def get_version() -> dict[str, Any]:
     """版本信息接口"""
     data = {
-        "version": settings.API_VERSION,
-        "name": "x-GuanHai",
-        "description": "A production-ready RAG integrated engineering framework",
-        "python_version": "3.11",
+        "version": settings.APP_VERSION,
+        "name": settings.APP_ID,
+        "description": settings.APP_DESCRIPTION,
     }
     return ResponseModel(data=data).model_dump()
 
