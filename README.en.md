@@ -65,8 +65,6 @@ x-GuanHai/
 │   │       ├── rrf.py          # RRF rank fusion
 │   │       ├── semantic.py     # Semantic reranking
 │   │       └── score_filter.py # Score threshold filtering
-│   ├── llms/                    # LLM providers
-│   │   └── providers.py        # Multi-provider registry (DeepSeek/Doubao/Aliyun/Mimo)
 │   ├── chunking/                # Text splitting
 │   │   ├── base.py            # Splitting abstract base class
 │   │   ├── langchain_provider.py   # LangChain splitting
