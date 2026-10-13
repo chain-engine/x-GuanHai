@@ -55,10 +55,10 @@ x-GuanHai 是一个**生产级 RAG（检索增强生成）一体化工程框架*
                                       ▼
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                           基础设施层 (infras/)                              │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐       │
-│  │  vector.py  │  │  bm25.py    │  │embedding.py │  │ storage.py  │       │
-│  │  (Chroma)   │  │   (BM25)    │  │  (BGE-M3)   │  │   (JSON)    │       │
-│  └─────────────┘  └─────────────┘  └─────────────┘  └─────────────┘       │
+│  ┌───────────┐  ┌───────────┐  ┌───────────┐  ┌───────────┐  ┌───────────┐  │
+│  │ vector.py │  │  bm25.py  │  │embedding. │  │ storage.py│  │  llm.py   │  │
+│  │ (Chroma)  │  │  (BM25)   │  │  (BGE-M3) │  │  (JSON)   │  │(LLM 提供) │  │
+│  └───────────┘  └───────────┘  └───────────┘  └───────────┘  └───────────┘  │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -178,6 +178,7 @@ class VectorRepository(BaseRepository):
 - `bm25.py`: BM25 稀疏索引存储
 - `embedding.py`: 嵌入模型抽象基类 + BGE-M3 实现
 - `storage.py`: 文档存储抽象基类 + JSON 实现
+- `llm.py`: LLM 提供者抽象基类 + 多提供商实现（DeepSeek/豆包/阿里云/Mimo/Mock）
 
 #### 7. 核心支撑层 (`core/`)
 
@@ -248,7 +249,7 @@ AppException
 使用抽象基类 + 注册表模式：
 
 ```python
-# llms/providers.py
+# infras/llm.py
 class BaseLLMProvider(ABC):
     @abstractmethod
     def create_chat_model(self) -> BaseChatModel:
