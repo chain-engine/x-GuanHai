@@ -215,10 +215,7 @@ graph TB
         I1["ChromaVectorStore"]
         I2["JSONDocumentStore"]
         I3["BGEEmbeddingModel"]
-    end
-
-    subgraph "LLM Layer (llms)"
-        LLM1["providers.py<br/>Multi-Provider"]
+        I4["BaseLLMProvider"]
     end
 
     subgraph "Chunking Layer (chunking)"
@@ -312,10 +309,6 @@ graph LR
 
         subgraph "retrieval/"
             RET["retrieval/<br/>Retrieval Subsystem"]
-        end
-
-        subgraph "llms/"
-            LLMS["llms/<br/>LLM Providers"]
         end
 
         subgraph "chunking/"
