@@ -6,7 +6,7 @@ Exceptions Module
 全局异常定义
 """
 
-from core.logger import logger
+from src.core.logger import logger
 
 
 class AppException(Exception):

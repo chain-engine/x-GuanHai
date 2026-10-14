@@ -12,8 +12,8 @@ from typing import Any, Optional
 import chromadb
 from chromadb.config import Settings as ChromaSettings
 
-from core.logger import logger
-from core.exceptions import VectorStoreError
+from src.core.logger import logger
+from src.core.exceptions import VectorStoreError
 
 
 class VectorStoreBase(ABC):
@@ -178,7 +178,8 @@ class ChromaVectorStore(VectorStoreBase):
                 ids=ids,
                 embeddings=embeddings,
                 documents=documents,
-                metadatas=metadatas or [{} for _ in ids]
+                # Chroma 要求 metadata 为非空 dict，None / 空 dict 都会报错
+                metadatas=metadatas or [{"source": "x-guanhai"} for _ in ids]
             )
             logger.debug(f"Added {len(ids)} vectors to collection")
         except Exception as e:

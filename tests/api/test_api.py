@@ -42,7 +42,8 @@ class TestRAGEndpoints:
             "/api/v1/rag/retrieve",
             json={"query": ""}
         )
-        assert response.status_code == 422
+        # 项目将 RequestValidationError 统一转为 400（见 main.py validation_exception_handler）
+        assert response.status_code == 400
 
     def test_retrieve_endpoint_empty_db(self, client):
         """Test retrieve with empty database"""

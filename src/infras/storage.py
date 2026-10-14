@@ -11,8 +11,8 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any
 
-from core.logger import logger
-from core.exceptions import DocumentError
+from src.core.logger import logger
+from src.core.exceptions import DocumentError
 
 
 class DocumentStoreBase(ABC):

@@ -13,9 +13,9 @@ import re
 from dataclasses import dataclass, field
 from typing import Any, Optional
 
-from constants import EntityType, ENTITY_PATTERNS
-from core.logger import logger
-from retrieval.understanding.base import (
+from src.constants import EntityType, ENTITY_PATTERNS
+from src.core.logger import logger
+from src.retrieval.understanding.base import (
     BaseQueryUnderstandingProvider,
     QueryUnderstandingResult,
 )

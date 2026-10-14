@@ -7,10 +7,10 @@ RAG管道 — 编排检索、增强、生成三个环节
 
 from typing import Any
 
-from rag.retrieval import Retrieval
-from rag.augmentation import Augmentation
-from rag.generation import LLMGeneration
-from core.logger import logger
+from src.rag.retrieval import Retrieval
+from src.rag.augmentation import Augmentation
+from src.rag.generation import LLMGeneration
+from src.core.logger import logger
 
 
 class RAGPipeline:

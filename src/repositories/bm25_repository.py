@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 BM25 Repository Module
 
 BM25 稀疏索引仓库 — 管理倒排索引的生命周期
 """
 
-from typing import Any, Optional
+from typing import Any
 
-from .base_repository import BaseRepository
-from infras.bm25 import BM25IndexStore
-from core.logger import logger
+from src.core.logger import logger
+from src.infras.bm25 import BM25IndexStore
+from src.repositories.base_repository import BaseRepository
 
 
 class BM25Repository(BaseRepository):

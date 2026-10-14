@@ -8,7 +8,7 @@ from pathlib import Path
 import tempfile
 import shutil
 
-from src.Repositories.document_repository import DocumentRepository
+from src.repositories.document_repository import DocumentRepository
 
 
 class TestDocumentRepositoryIntegration:
@@ -104,7 +104,7 @@ class TestVectorRepositoryIntegration:
     @pytest.fixture
     def vector_repo(self, temp_dir):
         """Create vector repository"""
-        from src.Repositories.vector_repository import VectorRepository
+        from src.repositories.vector_repository import VectorRepository
         repo = VectorRepository(
             persist_directory=temp_dir,
             collection_name="test_collection"

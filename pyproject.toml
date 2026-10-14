@@ -8,7 +8,7 @@ packages = ["src"]
 [project]
 name = "x-GuanHai"
 version = "0.1.0"
-description = "A production-ready RAG integrated engineering framework"
+description = "A RAG integrated engineering framework with dual HTTP and MCP mounting"
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [
@@ -47,7 +47,15 @@ dependencies = [
     "langchain-openai>=0.2.0",
     "langchain",
     "langchain-text-splitters>=1.1.2",
+    "mcp>=2.3.0",
+    "sqlalchemy>=2.0.0",
+    "cryptography>=42.0.0",
+    "pymysql>=1.2.3",
 ]
+
+[[tool.uv.index]]
+url = "https://mirrors.aliyun.com/pypi/simple/"
+default = true
 
 [dependency-groups]
 dev = [
@@ -62,7 +70,7 @@ dev = [
 ]
 
 [project.scripts]
-x-GuanHai = "src.main:run"
+x-GuanHai = "src.main:main"
 
 [project.urls]
 Homepage = "https://github.com/chain-engine/x-GuanHai"

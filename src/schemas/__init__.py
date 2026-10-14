@@ -6,19 +6,19 @@ Schemas Package
 统一存放接口请求入参、响应返回Pydantic模型
 """
 
-from schemas.base import (
+from src.schemas.base import (
     BaseSchema,
     BaseRequest,
     BaseResponse,
 )
-from schemas.responses import (
+from src.schemas.responses import (
     ResponseModel,
     PageModel,
     ErrorResponse,
     success_response,
     error_response,
 )
-from schemas.rag import (
+from src.schemas.rag import (
     RAGQueryRequest,
     RetrievalRequest,
     EmbeddingRequest,
@@ -29,7 +29,7 @@ from schemas.rag import (
     RetrievalResponse,
     GenerationResponse,
 )
-from schemas.document import (
+from src.schemas.document import (
     DocumentUploadRequest,
     DocumentDeleteRequest,
     DocumentQueryRequest,
@@ -39,7 +39,7 @@ from schemas.document import (
     DocumentQueryResponse,
     DocumentStatusResponse,
 )
-from schemas.health import (
+from src.schemas.health import (
     HealthCheckRequest,
     HealthCheckResponse,
     VersionResponse,

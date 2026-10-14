@@ -13,9 +13,9 @@ import re
 from dataclasses import dataclass
 from typing import Any, Optional
 
-from constants import DEFAULT_QUERY_STOPWORDS
-from core.logger import logger
-from retrieval.understanding.base import (
+from src.constants import DEFAULT_QUERY_STOPWORDS
+from src.core.logger import logger
+from src.retrieval.understanding.base import (
     BaseQueryUnderstandingProvider,
     QueryUnderstandingResult,
 )

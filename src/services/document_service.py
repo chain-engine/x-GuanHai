@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Document Service Module
 
@@ -9,22 +8,24 @@ Document Service Module
 
 import uuid
 from datetime import datetime
-from pathlib import Path
 from typing import Any
 
-from services.base_service import BaseService
-from repositories.vector_repository import VectorRepository
-from repositories.document_repository import DocumentRepository
-from repositories.bm25_repository import BM25Repository
-from core.logger import logger
-from core.exceptions import DocumentError
-from chunking import get_chunking_provider
-from infras.embedding import BGEEmbeddingModel
-from constants import DocStatus
+from src.constants import DocStatus
+from src.core.exceptions import DocumentError
+from src.core.logger import logger
+from src.infras.chunking import get_chunking_provider
+from src.infras.embedding import BGEEmbeddingModel
+from src.repositories.bm25_repository import BM25Repository
+from src.repositories.document_repository import DocumentRepository
+from src.repositories.vector_repository import VectorRepository
+from src.services.audit_service import AuditService
+from src.services.base_service import BaseService
 
 
 class DocumentService(BaseService):
     """文档业务服务 - 封装文档索引和管理流程"""
+
+    entity_type = "document"
 
     def __init__(
         self,
@@ -35,6 +36,7 @@ class DocumentService(BaseService):
         chunk_overlap: int = 50,
         chunking_provider: str = "langchain",
         chunking_strategy: str = "recursive",
+        audit_service: AuditService | None = None,
     ):
         self._vector_repo = vector_repo
         self._doc_repo = doc_repo
@@ -43,6 +45,7 @@ class DocumentService(BaseService):
         self._chunk_overlap = chunk_overlap
         self._initialized = False
         self._embedding_model: BGEEmbeddingModel | None = None
+        self._audit_service = audit_service
         self._chunking_provider = get_chunking_provider(
             provider_name=chunking_provider,
             chunk_size=chunk_size,
@@ -97,6 +100,28 @@ class DocumentService(BaseService):
         if not self._initialized:
             raise RuntimeError("DocumentService not initialized. Call initialize() first.")
 
+    def _audit(
+        self,
+        entity_id: str | None,
+        action: str,
+        operator: dict[str, Any] | None = None,
+        before_data: dict[str, Any] | None = None,
+        after_data: dict[str, Any] | None = None,
+        remarks: str | None = None,
+    ) -> None:
+        """记录文档操作审计（审计失败不阻断业务，由 AuditService 内部兜底）。"""
+        if self._audit_service is None:
+            return
+        self._audit_service.log_event(
+            entity_type=self.entity_type,
+            entity_id=entity_id,
+            action=action,
+            operator=operator,
+            before_data=before_data,
+            after_data=after_data,
+            remarks=remarks,
+        )
+
     def upload_document(
         self,
         text: str,
@@ -104,6 +129,7 @@ class DocumentService(BaseService):
         file_type: str = "txt",
         file_size: int = 0,
         metadata: dict[str, Any] | None = None,
+        operator: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """上传并索引文档
 
@@ -185,6 +211,21 @@ class DocumentService(BaseService):
 
             logger.info(f"Successfully indexed document {document_id}")
 
+            # 业务审计：文档上传（成功路径记录，after 为索引结果摘要，不记原文）
+            self._audit(
+                entity_id=document_id,
+                action="upload",
+                operator=operator,
+                after_data={
+                    "file_name": file_name,
+                    "file_type": file_type,
+                    "file_size": file_size,
+                    "chunk_count": len(chunks),
+                    "status": DocStatus.COMPLETED.mark,
+                },
+                remarks=f"上传文档「{file_name}」",
+            )
+
             return {
                 "document_id": document_id,
                 "status": "completed",
@@ -198,11 +239,16 @@ class DocumentService(BaseService):
             self._doc_repo.update(document_id, {"status": DocStatus.FAILED.mark})
             raise DocumentError(f"Failed to index document {document_id}: {e}") from e
 
-    def delete_document(self, document_id: str) -> dict[str, Any]:
+    def delete_document(
+        self,
+        document_id: str,
+        operator: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         """删除文档
 
         Args:
             document_id: 文档ID
+            operator: 操作人上下文（用于审计）
 
         Returns:
             删除结果
@@ -210,12 +256,34 @@ class DocumentService(BaseService):
         self._check_initialized()
 
         try:
+            # 删除前快照（审计 before_data）
+            before = self._doc_repo.load(document_id)
+            before_data = None
+            if before is not None:
+                before_data = {
+                    "file_name": before.get("file_name"),
+                    "file_type": before.get("file_type"),
+                    "file_size": before.get("file_size", 0),
+                    "status": before.get("status"),
+                    "chunk_count": before.get("chunk_count", 0),
+                }
+
             vector_count = self._vector_repo.delete_by_document_id(document_id)
             if self._bm25_repo:
-                bm25_count = self._bm25_repo.delete_by_document_id(document_id)
+                self._bm25_repo.delete_by_document_id(document_id)
             self._doc_repo.delete(document_id)
 
             logger.info(f"Successfully deleted document {document_id} ({vector_count} vectors)")
+
+            # 业务审计：文档删除
+            self._audit(
+                entity_id=document_id,
+                action="delete",
+                operator=operator,
+                before_data=before_data,
+                after_data={"vector_count": vector_count, "status": "deleted"},
+                remarks=f"删除文档「{before_data.get('file_name') if before_data else document_id}」",
+            )
 
             return {
                 "document_id": document_id,
@@ -227,11 +295,12 @@ class DocumentService(BaseService):
             logger.error(f"Failed to delete document {document_id}: {e}")
             raise DocumentError(f"Failed to delete document {document_id}: {e}") from e
 
-    def get_document(self, document_id: str) -> dict[str, Any]:
+    def get_document(self, document_id: str, operator: dict[str, Any] | None = None) -> dict[str, Any]:
         """获取文档详情
 
         Args:
             document_id: 文档ID
+            operator: 操作人上下文（读审计用，由 api 层传入；系统内部调用可不传）
 
         Returns:
             文档详情
@@ -258,7 +327,7 @@ class DocumentService(BaseService):
                 "metadata": vec.get("metadata", {}),
             })
 
-        return {
+        result = {
             "document_id": document.get("document_id"),
             "file_name": document.get("file_name"),
             "file_type": document.get("file_type"),
@@ -271,12 +340,28 @@ class DocumentService(BaseService):
             "metadata": document.get("metadata", {}),
             "chunks": chunks,
         }
+        # 业务审计：文档读取（after 记摘要，不记全文与大字段）
+        self._audit(
+            entity_id=document_id,
+            action="get",
+            operator=operator,
+            after_data={
+                "file_name": result["file_name"],
+                "file_type": result["file_type"],
+                "status": result["status"],
+                "chunk_count": result["chunk_count"],
+                "vector_count": result["vector_count"],
+            },
+            remarks=f"读取文档「{result['file_name']}」详情",
+        )
+        return result
 
-    def get_document_status(self, document_id: str) -> dict[str, Any]:
+    def get_document_status(self, document_id: str, operator: dict[str, Any] | None = None) -> dict[str, Any]:
         """获取文档状态
 
         Args:
             document_id: 文档ID
+            operator: 操作人上下文（读审计用，由 api 层传入；系统内部调用可不传）
 
         Returns:
             文档状态
@@ -293,13 +378,27 @@ class DocumentService(BaseService):
 
         vectors = self._vector_repo.get_by_document_id(document_id)
 
-        return {
+        result = {
             "document_id": document.get("document_id"),
             "file_name": document.get("file_name"),
             "status": document.get("status"),
             "chunk_count": document.get("chunk_count", 0),
             "vector_count": len(vectors),
         }
+        # 业务审计：文档状态读取
+        self._audit(
+            entity_id=document_id,
+            action="get_status",
+            operator=operator,
+            after_data={
+                "file_name": result["file_name"],
+                "status": result["status"],
+                "chunk_count": result["chunk_count"],
+                "vector_count": result["vector_count"],
+            },
+            remarks=f"查询文档「{result['file_name']}」状态",
+        )
+        return result
 
     def list_documents(
         self,
@@ -307,6 +406,7 @@ class DocumentService(BaseService):
         file_type: str | None = None,
         skip: int = 0,
         limit: int | None = None,
+        operator: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
         """列出文档
 
@@ -315,6 +415,7 @@ class DocumentService(BaseService):
             file_type: 按文件类型筛选
             skip: 跳过数量
             limit: 返回数量限制
+            operator: 操作人上下文（读审计用，由 api 层传入；系统内部调用可不传）
 
         Returns:
             文档列表
@@ -343,9 +444,24 @@ class DocumentService(BaseService):
         if limit is not None and limit > 0:
             documents = documents[:limit]
 
-        return {
+        result = {
             "documents": documents,
             "total": total,
             "skip": skip,
             "limit": limit,
         }
+        # 业务审计：文档列表读取（after 记筛选条件与总数，不记明细，避免大 payload）
+        self._audit(
+            entity_id=None,
+            action="list",
+            operator=operator,
+            after_data={
+                "status": status,
+                "file_type": file_type,
+                "skip": skip,
+                "limit": limit,
+                "total": total,
+            },
+            remarks="查询文档列表",
+        )
+        return result

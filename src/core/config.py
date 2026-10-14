@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 import yaml
 from dotenv import load_dotenv
 
-from constants import (
+from src.constants import (
     API_PREFIX,
     APP_DESCRIPTION,
     APP_ID,
@@ -35,6 +35,7 @@ from constants import (
     DEFAULT_TEMPERATURE,
     DEFAULT_TIMEOUT,
     DEFAULT_TOP_K,
+    OPENAPI_SIGNATURE_WINDOW_SECONDS,
 )
 
 
@@ -72,6 +73,17 @@ class CORSConfig:
     allow_origins: list[str] = field(default_factory=lambda: ["*"])
     allow_methods: list[str] = field(default_factory=lambda: ["GET", "POST", "PUT", "DELETE", "OPTIONS"])
     allow_headers: list[str] = field(default_factory=lambda: ["*"])
+
+
+@dataclass
+class OpenApiConfig:
+    """开放 API 认证鉴权配置（AppId + GuanHai-1 签名 + scope）"""
+    enabled: bool = True
+    # 默认 MySQL（生产）；本地开发可切回 sqlite:///./data/openapi.db
+    db_url: str = "mysql+pymysql://yeyushilai:123456@localhost:3306/guanhai?charset=utf8mb4"
+    signature_window_seconds: int = OPENAPI_SIGNATURE_WINDOW_SECONDS
+    default_rate_limit_per_minute: int = 60
+    secret_key: str = ""
 
 
 @dataclass
@@ -184,6 +196,13 @@ class Settings:
                 "allow_origins": ["*"],
                 "allow_methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                 "allow_headers": ["*"],
+            },
+            "openapi": {
+                "enabled": True,
+                "db_url": "mysql+pymysql://yeyushilai:123456@localhost:3306/guanhai?charset=utf8mb4",
+                "signature_window_seconds": OPENAPI_SIGNATURE_WINDOW_SECONDS,
+                "default_rate_limit_per_minute": 60,
+                "secret_key": "",
             },
             "embedding": {
                 "model": DEFAULT_EMBEDDING_MODEL,
@@ -321,6 +340,11 @@ class Settings:
             "CORS_ALLOW_ORIGINS": ("cors", "allow_origins", str),
             "CORS_ALLOW_METHODS": ("cors", "allow_methods", str),
             "CORS_ALLOW_HEADERS": ("cors", "allow_headers", str),
+            "OPENAPI_ENABLED": ("openapi", "enabled", lambda v: v.lower() == "true"),
+            "OPENAPI_DB_URL": ("openapi", "db_url", str),
+            "OPENAPI_SIGNATURE_WINDOW_SECONDS": ("openapi", "signature_window_seconds", int),
+            "OPENAPI_DEFAULT_RATE_LIMIT_PER_MINUTE": ("openapi", "default_rate_limit_per_minute", int),
+            "AUTH_SECRET_KEY": ("openapi", "secret_key", str),
         }
 
         for env_key, (section, field_key, converter) in env_mappings.items():
@@ -337,6 +361,7 @@ class Settings:
         self.logging = LoggingConfig(**self._config["logging"])
         self.rate_limit = RateLimitConfig(**self._config["rate_limit"])
         self.cors = CORSConfig(**self._config["cors"])
+        self.openapi = OpenApiConfig(**self._config["openapi"])
         self.embedding = EmbeddingConfig(**self._config["embedding"])
         self.vector_store = VectorStoreConfig(**self._config["vector_store"])
         self.text_splitter = TextSplitterConfig(**self._config["text_splitter"])
@@ -583,6 +608,27 @@ class Settings:
     def CORS_ALLOW_HEADERS(self) -> list[str]:
         return self.cors.allow_headers
 
+    # ===== OpenAPI 认证鉴权 Settings =====
+    @property
+    def OPENAPI_ENABLED(self) -> bool:
+        return self.openapi.enabled
+
+    @property
+    def OPENAPI_DB_URL(self) -> str:
+        return self.openapi.db_url
+
+    @property
+    def OPENAPI_SIGNATURE_WINDOW_SECONDS(self) -> int:
+        return self.openapi.signature_window_seconds
+
+    @property
+    def OPENAPI_DEFAULT_RATE_LIMIT_PER_MINUTE(self) -> int:
+        return self.openapi.default_rate_limit_per_minute
+
+    @property
+    def AUTH_SECRET_KEY(self) -> str:
+        return self.openapi.secret_key
+
 
 # 创建全局配置实例
 settings: Final[Settings] = Settings()
@@ -592,6 +638,7 @@ __all__ = [
     "LoggingConfig",
     "RateLimitConfig",
     "CORSConfig",
+    "OpenApiConfig",
     "EmbeddingConfig",
     "VectorStoreConfig",
     "TextSplitterConfig",

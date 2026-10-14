@@ -9,10 +9,10 @@ BM25 稀疏检索召回
 
 from typing import Any, Optional
 
-from retrieval.candidate.base import BaseRetrievalProvider
-from infras.bm25 import BM25IndexStore
-from repositories.bm25_repository import BM25Repository
-from core.logger import logger
+from src.retrieval.candidate.base import BaseRetrievalProvider
+from src.infras.bm25 import BM25IndexStore
+from src.repositories.bm25_repository import BM25Repository
+from src.core.logger import logger
 
 
 class BM25RetrievalProvider(BaseRetrievalProvider):

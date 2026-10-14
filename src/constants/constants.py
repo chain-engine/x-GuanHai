@@ -8,7 +8,7 @@ Constants Module
 
 from typing import Final
 
-from .enums import DocType, EntityType, IntentType
+from src.constants.enums import DocType, EntityType, IntentType
 
 # ====================================
 # 配置文件
@@ -20,9 +20,19 @@ DEFAULT_CONFIG_FILE: str = "config.yaml"
 # ====================================
 APP_ID: str = "x-GuanHai"
 APP_NAME: str = "观海（GuanHai）"
-APP_DESCRIPTION: str = "一个生产级 RAG（检索增强生成）一体化工程框架"
+APP_DESCRIPTION: str = "一个支持 HTTP 与 MCP 双挂载的 RAG（检索增强生成）一体化工程框架"
 APP_VERSION: str = "0.1.0"
 API_PREFIX: Final[str] = "/api/v1"
+
+# ====================================
+# 开放 API 认证（GuanHai-1 签名）
+# ====================================
+OPENAPI_HEADER_APP_ID: Final[str] = "X-App-Id"
+OPENAPI_HEADER_DATE: Final[str] = "X-App-Date"
+OPENAPI_HEADER_AUTHORIZATION: Final[str] = "X-App-Authorization"
+OPENAPI_ALGORITHM: Final[str] = "GuanHai-1"
+OPENAPI_CONTENT_TYPE: Final[str] = "application/json"
+OPENAPI_SIGNATURE_WINDOW_SECONDS: Final[int] = 300
 
 # ====================================
 # 文档类型与状态

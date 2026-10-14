@@ -12,14 +12,97 @@ import tempfile
 import shutil
 from pathlib import Path
 
-from repositories.document_repository import DocumentRepository
-from repositories.vector_repository import VectorRepository
-from services.document_service import DocumentService
-from rag.retrieval import Retrieval
-from rag.generation import LLMGeneration
-from rag.augmentation import Augmentation
-from rag.pipeline import RAGPipeline
-from utils.text_splitter import TextSplitter, create_splitter, SplitStrategy
+from src.repositories.document_repository import DocumentRepository
+from src.repositories.vector_repository import VectorRepository
+from src.services.document_service import DocumentService
+from src.rag.retrieval import Retrieval
+from src.rag.generation import LLMGeneration
+from src.rag.augmentation import Augmentation
+from src.rag.pipeline import RAGPipeline
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _openapi_session_env(tmp_path_factory):
+    """测试会话级：初始化开放 API 数据库（临时 SQLite），并默认关闭鉴权。
+
+    既有 API 测试通过 TestClient(app) 无签名直接调用，必须保持
+    settings.openapi.enabled=False 才能通过；开放 API 鉴权测试
+    （tests/integration/test_openapi_auth.py）在自身 fixture 内显式开启。
+    """
+    from src.core.config import settings
+    from src.infras.database import init_database
+
+    tmp = tmp_path_factory.mktemp("openapi_session")
+    # Provider 架构下 db_url 从 settings 读取，测试指向临时 SQLite
+    settings.openapi.db_url = f"sqlite:///{tmp}/openapi.db"
+    init_database()
+    settings.openapi.enabled = False
+    yield
+    settings.openapi.enabled = True
+
+
+class _StubRAGService:
+    """测试用 RAG 服务桩（避免加载真实 embedding 模型）。"""
+
+    def initialize(self) -> None:
+        pass
+
+    def shutdown(self) -> None:
+        pass
+
+    def retrieve(self, **kwargs) -> list:
+        return []
+
+    async def query(self, **kwargs) -> dict:
+        return {"answer": "stub", "documents": []}
+
+    def encode(self, texts: list[str], normalize: bool = True, **kwargs) -> list:
+        return [[0.0] * 8 for _ in texts]
+
+    def get_embedding_stats(self) -> dict:
+        return {"dimension": 8, "model": "stub"}
+
+    def get_stats(self, operator=None) -> dict:
+        return {"vector_count": 0}
+
+
+class _StubDocumentService:
+    """测试用文档服务桩。"""
+
+    def initialize(self) -> None:
+        pass
+
+    def shutdown(self) -> None:
+        pass
+
+    def list_documents(self, status=None, file_type=None, skip=0, limit=20, operator=None) -> dict:
+        return {"documents": [], "total": 0}
+
+    def get_document(self, document_id: str, operator=None) -> dict:
+        return {"status": "not_found"}
+
+    def get_document_status(self, document_id: str, operator=None) -> dict:
+        return {"status": "not_found"}
+
+    def delete_document(self, document_id: str, operator: dict | None = None) -> dict:
+        from src.core.exceptions import DocumentError
+
+        raise DocumentError(message=f"文档不存在: {document_id}")
+
+    def upload_document(self, **kwargs) -> dict:
+        return {"document_id": "stub-doc", "status": "completed", "chunk_count": 0}
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _stub_services():
+    """为 src.main.app 注入轻量服务桩，使 tests/api 可在不加载模型下运行。"""
+    from src.main import app
+
+    if not hasattr(app.state, "rag_service"):
+        app.state.rag_service = _StubRAGService()
+    if not hasattr(app.state, "document_service"):
+        app.state.document_service = _StubDocumentService()
+    yield
 
 
 @pytest.fixture(scope="session")
@@ -124,11 +207,14 @@ def rag_pipeline(retrieval, augmentation, generation):
 
 @pytest.fixture
 def text_splitter():
-    """文本切分器测试夹具"""
-    return create_splitter(
-        strategy=SplitStrategy.PARAGRAPH,
+    """文本切分器测试夹具（chunking 模块 langchain provider）"""
+    from src.infras.chunking import get_chunking_provider
+
+    return get_chunking_provider(
+        provider_name="langchain",
         chunk_size=100,
         chunk_overlap=10,
+        strategy="recursive",
     )
 
 

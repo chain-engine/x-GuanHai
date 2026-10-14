@@ -9,7 +9,7 @@ Response Schema Module
 from typing import Any, Generic, TypeVar
 from pydantic import BaseModel, Field, ConfigDict
 
-from constants import HttpStatus
+from src.constants import HttpStatus
 
 T = TypeVar("T")
 

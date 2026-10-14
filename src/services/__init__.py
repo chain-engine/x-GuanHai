@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Services Package
 
 Business logic layer - 业务逻辑层
 """
 
-from services.base_service import BaseService
-from services.rag_service import RAGService
-from services.document_service import DocumentService
+from src.services.base_service import BaseService
+from src.services.document_service import DocumentService
+from src.services.rag_service import RAGService
 
 __all__ = [
     "BaseService",

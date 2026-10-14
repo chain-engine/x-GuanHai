@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Vector Repository Module
 
@@ -8,11 +7,11 @@ Vector store repository
 
 from typing import Any
 
-from .base_repository import BaseRepository
-from infras.vector import ChromaVectorStore
-from utils.similarity import SimilaritySearchEngine
-from constants import DistanceType
-from core.logger import logger
+from src.constants import DistanceType
+from src.core.logger import logger
+from src.infras.vector import ChromaVectorStore
+from src.repositories.base_repository import BaseRepository
+from src.utils.similarity import SimilaritySearchEngine
 
 
 class VectorRepository(BaseRepository):

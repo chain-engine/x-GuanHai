@@ -9,8 +9,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from retrieval.ranking.base import BaseRerankingProvider
-from core.logger import logger
+from src.retrieval.ranking.base import BaseRerankingProvider
+from src.core.logger import logger
 
 
 class RRFReranker(BaseRerankingProvider):

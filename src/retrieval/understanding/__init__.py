@@ -5,32 +5,32 @@ Retrieval/Understanding Package
 Stage 1 — 查询理解子包
 """
 
-from retrieval.understanding.base import (
+from src.retrieval.understanding.base import (
     BaseQueryUnderstandingProvider,
     QueryUnderstandingResult,
 )
-from retrieval.understanding.rewrite import (
+from src.retrieval.understanding.rewrite import (
     QueryRewriteProvider,
     LLMQueryRewriter,
     SimpleQueryRewriter,
 )
-from retrieval.understanding.expansion import (
+from src.retrieval.understanding.expansion import (
     QueryExpansionProvider,
     SynonymExpander,
     EmbeddingExpander,
 )
-from retrieval.understanding.preprocess import (
+from src.retrieval.understanding.preprocess import (
     QueryPreprocessor,
 )
-from retrieval.understanding.intent import (
+from src.retrieval.understanding.intent import (
     IntentClassifier,
 )
-from retrieval.understanding.entity import (
+from src.retrieval.understanding.entity import (
     EntityExtractor,
 )
 
 # IntentType / EntityType 已迁移至 constants.understanding
-from constants import IntentType, EntityType
+from src.constants import IntentType, EntityType
 
 __all__ = [
     # Base

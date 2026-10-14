@@ -16,9 +16,9 @@ os.environ.setdefault("HF_ENDPOINT", "https://hf-mirror.com")
 
 from sentence_transformers import SentenceTransformer
 
-from core.logger import logger
-from core.exceptions import EmbeddingError
-from constants import (
+from src.core.logger import logger
+from src.core.exceptions import EmbeddingError
+from src.constants import (
     DEFAULT_EMBEDDING_MODEL,
     DEFAULT_EMBEDDING_DEVICE,
     DEFAULT_EMBEDDING_BATCH_SIZE,

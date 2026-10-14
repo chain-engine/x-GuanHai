@@ -10,7 +10,7 @@ Vector Index Optimizer Module
 from dataclasses import dataclass
 from typing import Any
 
-from core.logger import logger
+from src.core.logger import logger
 
 
 @dataclass

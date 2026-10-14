@@ -9,10 +9,10 @@ Vector Retrieval Module
 
 from typing import Any, Optional
 
-from retrieval.candidate.base import BaseRetrievalProvider
-from repositories.vector_repository import VectorRepository
-from infras.embedding import BGEEmbeddingModel
-from core.logger import logger
+from src.retrieval.candidate.base import BaseRetrievalProvider
+from src.repositories.vector_repository import VectorRepository
+from src.infras.embedding import BGEEmbeddingModel
+from src.core.logger import logger
 
 
 class VectorRetrievalProvider(BaseRetrievalProvider):

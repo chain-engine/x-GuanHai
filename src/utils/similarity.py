@@ -11,8 +11,8 @@ from typing import List, Optional
 
 import numpy as np
 
-from core.exceptions import RetrievalError
-from constants import (
+from src.core.exceptions import RetrievalError
+from src.constants import (
     DISTANCE_COSINE,
     DISTANCE_EUCLIDEAN,
     DISTANCE_DOT,

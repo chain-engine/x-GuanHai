@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Document Repository Module
 
@@ -8,9 +7,9 @@ Document repository
 
 from typing import Any
 
-from .base_repository import BaseRepository
-from infras.storage import JSONDocumentStore
-from core.logger import logger
+from src.core.logger import logger
+from src.infras.storage import JSONDocumentStore
+from src.repositories.base_repository import BaseRepository
 
 
 class DocumentRepository(BaseRepository):

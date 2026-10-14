@@ -10,8 +10,8 @@ Keyword Retrieval Module
 from abc import abstractmethod
 from typing import Any, Optional
 
-from retrieval.candidate.base import BaseRetrievalProvider
-from core.logger import logger
+from src.retrieval.candidate.base import BaseRetrievalProvider
+from src.core.logger import logger
 
 
 class KeywordRetrievalProvider(BaseRetrievalProvider):

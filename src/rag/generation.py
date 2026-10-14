@@ -8,9 +8,9 @@ Generation Module
 
 from typing import Any, AsyncIterator
 
-from core.logger import logger
-from core.exceptions import GenerationError
-from infras.llm import get_llm_provider, BaseLLMProvider
+from src.core.logger import logger
+from src.core.exceptions import GenerationError
+from src.infras.llm import get_llm_provider, BaseLLMProvider
 
 
 class LLMGeneration:

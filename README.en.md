@@ -1,142 +1,434 @@
-# x-GuanHai: Production-Ready RAG Learning Project
+# x-GuanHai
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+A RAG (Retrieval-Augmented Generation) integrated engineering framework with dual HTTP and MCP mounting — a layered, modular, extensible general-purpose service architecture exposing both HTTP APIs and MCP services from a single codebase.
 
-> **中文**: [README.md](./README.md)
+![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.104%2B-009688?logo=fastapi&logoColor=white)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-0.4.18%2B-6C3A5A?logo=chroma&logoColor=white)
+![MCP](https://img.shields.io/badge/MCP-2.3%2B-5B8DEF?logo=modelcontextprotocol&logoColor=white)
+![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-2.0%2B-D71F00?logo=sqlalchemy&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-24%2B-2496ED?logo=docker&logoColor=white)
+![uv](https://img.shields.io/badge/uv-0.4%2B-DE5FE9?logo=uv&logoColor=white)
 
-## Project Overview
+![Stars](https://img.shields.io/github/stars/chain-engine/x-GuanHai?label=Stars)
+![Forks](https://img.shields.io/github/forks/chain-engine/x-GuanHai?label=Forks)
+![License](https://img.shields.io/github/license/chain-engine/x-GuanHai)
+![Commit Activity](https://img.shields.io/github/commit-activity/m/chain-engine/x-GuanHai)
 
-x-GuanHai is a **production-grade RAG (Retrieval-Augmented Generation) integrated engineering framework**, following backend industry-standard engineering practices with a clear layered, modular, highly extensible, and maintainable architecture.
+[中文](README.md) | English
 
-### Core Values
+## 💡 Introduction
 
-- **Layered Architecture**: Standard five-layer business architecture + universal core support layer, completely isolated from web framework
-- **Modular Design**: Core support layer can be reused across RESTful API, scheduled tasks, message consumers, offline scripts, and unit tests
-- **Ready to Use**: Supports multi-environment switching and containerized deployment, enabling rapid enterprise RESTful API backend setup
-- **Engineering Standards**: PEP8 compliance, complete type annotations, production-grade logging and exception handling
+x-GuanHai is a **RAG (Retrieval-Augmented Generation) integrated engineering framework with dual HTTP and MCP mounting** following industry-standard backend engineering practices, providing a layered, modular, highly extensible and maintainable general-purpose service architecture.
 
-### Core Features
+**Core Value**
 
-- **OOP Retrieval Pipeline**: Three-stage pluggable architecture — Query Understanding, Candidate Retrieval, Ranking & Filtering; each stage supports multiple swappable Provider implementations
-- **Query Preprocessing**: Normalization, stopword removal, punctuation handling — provides clean input for downstream stages
-- **Intent Recognition**: Rule-based recognition of 7 query intent types (factual, opinion, list, definition, comparison, causal, howto), powering downstream routing decisions
-- **Entity Extraction**: Regex + dictionary dual-mode NER, extracting time, number, location, technology terms and more
-- **Multi-source Retrieval**: Dense vector retrieval (Chroma ANN) + sparse BM25 keyword retrieval, complementary parallel recall
-- **RRF + MMR Ranking**: RRF fuses multi-source recall results, then MMR diversifies the final ranking — balancing relevance and diversity
-- **Flexible Splitting**: Multiple text splitting strategies — character, word, sentence, paragraph, and semantic levels via LangChain / LlamaIndex
-- **Multi-LLM Support**: DeepSeek, Doubao, Aliyun (Qwen), Xiaomi Mimo, and other major LLM providers
-- **Middleware Support**: CORS, rate limiting, request tracing, unified exception handling
+- **Dual-protocol exposure**: the same services are mounted as HTTP APIs (`/api/v1`) and an MCP server (`/mcp`) simultaneously; third-party agents can dynamically discover and call tools through the standard MCP protocol
+- **Machine identity security**: pure machine-to-machine authentication for third-party agents (AppId + GuanHai-1 signature + minimal-scope authorization), no human login
+- **Layered architecture**: standard five-layer business architecture plus a shared core support layer, fully decoupled from the web framework and reusable across RESTful APIs, MCP tools, offline scripts and unit tests
+- **OOP retrieval pipeline**: pluggable three-stage architecture (query understanding, candidate recall, ranking & filtering), each stage supports swappable algorithm providers
+- **Multi-channel recall**: dense vector retrieval (Chroma ANN) plus sparse BM25 keyword retrieval in parallel, fused by RRF and diversified by MMR
+- **Multi-LLM support**: DeepSeek, Doubao, Aliyun Bailian, Xiaomi Mimo and other mainstream LLM providers
+- **Engineering standards**: PEP8 compliance, full type annotations, production-grade logging and exception handling, CI/CD and containerized deployment
 
-## Project Structure
+**Use Cases**
+
+- Enterprise knowledge base Q&A systems
+- Intelligent customer service and conversational bots
+- Document retrieval and summarization
+- Multi-source data fusion retrieval platforms
+- RAG learning and rapid prototyping
+
+## 🚀 Quick Start
+
+**1. Environment Requirements**
+
+| Platform | Requirements |
+|----------|--------------|
+| **General** | Python 3.11+, Git, [uv](https://github.com/astral-sh/uv) (recommended; avoid pip unless necessary) |
+| **Windows** | PowerShell 5.1+; `scripts/start.ps1` included |
+| **Linux** | Ubuntu 20.04+ / CentOS 8+; `scripts/start.sh` included |
+| **macOS** | macOS 12+; install Python and uv via Homebrew |
+
+**2. Clone the Repository**
+
+```bash
+git clone https://github.com/chain-engine/x-GuanHai.git
+cd x-GuanHai
+```
+
+**3. Install Dependencies**
+
+```bash
+# Sync dependencies with uv (recommended)
+uv sync
+
+# Include development dependencies
+uv sync --group dev
+```
+
+**4. Environment Configuration**
+
+The project supports both `.env` environment variables and a `config.yaml` configuration file, with priority: **environment variables > config.yaml > defaults**.
+
+```bash
+# Option 1: environment variable template (recommended)
+cp .env.example .env          # Windows PowerShell: Copy-Item .env.example .env
+
+# Option 2: configuration file template
+cp config.yaml.example config.yaml
+```
+
+**Core Configuration Parameters**:
+
+| Parameter | Description | Default |
+|-----------|-------------|---------|
+| `DEEPSEEK_API_KEY` | LLM provider API key (DeepSeek/Doubao/Bailian/Mimo all supported) | required |
+| `EMBEDDING_MODEL` | Embedding model name | `BAAI/bge-m3` |
+| `EMBEDDING_DEVICE` | Embedding model device | `cpu` |
+| `VECTOR_STORE_PERSIST_DIR` | Vector store persistence directory | `./data/chroma` |
+| `TEXT_SPLITTER_STRATEGY` | Text splitting strategy | `recursive` |
+| `GENERATION_PROVIDER` | LLM generation provider | `deepseek` |
+| `GENERATION_MODEL` | LLM generation model | `deepseek-chat` |
+| `OPENAPI_ENABLED` | Open API authentication switch (AppId + GuanHai-1 signature) | `true` |
+| `OPENAPI_DB_URL` | Open API auth database URL (MySQL default; SQLite for local) | `mysql+pymysql://...` |
+| `AUTH_SECRET_KEY` | Encryption key for app keys, **must be set to a random value in production** | empty (dev fallback) |
+| `DEBUG` | Debug mode (enables hot reload when true) | `false` |
+
+See the comments in `.env.example` and `config.yaml` for the full parameter list.
+
+**5. Start the Service**
+
+*Option 1: local development with hot reload (recommended)*
+
+```bash
+# Ensure DEBUG=true in .env
+uv run x-GuanHai
+
+# Or start directly with uvicorn
+uv run uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+*Option 2: Docker container deployment*
+
+```bash
+# Build and start
+docker compose up -d
+
+# View logs
+docker compose logs -f
+
+# Stop services
+docker compose down
+```
+
+*Option 3: use the startup script*
+
+```bash
+# Windows
+.\scripts\start.ps1
+
+# Linux / macOS
+./scripts/start.sh
+```
+
+After startup, visit:
+
+| URL | Description |
+|-----|-------------|
+| http://localhost:8000/docs | Swagger interactive API docs |
+| http://localhost:8000/redoc | ReDoc read-only API docs |
+| http://localhost:8000/openapi.json | OpenAPI JSON spec |
+| http://localhost:8000/mcp | MCP Streamable HTTP endpoint (for third-party agents) |
+
+**6. Common Engineering Commands**
+
+```bash
+# Unit tests (with coverage report)
+uv run pytest
+
+# Code formatting
+uv run ruff format src/ tests/
+
+# Static linting
+uv run ruff check src/ tests/
+
+# Type checking
+uv run mypy src/
+
+# Dependency vulnerability scan
+uv audit
+
+# Install pre-commit hooks
+uv run pre-commit install
+```
+
+**7. Usage Examples**
+
+*Document upload and RAG Q&A:*
+
+```bash
+# 1. Upload a document
+curl -X POST http://localhost:8000/api/v1/documents/upload \
+  -F "file=@your_document.pdf"
+
+# 2. RAG Q&A (retrieval + generation)
+curl -X POST http://localhost:8000/api/v1/rag/query \
+  -H "Content-Type: application/json" \
+  -d '{"query": "Your question"}'
+
+# 3. Retrieve only (no LLM generation)
+curl -X POST http://localhost:8000/api/v1/rag/retrieve \
+  -H "Content-Type: application/json" \
+  -d '{"query": "Search keywords"}'
+```
+
+*Signed Open API calls (third-party agent integration):*
+
+```bash
+# 1. Create an app from the management side (AppKey is returned once)
+python scripts/manage_openapi_app.py create --name my-agent --scopes rag:read document:read
+
+# 2. Call with the signed client (see examples/openapi_client.py)
+export OPENAPI_APP_ID=gh_xxxxxxxx
+export OPENAPI_APP_KEY=gk_xxxxxxxx
+python examples/openapi_client.py rag/query --query "Your question"
+```
+
+See `examples/` and the `docs/` directory for more examples.
+
+**8. Troubleshooting**
+
+| Issue | Solution |
+|-------|----------|
+| Port 8000 already in use | Change `SERVER_PORT` in `.env`, or run `netstat -ano \| findstr :8000` to locate the process |
+| `uv sync` fails | Confirm access to the mirror index (Aliyun mirror is configured in pyproject.toml); upgrade uv: `uv self update` |
+| Config load error | Ensure `.env` / `config.yaml` exist and are well-formed; priority is env vars > config.yaml > defaults |
+| Open API database connection failure | The MySQL database in `OPENAPI_DB_URL` must be created first (e.g. `CREATE DATABASE guanhai CHARACTER SET utf8mb4`); switch to `sqlite:///./data/openapi.db` for local debugging |
+| Embedding model download is slow/fails | The BGE-M3 model is downloaded on first run; configure an `HF_ENDPOINT` mirror or place the model in the cache directory manually |
+| Windows permission error | Run PowerShell as administrator, or execute `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` |
+
+## 📁 Project Structure
 
 ```
 x-GuanHai/
-├── src/                          # Core source code
-│   ├── api/                      # API interface layer
-│   │   ├── router.py             # Route registration
-│   │   └── v1/                  # API v1
-│   │       ├── health.py          # Health check
-│   │       ├── rag.py           # RAG endpoints
-│   │       └── document.py       # Document management
-│   ├── rag/                      # RAG core module
-│   │   ├── pipeline.py          # RAG pipeline orchestration
-│   │   ├── retrieval.py          # Retrieval entry (delegates to Pipeline)
-│   │   ├── augmentation.py     # Context augmentation
-│   │   └── generation.py        # LLM generation
-│   ├── retrieval/               # Retrieval subsystem (OOP 3-stage)
-│   │   ├── pipeline.py         # Retrieval pipeline orchestration
-│   │   ├── understanding/       # Stage 1 — Query Understanding
-│   │   │   ├── base.py         # Abstract base class
-│   │   │   ├── preprocess.py   # Query preprocessing (norm/stopwords)
-│   │   │   ├── intent.py       # Intent recognition (7 intent types)
-│   │   │   ├── entity.py       # Entity extraction (NER)
-│   │   │   ├── rewrite.py      # Query rewrite
-│   │   │   └── expansion.py    # Query expansion (synonym/vector)
-│   │   ├── candidate/           # Stage 2 — Candidate Retrieval
-│   │   │   ├── base.py         # Abstract base class
-│   │   │   ├── vector_retrieval.py  # Dense vector ANN (Chroma)
-│   │   │   ├── keyword_retrieval.py # Keyword retrieval abstract
-│   │   │   └── bm25_retrieval.py    # Sparse BM25 retrieval
-│   │   └── ranking/             # Stage 3 — Ranking & Filtering
-│   │       ├── base.py         # Abstract base class
-│   │       ├── mmr.py          # MMR diversity reranking
-│   │       ├── rrf.py          # RRF rank fusion
-│   │       ├── semantic.py     # Semantic reranking
-│   │       └── score_filter.py # Score threshold filtering
-│   ├── chunking/                # Text splitting
-│   │   ├── base.py            # Splitting abstract base class
-│   │   ├── langchain_provider.py   # LangChain splitting
-│   │   └── llama_index_provider.py  # LlamaIndex splitting
-│   ├── services/                # Business service layer
-│   │   ├── base_service.py     # Base service class
-│   │   ├── rag_service.py      # RAG service
-│   │   └── document_service.py # Document service
-│   ├── repositories/            # Data access layer
-│   │   ├── base_repository.py  # Base repository class
-│   │   ├── vector_repository.py    # Vector repository
-│   │   ├── bm25_repository.py      # BM25 repository
-│   │   └── document_repository.py  # Document repository
-│   ├── models/                  # ORM entity layer
-│   │   ├── base.py             # Entity base class
-│   │   ├── document.py        # Document entity
-│   │   └── vector.py          # Vector record
-│   ├── infras/                 # Infrastructure layer
-│   │   ├── storage.py         # Document store (abstract base + JSON impl)
-│   │   ├── embedding.py       # Embedding model (abstract base + BGE-M3 impl)
-│   │   ├── vector.py          # Vector store (abstract base + Chroma impl)
-│   │   └── bm25.py            # BM25 sparse index store
-│   ├── core/                   # Core support layer
-│   │   ├── config.py          # Configuration center
-│   │   ├── logger.py         # Logging module
-│   │   ├── exceptions.py      # Exception definitions
-│   │   └── middleware.py      # Middleware (CORS/rate limit/tracing)
-│   ├── schemas/                 # Data models (Pydantic)
-│   │   ├── base.py            # Schema base class
-│   │   ├── rag.py            # RAG schemas
-│   │   ├── document.py       # Document schemas
-│   │   ├── health.py         # Health schemas
-│   │   └── responses.py      # Unified response format
-│   ├── constants/               # Constants
-│   │   ├── base.py            # Enum base classes (BaseEnum/StrBaseEnum/IntBaseEnum/FloatBaseEnum)
-│   │   ├── enums.py           # Enum definitions
-│   │   └── constants.py       # Constant definitions
-│   ├── utils/                   # Utilities
-│   │   ├── similarity.py      # Similarity search engine
-│   │   ├── filters.py        # Metadata filter engine
-│   │   └── index_optimizer.py  # Vector index optimizer
-│   └── main.py                 # Application entry
-├── tests/                        # Test cases
-├── examples/                     # Example code
-├── scripts/                      # Operations scripts
-├── docs/                         # Documentation
-├── .github/workflows/            # GitHub Actions
-├── .pre-commit-config.yaml    # Pre-commit config
-├── config.yaml                 # Configuration file
-├── .env.example                # Environment template
-├── docker-compose.yml          # Docker compose
-├── Dockerfile                  # Docker image
-├── pyproject.toml             # Project config (uv)
-├── CHANGELOG.md              # Changelog
-├── LICENSE                   # MIT License
-└── README.md                # This file
+├── src/                              # Core source code
+│   ├── main.py                      # Application entry (HTTP + MCP dual-protocol assembly)
+│   ├── http_server/                 # HTTP access layer (peer of mcp_server)
+│   │   ├── router.py                # Route registration (health/rag/document/audit/openapi_app)
+│   │   ├── dependencies.py          # Dependency management (services + Open API auth deps)
+│   │   ├── response.py              # Unified response helpers (success_response / error_response)
+│   │   ├── scope_decorator.py       # Scope decorator (declares route-required scopes)
+│   │   └── v1/                      # API v1 routes (health/rag/document/audit_log/openapi_app)
+│   ├── mcp_server/                  # MCP access layer (peer of http_server)
+│   │   ├── server.py                # MCPServer instance + unified primitive registration
+│   │   ├── tools.py                 # Tools primitives (retrieve_docs / rag_query, read-only)
+│   │   ├── prompts.py               # Prompts primitives (reserved)
+│   │   ├── resources.py             # Resources primitives (reserved)
+│   │   └── auth.py                  # MCP egress auth middleware (GuanHai-1, same source as HTTP)
+│   ├── rag/                          # RAG core module
+│   │   ├── pipeline.py              # RAG pipeline orchestration (Retrieval→Augmentation→Generation)
+│   │   ├── retrieval.py             # Retrieval entry
+│   │   ├── augmentation.py          # Context augmentation
+│   │   └── generation.py            # LLM generation
+│   ├── retrieval/                   # Retrieval subsystem (OOP three stages)
+│   │   ├── pipeline.py              # Retrieval pipeline orchestration
+│   │   ├── understanding/           # Stage 1 — query understanding (preprocess/intent/entity/rewrite/expansion)
+│   │   ├── candidate/               # Stage 2 — candidate recall (vector ANN / BM25 sparse)
+│   │   └── ranking/                 # Stage 3 — ranking & filtering (RRF / MMR / semantic / score filter)
+│   ├── services/                    # Business logic layer (shared by HTTP and MCP)
+│   │   ├── rag_service.py           # RAG service
+│   │   ├── document_service.py      # Document service
+│   │   ├── gateway_service.py  # Open API gateway auth (signature + scope verification)
+│   │   ├── openapi_app_service.py      # Open API app management (admin)
+│   │   └── audit_service.py         # Business audit log service (independent transactions)
+│   ├── repositories/                # Data access layer
+│   │   ├── vector_repository.py     # Vector repository (Chroma)
+│   │   ├── bm25_repository.py       # BM25 sparse index repository
+│   │   ├── document_repository.py   # Document repository (JSON)
+│   │   ├── openapi_app_repository.py # Open API app repository
+│   │   └── audit_log_repository.py  # Audit log repository
+│   ├── models/                      # ORM entity layer (openapi_app / openapi_scope / audit_log)
+│   ├── infras/                      # Infrastructure layer
+│   │   ├── database.py              # Database (Provider abstraction: MySQL default / SQLite fallback)
+│   │   ├── storage.py               # Document storage (abstract base + JSON implementation)
+│   │   ├── embedding.py             # Embedding model (abstract base + BGE-M3 implementation)
+│   │   ├── vector.py                # Vector store (abstract base + Chroma implementation)
+│   │   ├── bm25.py                  # BM25 sparse index storage
+│   │   ├── chunking.py              # Text splitting (LangChain / LlamaIndex providers)
+│   │   └── llm.py                   # LLM providers (abstract base + OpenAI-compatible implementation)
+│   ├── core/                        # Core support layer
+│   │   ├── config.py                # Config center (env vars + YAML)
+│   │   ├── logger.py                # Logging (Loguru)
+│   │   ├── exceptions.py            # Exception definitions
+│   │   ├── middleware.py            # Middleware (CORS / rate limit / request tracing)
+│   │   └── signature.py             # GuanHai-1 signature protocol (pure functions)
+│   ├── constants/                   # Constants and enums (incl. OpenApiScopeCode catalog)
+│   ├── schemas/                     # Data models (Pydantic)
+│   └── utils/                       # Utilities (security/openapi/similarity/filters)
+├── tests/                            # Test suite (unit / integration / api)
+├── examples/                         # Example code (openapi_client.py, etc.)
+├── scripts/                          # Ops scripts (start.ps1 / start.sh / manage_openapi_app.py)
+├── docs/                             # Project docs (architecture, retrieval pipeline, Postman collection)
+├── data/                             # Runtime data (vector store, document store, BM25 index)
+├── logs/                             # Runtime logs
+├── .github/workflows/                # GitHub Actions CI/CD
+├── .pre-commit-config.yaml           # Pre-commit configuration
+├── config.yaml / config.yaml.example # Configuration file (template)
+├── .env.example                      # Environment variable template
+├── docker-compose.yml                # Docker orchestration
+├── Dockerfile                        # Docker image (multi-stage build)
+├── pyproject.toml                    # Project configuration (uv / ruff / mypy / pytest)
+├── CHANGELOG.md                      # Changelog
+├── LICENSE                           # MIT License
+└── README.en.md                      # This document
 ```
 
-## System Architecture
+## 🏗️ System Architecture
 
-### Retrieval Pipeline Architecture (Key Feature)
+**Layered Architecture**
+
+```mermaid
+graph TB
+    subgraph "HTTP Access Layer (http_server)"
+        H1["v1/health<br/>Health check"]
+        H2["v1/rag<br/>RAG queries"]
+        H3["v1/document<br/>Document management"]
+        H4["v1/openapi_app<br/>Open API app management"]
+        H5["v1/audit_log<br/>Audit logs"]
+    end
+
+    subgraph "MCP Access Layer (mcp_server)"
+        M1["tools.py<br/>retrieve_docs / rag_query"]
+        M2["auth.py<br/>egress auth (GuanHai-1)"]
+    end
+
+    subgraph "Business Logic Layer (services)"
+        S1["rag_service<br/>RAG service"]
+        S2["document_service<br/>Document service"]
+        S3["gateway_service<br/>signature + scope auth"]
+        S4["openapi_app_service<br/>App management"]
+        S5["audit_service<br/>Audit logging"]
+    end
+
+    subgraph "RAG Core Layer (rag)"
+        R1["pipeline.py<br/>RAGPipeline"]
+        R2["retrieval.py<br/>Retrieval entry"]
+        R3["augmentation.py<br/>Context augmentation"]
+        R4["generation.py<br/>LLM generation"]
+    end
+
+    subgraph "Retrieval Subsystem (retrieval)"
+        T1["pipeline.py<br/>three-stage orchestration"]
+        T2["understanding/<br/>query understanding"]
+        T3["candidate/<br/>candidate recall"]
+        T4["ranking/<br/>ranking & filtering"]
+    end
+
+    subgraph "Data Access Layer (repositories)"
+        P1["vector_repository<br/>Vector repository"]
+        P2["document_repository<br/>Document repository"]
+        P3["bm25_repository<br/>BM25 repository"]
+        P4["openapi_app_repository<br/>App repository"]
+    end
+
+    subgraph "Infrastructure Layer (infras)"
+        I1["vector.py<br/>ChromaVectorStore"]
+        I2["storage.py<br/>JSONDocumentStore"]
+        I3["embedding.py<br/>BGEEmbeddingModel"]
+        I4["llm.py<br/>LLM Provider"]
+        I5["chunking.py<br/>Text splitting"]
+        I6["database.py<br/>MySQL / SQLite"]
+    end
+
+    subgraph "Core Support Layer (core)"
+        C1["config.py<br/>Config center"]
+        C2["logger.py<br/>Logging"]
+        C3["exceptions.py<br/>Exceptions"]
+        C4["middleware.py<br/>Middleware"]
+        C5["signature.py<br/>GuanHai-1 signature"]
+    end
+
+    H2 --> S1
+    H3 --> S2
+    H4 --> S4
+    H5 --> S5
+    H1 -.-> S1
+
+    M1 --> S1
+    M1 --> S3
+    M2 --> C5
+
+    S1 --> R1
+    S2 --> P2
+    S3 --> P4
+    S4 --> P4
+
+    R1 --> R2
+    R1 --> R3
+    R1 --> R4
+    R2 --> T1
+
+    T1 --> T2
+    T1 --> T3
+    T1 --> T4
+    T3 --> P1
+    T3 --> P3
+
+    P1 --> I1
+    P2 --> I2
+    P3 -.-> I3
+    P4 --> I6
+
+    style H1 fill:#b3e5fc,stroke:#0277bd
+    style H2 fill:#b3e5fc,stroke:#0277bd
+    style H3 fill:#b3e5fc,stroke:#0277bd
+    style H4 fill:#b3e5fc,stroke:#0277bd
+    style H5 fill:#b3e5fc,stroke:#0277bd
+    style M1 fill:#b3e5fc,stroke:#0277bd
+    style M2 fill:#b3e5fc,stroke:#0277bd
+    style S1 fill:#c8e6c9,stroke:#2e7d32
+    style S2 fill:#c8e6c9,stroke:#2e7d32
+    style S3 fill:#c8e6c9,stroke:#2e7d32
+    style S4 fill:#c8e6c9,stroke:#2e7d32
+    style S5 fill:#c8e6c9,stroke:#2e7d32
+    style R1 fill:#ffe0b2,stroke:#ef6c00
+    style R2 fill:#ffe0b2,stroke:#ef6c00
+    style R3 fill:#ffe0b2,stroke:#ef6c00
+    style R4 fill:#ffe0b2,stroke:#ef6c00
+    style T1 fill:#e1bee7,stroke:#7b1fa2
+    style T2 fill:#e1bee7,stroke:#7b1fa2
+    style T3 fill:#e1bee7,stroke:#7b1fa2
+    style T4 fill:#e1bee7,stroke:#7b1fa2
+    style P1 fill:#fff9c4,stroke:#f9a825
+    style P2 fill:#fff9c4,stroke:#f9a825
+    style P3 fill:#fff9c4,stroke:#f9a825
+    style P4 fill:#fff9c4,stroke:#f9a825
+    style I1 fill:#f8bbd0,stroke:#c2185b
+    style I2 fill:#f8bbd0,stroke:#c2185b
+    style I3 fill:#f8bbd0,stroke:#c2185b
+    style I4 fill:#f8bbd0,stroke:#c2185b
+    style I5 fill:#f8bbd0,stroke:#c2185b
+    style I6 fill:#f8bbd0,stroke:#c2185b
+    style C1 fill:#cfd8dc,stroke:#455a64
+    style C2 fill:#cfd8dc,stroke:#455a64
+    style C3 fill:#cfd8dc,stroke:#455a64
+    style C4 fill:#cfd8dc,stroke:#455a64
+    style C5 fill:#cfd8dc,stroke:#455a64
+```
+
+**Core Business Flow: Retrieval Pipeline**
 
 ```mermaid
 flowchart TD
     Q["User Query"]
 
     subgraph Stage1["Stage 1: Query Understanding (parallel → merge)"]
-        P1["QueryPreprocessor<br/>(Preprocess)"]
-        I1["IntentClassifier<br/>(Intent Detect)"]
-        E1["EntityExtractor<br/>(NER)"]
-        S1["SynonymExpander<br/>(Synonym)"]
-        R1["SimpleRewriter<br/>(Rule Rewrite)"]
+        P1["QueryPreprocessor<br/>(preprocessing)"]
+        I1["IntentClassifier<br/>(intent recognition)"]
+        E1["EntityExtractor<br/>(entity extraction)"]
+        S1["SynonymExpander<br/>(synonym expansion)"]
+        R1["SimpleRewriter<br/>(rule rewriting)"]
         M1["merge()"]
         P1 --> M1
         I1 --> M1
@@ -147,10 +439,10 @@ flowchart TD
 
     Q --> Stage1
 
-    subgraph Stage2["Stage 2: Candidate Retrieval (multi-source → dedup)"]
-        V1["ChromaVectorRetrieval<br/>(Dense ANN)"]
-        B1["BM25RetrievalProvider<br/>(Sparse BM25)"]
-        D1["Dedup & Merge"]
+    subgraph Stage2["Stage 2: Candidate Recall (parallel → dedup merge)"]
+        V1["ChromaVectorRetrieval<br/>(dense vector ANN)"]
+        B1["BM25RetrievalProvider<br/>(sparse BM25 keywords)"]
+        D1["Dedup merge"]
         V1 --> D1
         B1 --> D1
     end
@@ -158,9 +450,9 @@ flowchart TD
     M1 --> Stage2
 
     subgraph Stage3["Stage 3: Ranking & Filtering (sequential)"]
-        RRF["RRFReranker<br/>(Rank Fusion)"]
-        MMR["MMRReranker<br/>(Diversity)"]
-        SF["ScoreFilter<br/>(Threshold)"]
+        RRF["RRFReranker<br/>(multi-rank fusion)"]
+        MMR["MMRReranker<br/>(diversity rerank)"]
+        SF["ScoreFilter<br/>(threshold filtering)"]
         RRF --> MMR --> SF
     end
 
@@ -175,431 +467,158 @@ flowchart TD
     style R fill:#c8e6c9,stroke:#2e7d32
 ```
 
-### Layered Architecture Diagram
+**Core Business Flow: Open API Signed Authentication**
 
 ```mermaid
-graph TB
-    subgraph "API Layer (api)"
-        A1["health.py<br/>Health Check"]
-        A2["rag.py<br/>RAG Query"]
-        A3["document.py<br/>Document Management"]
-        A1 --- A2 --- A3
-    end
-
-    subgraph "Business Logic Layer (services)"
-        SVC1["rag_service.py<br/>RAG Service"]
-        SVC2["document_service.py<br/>Document Service"]
-    end
-
-    subgraph "RAG Core (rag)"
-        RAG1["pipeline.py<br/>RAGPipeline<br/>Orchestrates Retrieval→Augmentation→Generation"]
-        RAG2["retrieval.py<br/>Retrieval<br/>Retrieval Entry"]
-        RAG3["augmentation.py<br/>Context Augmentation"]
-        RAG4["generation.py<br/>LLM Generation"]
-    end
-
-    subgraph "Retrieval Subsystem (retrieval)"
-        RET1["pipeline.py<br/>RetrievalPipeline<br/>Orchestrates 3-Stage Pipeline"]
-        RET2["understanding/<br/>Query Understanding"]
-        RET3["candidate/<br/>Candidate Retrieval"]
-        RET4["ranking/<br/>Ranking & Filtering"]
-    end
-
-    subgraph "Data Access Layer (repositories)"
-        REP1["vector_repository.py<br/>Vector Repository"]
-        REP2["document_repository.py<br/>Document Repository"]
-        REP3["bm25_repository.py<br/>BM25 Repository"]
-    end
-
-    subgraph "Infrastructure Layer (infras)"
-        I1["ChromaVectorStore"]
-        I2["JSONDocumentStore"]
-        I3["BGEEmbeddingModel"]
-        I4["BaseLLMProvider"]
-    end
-
-    subgraph "Chunking Layer (chunking)"
-        CHK1["langchain_provider.py"]
-        CHK2["llama_index_provider.py"]
-    end
-
-    subgraph "Core Support Layer (core)"
-        C1["config.py"]
-        C2["logger.py"]
-        C3["exceptions.py"]
-        C4["middleware.py"]
-    end
-
-    subgraph "Constants Layer (constants)"
-        CON1["enums.py<br/>Enum Definitions"]
-        CON2["constants.py<br/>Constant Definitions"]
-    end
-
-    A2 --> SVC1
-    A3 --> SVC2
-    A1 -.-> SVC1
-
-    SVC1 --> RAG1
-    SVC2 --> REP2
-    SVC2 --> CHK1
-
-    RAG1 --> RAG2
-    RAG1 --> RAG3
-    RAG1 --> RAG4
-
-    RAG2 --> RET1
-    RAG3 --> RAG4
-    RAG4 --> LLM1
-
-    RET1 --> RET2
-    RET1 --> RET3
-    RET1 --> RET4
-
-    RET3 --> REP1
-    RET3 --> REP3
-
-    REP1 --> I1
-    REP2 --> I2
-    REP3 -.-> I3
-    CHK1 --> I3
-
-    style A1 fill:#b3e5fc,stroke:#0277bd
-    style A2 fill:#b3e5fc,stroke:#0277bd
-    style A3 fill:#b3e5fc,stroke:#0277bd
-    style SVC1 fill:#c8e6c9,stroke:#2e7d32
-    style SVC2 fill:#c8e6c9,stroke:#2e7d32
-    style RAG1 fill:#ffe0b2,stroke:#ef6c00
-    style RAG2 fill:#ffe0b2,stroke:#ef6c00
-    style RAG3 fill:#ffe0b2,stroke:#ef6c00
-    style RAG4 fill:#ffe0b2,stroke:#ef6c00
-    style RET1 fill:#e1bee7,stroke:#7b1fa2
-    style RET2 fill:#e1bee7,stroke:#7b1fa2
-    style RET3 fill:#e1bee7,stroke:#7b1fa2
-    style RET4 fill:#e1bee7,stroke:#7b1fa2
-    style REP1 fill:#fff9c4,stroke:#f9a825
-    style REP2 fill:#fff9c4,stroke:#f9a825
-    style REP3 fill:#fff9c4,stroke:#f9a825
-    style I1 fill:#f8bbd0,stroke:#c2185b
-    style I2 fill:#f8bbd0,stroke:#c2185b
-    style I3 fill:#f8bbd0,stroke:#c2185b
-    style LLM1 fill:#d1c4e9,stroke:#512da8
-    style LLM2 fill:#d1c4e9,stroke:#512da8
-    style CHK1 fill:#d1c4e9,stroke:#512da8
-    style CHK2 fill:#d1c4e9,stroke:#512da8
-    style C1 fill:#cfd8dc,stroke:#455a64
-    style C2 fill:#cfd8dc,stroke:#455a64
-    style C3 fill:#cfd8dc,stroke:#455a64
-    style C4 fill:#cfd8dc,stroke:#455a64
-    style CON1 fill:#dcedc8,stroke:#558b2f
-    style CON2 fill:#dcedc8,stroke:#558b2f
+flowchart TD
+    A["Third-party Agent"] -->|"Headers: X-App-Id / X-App-Date / X-App-Authorization"| B["HTTP / MCP Access Layer"]
+    B --> C["gateway_service.authenticate"]
+    C --> D{"App exists and active?"}
+    D -->|"No"| E["401 Rejected"]
+    D -->|"Yes"| F{"Timestamp within ±300s window?"}
+    F -->|"No"| E
+    F -->|"Yes"| G{"Recomputed HMAC-SHA256 signature matches?"}
+    G -->|"No"| E
+    G -->|"Yes"| H{"Scope satisfies route declaration?"}
+    H -->|"No"| I["403 Rejected"]
+    H -->|"Yes"| J["Allowed → business service"]
+    J --> K["Audit log (audit_service)"]
+    style A fill:#e1f5fe,stroke:#01579b
+    style E fill:#ffebee,stroke:#c62828
+    style I fill:#ffebee,stroke:#c62828
+    style J fill:#c8e6c9,stroke:#2e7d32
+    style K fill:#f3e5f5,stroke:#7b1fa2
 ```
 
-### Module Dependency Diagram
+**Key Component Overview**
 
-```mermaid
-graph LR
-    subgraph "src/"
-        subgraph "api/"
-            API["api/v1/<br/>API Layer"]
-        end
+| Component | Description |
+|-----------|-------------|
+| RAG Pipeline | `Retrieval → Augmentation → Generation` orchestration; retrieval results are joined with the user query into context and handed to the LLM |
+| Retrieval Pipeline | OOP three stages: query understanding (preprocess/intent/entity/rewrite/expansion) → candidate recall (vector ANN + BM25) → ranking & filtering (RRF/MMR/threshold) |
+| Open API Auth | AppId + GuanHai-1 HMAC signature + minimal-scope authorization; ±300s window; admin scope required for management routes (keys/audit) |
+| MCP Server | MCP Python SDK Streamable HTTP transport mounted at `/mcp`; read-only tools `retrieve_docs` / `rag_query` reuse the shared RAG service instance |
+| Audit Service | Write-operation auditing with independent transactions that never block the business flow |
+| Config Center | Three-level priority: environment variables > config.yaml > defaults |
 
-        subgraph "rag/"
-            RAG["rag/<br/>RAG Core"]
-        end
-
-        subgraph "retrieval/"
-            RET["retrieval/<br/>Retrieval Subsystem"]
-        end
-
-        subgraph "chunking/"
-            CHK["chunking/<br/>Text Chunking"]
-        end
-
-        subgraph "services/"
-            SVC["services/<br/>Business Logic"]
-        end
-
-        subgraph "repositories/"
-            REPO["repositories/<br/>Data Access"]
-        end
-
-        subgraph "infras/"
-            INFRAS["infras/<br/>Infrastructure"]
-        end
-
-        subgraph "core/"
-            CORE["core/<br/>Core Support"]
-        end
-
-        subgraph "constants/"
-            CONST["constants/<br/>Constants"]
-        end
-
-        subgraph "schemas/"
-            SCHEMAS["schemas/<br/>Data Models"]
-        end
-
-        subgraph "utils/"
-            UTILS["utils/<br/>Utilities"]
-        end
-    end
-
-    API --> RAG
-    API --> SVC
-    RAG --> RET
-    RAG --> LLMS
-    RAG --> SVC
-    RET --> REPO
-    RET --> LLMS
-    SVC --> REPO
-    SVC --> INFRAS
-    SVC --> CHK
-    REPO --> INFRAS
-    RET --> CONST
-    REPO --> CONST
-
-    SCHEMAS -.-> CORE
-    UTILS -.-> CORE
-
-    style API fill:#e1f5fe,stroke:#01579b
-    style RAG fill:#fff3e0,stroke:#e65100
-    style RET fill:#fff8e1,stroke:#ff8f00
-    style LLMS fill:#f3e5f5,stroke:#7b1fa2
-    style CHK fill:#e0f7fa,stroke:#00838f
-    style SVC fill:#f1f8e9,stroke:#558b2f
-    style REPO fill:#e8f5e9,stroke:#2e7d32
-    style INFRAS fill:#fce4ec,stroke:#c2185b
-    style CORE fill:#eceff1,stroke:#546e7a
-    style CONST fill:#ede7f6,stroke:#4527a0
-    style SCHEMAS fill:#fff8e1,stroke:#ff8f00
-    style UTILS fill:#f1f8e9,stroke:#558b2f
-```
-
-### Dependency Rules
-
-```mermaid
-graph TD
-    subgraph "Allowed Dependencies"
-        R1["✓ API → RAG/Service"]
-        R2["✓ RAG → Retrieval → Repository"]
-        R3["✓ Repository → Infras (get resources)"]
-        R4["✓ Service/Utils → Core (config/logging)"]
-    end
-
-    subgraph "Forbidden Rules ⚠️"
-        D1["✗ No cross-layer calls (API → Repository)"]
-        D2["✗ Lower layers cannot depend on upper layers"]
-        D3["✗ No circular dependencies"]
-        D4["✗ Infras cannot depend on Repository/RAG"]
-    end
-
-    R1 --> D1
-    R2 --> D2
-    R3 --> D3
-    R4 --> D4
-```
-
-## Quick Start
-
-### Requirements
-
-- Python 3.11+
-- uv (recommended) or pip
-
-### Clone Project
-
-```bash
-git clone https://github.com/chain-engine/x-GuanHai.git
-cd x-GuanHai
-```
-
-### Install Dependencies
-
-```cmd
-# Using uv (recommended)
-uv sync
-
-# Or using pip
-pip install -e .
-```
-
-### Configure Environment
-
-```bash
-# Copy environment template
-cp .env.example .env
-
-# Edit .env and add your API Key
-DEEPSEEK_API_KEY=your-deepseek-api-key-here
-```
-
-### Start Service
-
-```bash
-# Development mode (hot reload)
-uv run uvicorn src.main:app --reload
-
-# Or using scripts
-./scripts/start.sh   # Linux/macOS
-.\scripts\start.ps1  # Windows
-```
-
-After starting, access:
-- API Docs: http://localhost:8000/docs
-- ReDoc: http://localhost:8000/redoc
-
-### Docker Deployment
-
-```cmd
-# Build and start
-docker-compose up -d
-
-# View logs
-docker-compose logs -f
-```
-
-## Common Commands
-
-```cmd
-# Run tests
-uv run pytest tests/
-
-# Format code
-uv run ruff check src/ --fix
-uv run ruff format src/
-
-# Type checking
-uv run mypy src/
-
-# Install pre-commit hooks
-uv run pre-commit install
-```
-
-## Tech Stack
+## 🛠️ Tech Stack
 
 | Category | Technology |
 |----------|------------|
-| Web Framework | FastAPI + Uvicorn |
-| Data Storage | Chroma (Vector Database) |
-| Embedding Model | BGE-M3 (BAAI Open Source) |
-| LLM | DeepSeek / Doubao / Aliyun (Qwen) / Xiaomi Mimo |
-| Text Chunking | LangChain / LlamaIndex |
-| Logging | Loguru |
-| Utilities | Pydantic, httpx, rank-bm25 |
-| Containerization | Docker, docker-compose |
-| CI/CD | GitHub Actions |
-| Package Manager | uv |
+| **Language** | Python 3.11+ |
+| **Web Framework** | FastAPI + Uvicorn |
+| **MCP Service** | MCP Python SDK (Streamable HTTP, /mcp) |
+| **Data Storage** | Chroma (vector DB), SQLAlchemy (MySQL default / SQLite fallback), JSON files (document metadata), BM25 (sparse index) |
+| **Embedding Model** | BGE-M3 (BAAI open-source) |
+| **LLM** | DeepSeek / Doubao / Aliyun Bailian / Xiaomi Mimo (OpenAI-compatible APIs) |
+| **Text Splitting** | LangChain / LlamaIndex providers |
+| **Security** | HMAC-SHA256, Fernet (AppKey encryption), scope permission model |
+| **Logging** | Loguru |
+| **Core Libraries** | Pydantic, httpx, rank-bm25, python-jose, passlib |
+| **Containerization** | Docker (multi-stage build), docker-compose |
+| **CI/CD** | GitHub Actions |
+| **Package Manager** | uv |
+| **Code Quality** | Ruff (format + lint), mypy (type check), black, pre-commit |
 
-### Retrieval Subsystem Technology Details
+## 📚 API Documentation
 
-| Stage | Component | Description |
-|-------|-----------|-------------|
-| **Stage 1 Query Understanding** | QueryPreprocessor | Normalization, stopword removal, punctuation handling |
-| | IntentClassifier | Rule-based recognition of 7 intent types |
-| | EntityExtractor | Regex + dictionary dual-mode NER |
-| | SynonymExpander / EmbeddingExpander | Synonym / vector semantic expansion |
-| | SimpleQueryRewriter / LLMQueryRewriter | Rule-based / LLM rewrite |
-| **Stage 2 Candidate Retrieval** | ChromaVectorRetrieval | Chroma ANN dense vector retrieval |
-| | BM25RetrievalProvider | BM25 sparse keyword retrieval |
-| **Stage 3 Ranking & Filtering** | RRFReranker | RRF multi-source rank fusion |
-| | MMRReranker | MMR diversity reranking |
-| | SemanticReranker | LLM semantic reranking |
-| | ScoreFilter | Score threshold filtering |
+After startup, the following endpoints are available:
 
-## API Documentation
+| Doc Type | URL | Description |
+|----------|-----|-------------|
+| **Swagger UI** | http://localhost:8000/docs | Interactive API docs with online testing |
+| **ReDoc** | http://localhost:8000/redoc | Read-only API docs for reference |
+| **OpenAPI JSON** | http://localhost:8000/openapi.json | OpenAPI 3.x spec, importable into Postman etc. |
+| **MCP Endpoint** | http://localhost:8000/mcp | MCP Streamable HTTP, supports `initialize` / `tools/list` |
 
-### Health Check
+**Core API List**:
 
-```bash
-GET /api/v1/health
-```
+| Module | Method | Path | Description | Permission |
+|--------|--------|------|-------------|------------|
+| System | `GET` | `/api/v1/health` | Health check | Public |
+| System | `GET` | `/api/v1/version` | Version info | Public |
+| System | `GET` | `/api/v1/status` | System status | Public |
+| RAG | `POST` | `/api/v1/rag/query` | RAG Q&A (retrieval + generation) | Signed + `rag:read` |
+| RAG | `POST` | `/api/v1/rag/retrieve` | Retrieve only (no LLM) | Signed + `rag:read` |
+| RAG | `POST` | `/api/v1/rag/embed` | Embed texts | Signed + `rag:read` |
+| RAG | `GET` | `/api/v1/rag/stats` | Vector store statistics | Signed + `rag:read` |
+| Document | `POST` | `/api/v1/documents/upload` | Upload document | Signed + `document:write` |
+| Document | `GET` | `/api/v1/documents` | List documents | Signed + `document:read` |
+| Document | `GET` | `/api/v1/documents/{id}` | Get document detail | Signed + `document:read` |
+| Document | `DELETE` | `/api/v1/documents/{id}` | Delete document | Signed + `document:write` |
+| Document | `GET` | `/api/v1/documents/{id}/status` | Document processing status | Signed + `document:read` |
+| Open API App Admin | `GET` | `/api/v1/apps` | List apps | Signed + `admin` |
+| Open API App Admin | `POST` | `/api/v1/apps` | Create app (plaintext AppKey, once only) | Signed + `admin` |
+| Open API App Admin | `DELETE` | `/api/v1/apps/{app_id}` | Revoke app | Signed + `admin` |
+| Open API App Admin | `POST` | `/api/v1/apps/{app_id}/enable` | Re-enable app | Signed + `admin` |
+| Open API App Admin | `DELETE` | `/api/v1/apps/{app_id}/purge` | Purge app | Signed + `admin` |
+| Audit | `GET` | `/api/v1/audit/logs` | Audit log list | Signed + `admin` |
+| Audit | `GET` | `/api/v1/audit/logs/{log_id}` | Audit log detail | Signed + `admin` |
 
-### Document Management
+**Access Control**:
 
-```bash
-# Upload document
-POST /api/v1/documents/upload
+- **Auth model**: pure machine identity authentication for third-party agents (AppId + GuanHai-1 HMAC signature), no human login
+- **Signature protocol**: requests carry `X-App-Id` / `X-App-Date` (RFC1123 GMT) / `X-App-Authorization` (`GuanHai-1 {app_id}:{signature}`); the signature is an HMAC-SHA256 of the request method, URI, Content-Type, timestamp and body SHA256 computed with the AppKey; ±300s window prevents replay
+- **Minimal-scope authorization**: 6 scope enums (`rag:read` / `document:read` / `document:write` / `admin`), dual-declared auth (route Depends + decorator), scope catalog reconciled automatically at startup
+- **Key management**: AppKeys are stored Fernet-encrypted; plaintext is returned once at creation; apps can be revoked / re-enabled / purged
+- **MCP auth**: `/mcp` egress authentication shares the same source as HTTP (GuanHai-1 signature) and reuses the same app and scope system
 
-# List documents
-GET /api/v1/documents
+## 💾 Storage Configuration
 
-# Get document
-GET /api/v1/documents/{document_id}
+The project uses **hybrid storage**: vectors in Chroma, document metadata in JSON files, sparse index in BM25, and Open API auth data in a relational database (MySQL default / SQLite fallback).
 
-# Delete document
-DELETE /api/v1/documents/{document_id}
+**Vector Store (Chroma)**
 
-# Get document status
-GET /api/v1/documents/{document_id}/status
-```
+| Config | Parameter | Default | Description |
+|--------|-----------|---------|-------------|
+| Persist directory | `VECTOR_STORE_PERSIST_DIR` | `./data/chroma` | Local persistence path of the vector DB |
+| Collection name | `VECTOR_STORE_COLLECTION_NAME` | `documents` | Chroma collection name |
+| Distance type | `VECTOR_STORE_DISTANCE` | `cosine` | Distance metric (cosine / l2 / ip) |
 
-### RAG Query
+**Document Store (JSON)**
 
-```bash
-# RAG Q&A
-POST /api/v1/rag/query
+Document metadata is stored as JSON files under `./data/documents/`, supporting document CRUD and status tracking (one file per document: document ID, file name, upload time, processing status, chunk count, etc.).
 
-# Retrieval only
-POST /api/v1/rag/retrieve
+**BM25 Sparse Index Storage**
 
-# Text embedding
-POST /api/v1/rag/embed
+| Config | Description |
+|--------|-------------|
+| Storage path | `./data/bm25/` |
+| Index name | `documents` |
+| Purpose | BM25 index persistence for sparse keyword retrieval |
 
-# Statistics
-GET /api/v1/rag/stats
-```
+**Open API Auth Database (SQLAlchemy)**
 
-## Retrieval Subsystem Usage Guide
+| Config | Parameter | Default | Description |
+|--------|-----------|---------|-------------|
+| Connection URL | `OPENAPI_DB_URL` | MySQL (production) | Default `mysql+pymysql://...`; switch to `sqlite:///./data/openapi.db` for local debugging |
+| Tables | openapi_apps / openapi_scopes | — | App registry (AppId/encrypted AppKey/scope/status) + scope catalog table |
+| Signature window | `OPENAPI_SIGNATURE_WINDOW_SECONDS` | `300` | Replay-prevention window (seconds) |
+| Rate limit | `OPENAPI_DEFAULT_RATE_LIMIT_PER_MINUTE` | `60` | Per-app calls per minute |
 
-For detailed usage instructions and algorithm principles, see [Retrieval Pipeline Documentation](./docs/retrieval-pipeline.md).
-**Typical Configuration**:
+## 📄 License
 
-- Stage 1 (Query Understanding): `QueryPreprocessor` → `IntentClassifier` → `EntityExtractor` → `SynonymExpander`
-- Stage 2 (Candidate Retrieval): `ChromaVectorRetrieval` (Dense) + `BM25RetrievalProvider` (Sparse), multi-path parallel
-- Stage 3 (Ranking & Filtering): `RRFReranker` (Fusion) → `MMRReranker` (Diversity) → `ScoreFilter` (Threshold Filtering)
-**Typical configuration**:
-- Stage 1 (Query Understanding): `QueryPreprocessor` → `IntentClassifier` → `EntityExtractor` → `SynonymExpander`
-- Stage 2 (Candidate Retrieval): `ChromaVectorRetrieval` (dense) + `BM25RetrievalProvider` (sparse), multi-source parallel
-- Stage 3 (Ranking & Filtering): `RRFReranker` (fusion) → `MMRReranker` (diversity) → `ScoreFilter` (threshold)
+This project is open-sourced under the [MIT License](./LICENSE).
 
-## Constants Management
+## 📖 References
 
-All enums and pattern configurations are centralized in `src/constants/`:
-
-```python
-from constants import (
-    # Intent type enum
-    IntentType,
-    # Entity type enum
-    EntityType,
-    # Intent recognition patterns
-    INTENT_PATTERNS,
-    # Entity extraction patterns
-    ENTITY_PATTERNS,
-    # Default stopword set
-    DEFAULT_QUERY_STOPWORDS,
-    # Distance type
-    DistanceType,
-)
-```
-
-## License
-
-This project is open source under [MIT License](./LICENSE).
-
-## Contact
-
-- Author: John Young
-- Email: john.young@foxmail.com
-- Gitee: https://gitee.com/yeyushilai
-- GitHub: https://github.com/yeyushilai
-
-## References
-
-- [Python](https://docs.python.org/3.11/)
-- [FastAPI](https://fastapi.tiangolo.com/)
-- [uv](https://github.com/astral-sh/uv)
-- [Chroma](https://docs.trychroma.com/)
-- [BGE-M3](https://github.com/FlagOpen/FlagEmbedding)
-- [Pydantic](https://docs.pydantic.dev/)
+- [Python Documentation](https://docs.python.org/3.11/)
+- [uv Documentation](https://github.com/astral-sh/uv)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+- [MCP Documentation](https://modelcontextprotocol.io/)
+- [Chroma Documentation](https://docs.trychroma.com/)
+- [BGE-M3 (FlagEmbedding)](https://github.com/FlagOpen/FlagEmbedding)
+- [SQLAlchemy Documentation](https://docs.sqlalchemy.org/)
+- [Pydantic Documentation](https://docs.pydantic.dev/)
 - [rank-bm25](https://github.com/dorianbrown/rank_bm25)
+- [LangChain Documentation](https://python.langchain.com/)
+- [Loguru](https://github.com/Delgan/loguru)
+- [Docker Documentation](https://docs.docker.com/)
+
+## 📬 Contact
+
+- **Author**: John Young（夜雨诗来）
+- **Email**: john.young@foxmail.com
+- **Gitee**: https://gitee.com/yeyushilai
+- **GitHub**: https://github.com/yeyushilai
+- **Project URL**: https://github.com/chain-engine/x-GuanHai

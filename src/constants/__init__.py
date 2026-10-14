@@ -7,8 +7,8 @@ Constants Package
 枚举基类族保留在 base.py。
 """
 
-from .base import BaseEnum
-from .constants import (
+from src.constants.base import BaseEnum
+from src.constants.constants import (
     API_PREFIX,
     APP_DESCRIPTION,
     APP_ID,
@@ -36,9 +36,15 @@ from .constants import (
     DISTANCE_EUCLIDEAN,
     ENTITY_PATTERNS,
     INTENT_PATTERNS,
+    OPENAPI_ALGORITHM,
+    OPENAPI_CONTENT_TYPE,
+    OPENAPI_HEADER_APP_ID,
+    OPENAPI_HEADER_AUTHORIZATION,
+    OPENAPI_HEADER_DATE,
+    OPENAPI_SIGNATURE_WINDOW_SECONDS,
     SUPPORTED_DOC_TYPES,
 )
-from .enums import (
+from src.constants.enums import (
     DistanceType,
     DocStatus,
     DocType,
@@ -103,4 +109,11 @@ __all__ = [
     "ENTITY_PATTERNS",
     "DEFAULT_INTENT_MIN_CONFIDENCE",
     "DEFAULT_QUERY_STOPWORDS",
+    # OpenAPI Auth
+    "OPENAPI_HEADER_APP_ID",
+    "OPENAPI_HEADER_DATE",
+    "OPENAPI_HEADER_AUTHORIZATION",
+    "OPENAPI_ALGORITHM",
+    "OPENAPI_CONTENT_TYPE",
+    "OPENAPI_SIGNATURE_WINDOW_SECONDS",
 ]

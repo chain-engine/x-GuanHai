@@ -10,7 +10,7 @@ from typing import Any
 from datetime import datetime
 from pydantic import BaseModel, Field, ConfigDict
 
-from constants import SUPPORTED_DOC_TYPES
+from src.constants import SUPPORTED_DOC_TYPES
 
 
 class DocumentUploadRequest(BaseModel):

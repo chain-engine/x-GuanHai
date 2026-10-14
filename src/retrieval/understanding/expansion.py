@@ -10,11 +10,11 @@ Query Expansion Module
 from abc import abstractmethod
 from typing import Any, Optional
 
-from retrieval.understanding.base import (
+from src.retrieval.understanding.base import (
     BaseQueryUnderstandingProvider,
     QueryUnderstandingResult,
 )
-from core.logger import logger
+from src.core.logger import logger
 
 
 class QueryExpansionProvider(BaseQueryUnderstandingProvider):
@@ -153,7 +153,7 @@ class EmbeddingExpander(QueryExpansionProvider):
             query_embedding = self._embedding_model.encode_single(query)
             vocab_embeddings = self._embedding_model.encode(self._vocabulary)
 
-            from utils.similarity import SimilaritySearchEngine, DistanceType
+            from src.utils.similarity import SimilaritySearchEngine, DistanceType
 
             engine = SimilaritySearchEngine(distance_type=DistanceType.COSINE)
             similarities = engine.compute_batch(query_embedding, vocab_embeddings)

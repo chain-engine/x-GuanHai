@@ -15,9 +15,9 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
-from core.logger import logger
-from core.config import settings
-from constants import HeaderType
+from src.core.logger import logger
+from src.core.config import settings
+from src.constants import HeaderType
 
 
 # 限流器实例
@@ -33,15 +33,17 @@ limiter = Limiter(
 async def request_id_middleware(request: Request, call_next: Callable) -> Response:
     """请求ID中间件
 
-    为每个请求生成唯一的请求ID
+    为每个请求生成唯一的请求ID，并通过 loguru contextualize 注入日志上下文，
+    使一条请求从头到尾的所有日志都携带同一个 request_id（JSON 日志同字段）。
     """
     request_id: str = request.headers.get(HeaderType.REQUEST_ID.mark) or str(uuid.uuid4())
     request.state.request_id = request_id
 
-    response: Response = await call_next(request)
-    response.headers[HeaderType.REQUEST_ID.mark] = request_id
+    with logger.contextualize(request_id=request_id):
+        response: Response = await call_next(request)
+        response.headers[HeaderType.REQUEST_ID.mark] = request_id
 
-    logger.info(f"Request {request_id}: {request.method} {request.url.path}")
+        logger.info(f"Request {request_id}: {request.method} {request.url.path}")
     return response
 
 

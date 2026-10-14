@@ -9,7 +9,7 @@ Enums Module
     mark 为 str 的枚举（状态、类型、名称等） → StrBaseEnum
 """
 
-from .base import IntBaseEnum, StrBaseEnum
+from src.constants.base import IntBaseEnum, StrBaseEnum
 
 # ====================================
 # 通用领域

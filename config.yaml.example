@@ -105,6 +105,18 @@ rate_limit:
   requests_per_hour: 1000
 
 # ====================================
+# 开放 API 认证配置（AppId + GuanHai-1 签名 + scope）
+# ====================================
+openapi:
+  enabled: true
+  # 默认 MySQL（生产）；本地开发可切回 sqlite:///./data/openapi.db
+  # 注意：数据库需提前创建（如 CREATE DATABASE guanhai CHARACTER SET utf8mb4）
+  db_url: "mysql+pymysql://yeyushilai:123456@localhost:3306/guanhai?charset=utf8mb4"
+  signature_window_seconds: 300
+  default_rate_limit_per_minute: 60
+  secret_key: ""            # AUTH_SECRET_KEY：签名密钥加密密钥，生产必须设置随机值
+
+# ====================================
 # CORS 配置
 # ====================================
 cors:

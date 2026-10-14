@@ -18,9 +18,9 @@ from typing import Any, ClassVar
 from langchain_core.language_models import BaseChatModel
 from langchain_openai import ChatOpenAI
 
-from core.logger import logger
-from core.config import Settings
-from constants import LLMProviderType
+from src.core.logger import logger
+from src.core.config import Settings
+from src.constants import LLMProviderType
 
 
 class BaseLLMProvider(ABC):
@@ -41,7 +41,7 @@ class BaseLLMProvider(ABC):
     @staticmethod
     def _get_settings() -> Settings:
         """延迟加载 settings 以避免循环导入"""
-        from core.config import settings
+        from src.core.config import settings
         return settings
 
     def _get_config(self, **overrides: Any) -> dict[str, Any]:

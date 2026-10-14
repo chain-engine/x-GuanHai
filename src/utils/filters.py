@@ -9,7 +9,7 @@ Metadata Filter Engine Module
 
 from typing import Any
 
-from core.logger import logger
+from src.core.logger import logger
 
 
 class MetadataFilterEngine:

@@ -9,10 +9,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from retrieval.ranking.base import BaseRerankingProvider
-from utils.similarity import SimilaritySearchEngine, DistanceType
-from core.logger import logger
-from infras.embedding import EmbeddingModelBase
+from src.retrieval.ranking.base import BaseRerankingProvider
+from src.utils.similarity import SimilaritySearchEngine, DistanceType
+from src.core.logger import logger
+from src.infras.embedding import EmbeddingModelBase
 
 
 class MMRReranker(BaseRerankingProvider):

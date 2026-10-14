@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Any
 from pydantic import BaseModel, Field, ConfigDict
 
-from core.config import settings
+from src.core.config import settings
 
 
 class HealthCheckRequest(BaseModel):

@@ -9,7 +9,7 @@ RAG相关接口的请求和响应模型
 from typing import Any
 from pydantic import BaseModel, Field, ConfigDict
 
-from constants import (
+from src.constants import (
     DEFAULT_TOP_K,
     DEFAULT_SIMILARITY_THRESHOLD,
     DEFAULT_MMR_LAMBDA,
@@ -210,6 +210,20 @@ class RetrievedDocument(BaseModel):
         default_factory=dict,
         description="元数据",
     )
+
+    @classmethod
+    def from_search_results(cls, results: list[dict[str, Any]]) -> list["RetrievedDocument"]:
+        """将检索服务返回的原始结果转换为模型列表（HTTP 与 MCP 层共用，避免重复组装）"""
+        return [
+            cls(
+                chunk_id=doc["id"],
+                document_id=doc["metadata"].get("document_id", ""),
+                text=doc["text"],
+                score=doc["score"],
+                metadata=doc["metadata"],
+            )
+            for doc in results
+        ]
 
     model_config = ConfigDict(
         json_schema_extra={

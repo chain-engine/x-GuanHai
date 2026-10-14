@@ -7,18 +7,18 @@ Utils Package
 """
 
 # 相似度计算
-from .similarity import (
+from src.utils.similarity import (
     SimilaritySearchEngine,
 )
-from constants import DistanceType
+from src.constants import DistanceType
 
 # 过滤器
-from .filters import (
+from src.utils.filters import (
     MetadataFilterEngine,
 )
 
 # 索引优化
-from .index_optimizer import (
+from src.utils.index_optimizer import (
     VectorIndexOptimizer,
     IndexConfig,
     MemoryEstimate,
