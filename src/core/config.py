@@ -147,6 +147,14 @@ class GenerationConfig:
 
 
 @dataclass
+class LLMDefaultsConfig:
+    """LLM 调用层通用默认配置（所有 Provider 的兜底参数，独立于 RAG 生成配置）"""
+
+    max_tokens: int = DEFAULT_MAX_TOKENS
+    timeout: int = DEFAULT_TIMEOUT
+
+
+@dataclass
 class LLMProvidersConfig:
     """LLM 提供商配置"""
 
@@ -250,6 +258,10 @@ class Settings:
                 "max_tokens": DEFAULT_MAX_TOKENS,
                 "timeout": DEFAULT_TIMEOUT,
             },
+            "llm": {
+                "max_tokens": DEFAULT_MAX_TOKENS,
+                "timeout": DEFAULT_TIMEOUT,
+            },
             "llm_providers": {
                 "deepseek_api_key": "",
                 "deepseek_api_base": "https://api.deepseek.com/v1",
@@ -330,6 +342,9 @@ class Settings:
             "GENERATION_TEMPERATURE": ("generation", "temperature", float),
             "GENERATION_MAX_TOKENS": ("generation", "max_tokens", int),
             "GENERATION_TIMEOUT": ("generation", "timeout", int),
+            # LLM 调用层通用默认
+            "LLM_MAX_TOKENS": ("llm", "max_tokens", int),
+            "LLM_TIMEOUT": ("llm", "timeout", int),
             # DeepSeek
             "DEEPSEEK_API_KEY": ("llm_providers", "deepseek_api_key", str),
             "DEEPSEEK_API_BASE": ("llm_providers", "deepseek_api_base", str),
@@ -384,6 +399,7 @@ class Settings:
         self.text_splitter = TextSplitterConfig(**self._config["text_splitter"])
         self.retrieval = RetrievalConfig(**self._config["retrieval"])
         self.generation = GenerationConfig(**self._config["generation"])
+        self.llm = LLMDefaultsConfig(**self._config["llm"])
         self.llm_providers = LLMProvidersConfig(**self._config["llm_providers"])
 
     def reload(self) -> None:
@@ -519,6 +535,15 @@ class Settings:
     @property
     def GENERATION_TIMEOUT(self) -> int:
         return self.generation.timeout
+
+    # ===== LLM 调用层通用默认 =====
+    @property
+    def LLM_MAX_TOKENS(self) -> int:
+        return self.llm.max_tokens
+
+    @property
+    def LLM_TIMEOUT(self) -> int:
+        return self.llm.timeout
 
     # ===== LLM Provider Settings =====
     @property

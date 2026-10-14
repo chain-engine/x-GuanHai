@@ -179,7 +179,7 @@ class DeepSeekProvider(BaseLLMProvider):
             "api_base": overrides.get("api_base") or settings.DEEPSEEK_API_BASE,
             "model_name": overrides.get("model_name") or settings.DEEPSEEK_MODEL_NAME,
             "temperature": overrides.get("temperature") or settings.TEMPERATURE,
-            "max_tokens": overrides.get("max_tokens") or settings.MAX_TOKENS,
+            "max_tokens": overrides.get("max_tokens") or settings.LLM_MAX_TOKENS,
             "timeout": overrides.get("timeout") or settings.LLM_TIMEOUT,
         }
 
@@ -206,7 +206,7 @@ class DoubaoProvider(BaseLLMProvider):
             "api_base": overrides.get("api_base") or settings.DOUBAO_API_BASE,
             "model_name": overrides.get("model_name") or settings.DOUBAO_MODEL_NAME,
             "temperature": overrides.get("temperature") or settings.TEMPERATURE,
-            "max_tokens": overrides.get("max_tokens") or settings.MAX_TOKENS,
+            "max_tokens": overrides.get("max_tokens") or settings.LLM_MAX_TOKENS,
             "timeout": overrides.get("timeout") or settings.LLM_TIMEOUT,
         }
 
@@ -234,7 +234,7 @@ class AliyunProvider(BaseLLMProvider):
             "api_base": overrides.get("api_base") or settings.ALIYUN_API_BASE,
             "model_name": overrides.get("model_name") or settings.ALIYUN_MODEL_NAME,
             "temperature": overrides.get("temperature") or settings.TEMPERATURE,
-            "max_tokens": overrides.get("max_tokens") or settings.MAX_TOKENS,
+            "max_tokens": overrides.get("max_tokens") or settings.LLM_MAX_TOKENS,
             "timeout": overrides.get("timeout") or settings.LLM_TIMEOUT,
         }
 
@@ -259,7 +259,7 @@ class MimoProvider(BaseLLMProvider):
             "api_base": overrides.get("api_base") or settings.MIMO_API_BASE,
             "model_name": overrides.get("model_name") or settings.MIMO_MODEL_NAME,
             "temperature": overrides.get("temperature") or settings.TEMPERATURE,
-            "max_tokens": overrides.get("max_tokens") or settings.MAX_TOKENS,
+            "max_tokens": overrides.get("max_tokens") or settings.LLM_MAX_TOKENS,
             "timeout": overrides.get("timeout") or settings.LLM_TIMEOUT,
         }
 

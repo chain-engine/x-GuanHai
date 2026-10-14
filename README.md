@@ -193,7 +193,37 @@ export OPENAPI_APP_KEY=gk_xxxxxxxx
 python examples/openapi_client.py rag/query --query "你的问题"
 ```
 
-更多示例请参考 `examples/` 目录与 `docs/` 目录下的文档。
+*使用官方客户端（推荐：自动完成 GuanHai-1 签名）：*
+
+项目内置两个客户端脚本，自动计算签名头（X-App-Id / X-App-Date / X-App-Authorization），外部 Agent 可直接复用：
+
+| 客户端 | 说明 |
+|--------|------|
+| `scripts/guanhai_http_client.py` | HTTP 开放接口客户端（RAG 问答/检索/统计等，类 + CLI 双入口） |
+| `scripts/guanhai_mcp_client.py` | MCP 协议客户端（模拟外部 Agent 接入 `/mcp`，完整握手 + 工具调用） |
+
+```bash
+# HTTP 客户端 — 命令行
+python scripts/guanhai_http_client.py --url http://127.0.0.1:8000/api/v1/rag/stats
+python scripts/guanhai_http_client.py --url http://127.0.0.1:8000/api/v1/rag/query --method POST --body-file body.json
+
+# HTTP 客户端 — 编程方式（集成进自己的代码）
+from scripts.guanhai_http_client import GuanHaiHTTPClient
+client = GuanHaiHTTPClient("http://127.0.0.1:8000", app_id="app", app_key="gk_admin_change_me")
+answer = client.rag_query("什么是RAG技术？", top_k=3)
+
+# MCP 客户端 — 命令行
+python scripts/guanhai_mcp_client.py --list
+python scripts/guanhai_mcp_client.py --tool rag_query --query "什么是RAG技术？"
+
+# MCP 客户端 — 编程方式（集成进自己的 Agent）
+from scripts.guanhai_mcp_client import GuanHaiMcpClient
+client = GuanHaiMcpClient("http://127.0.0.1:8000/mcp", app_id="app", app_key="gk_admin_change_me")
+client.initialize()
+result = client.call_tool("rag_query", {"query": "什么是RAG技术？", "top_k": 3})
+```
+
+两个客户端每次请求都会打印完整签名过程（签名串 / 签名值 / 实际请求头）与响应，便于调试与审计。更多示例请参考 `examples/` 目录与 `docs/` 目录下的文档。
 
 **8. 常见问题排查**
 
@@ -266,7 +296,7 @@ x-GuanHai/
 │   └── utils/                       # 工具函数（security/openapi/similarity/filters）
 ├── tests/                            # 测试用例（unit / integration / api）
 ├── examples/                         # 示例代码（openapi_client.py 等）
-├── scripts/                          # 运维脚本（start.ps1 / start.sh / manage_openapi_app.py）
+├── scripts/                          # 运维与客户端脚本（start.ps1 / start.sh / manage_openapi_app.py / guanhai_http_client.py / guanhai_mcp_client.py）
 ├── docs/                             # 项目文档（架构设计、检索流水线、Postman 集合）
 ├── data/                             # 运行时数据（向量库、文档库、BM25 索引）
 ├── logs/                             # 运行日志

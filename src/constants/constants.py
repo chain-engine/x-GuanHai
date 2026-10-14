@@ -63,7 +63,7 @@ DEFAULT_USER_PROMPT_TEMPLATE: Final[str] = """基于以下参考资料回答问�
 参考资料：
 {context}
 
-用户问题：{question}
+用户问题：{query}
 
 请给出准确、简洁的回答。"""
 
