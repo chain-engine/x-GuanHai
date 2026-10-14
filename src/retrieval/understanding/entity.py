@@ -23,6 +23,7 @@ from src.retrieval.understanding.base import (
 @dataclass
 class ExtractedEntity:
     """抽取的单个实体"""
+
     text: str
     type: EntityType
     start: int  # 在原始文本中的起始位置
@@ -32,6 +33,7 @@ class ExtractedEntity:
 @dataclass
 class EntityExtraction:
     """实体抽取结果"""
+
     entities: list[ExtractedEntity] = field(default_factory=list)
 
     def get_by_type(self, entity_type: EntityType) -> list[ExtractedEntity]:
@@ -74,9 +76,7 @@ class EntityExtractor(BaseQueryUnderstandingProvider):
         # 预编译正则
         self._compiled_patterns: dict[EntityType, list[re.Pattern]] = {}
         for etype, patterns in self._patterns.items():
-            self._compiled_patterns[etype] = [
-                re.compile(p) for p in patterns
-            ]
+            self._compiled_patterns[etype] = [re.compile(p) for p in patterns]
 
     def supports(self) -> list[str]:
         return ["entity"]
@@ -93,12 +93,14 @@ class EntityExtractor(BaseQueryUnderstandingProvider):
                     key = (match.group(), etype)
                     if key not in seen:
                         seen.add(key)
-                        entities.append(ExtractedEntity(
-                            text=match.group(),
-                            type=etype,
-                            start=match.start(),
-                            end=match.end(),
-                        ))
+                        entities.append(
+                            ExtractedEntity(
+                                text=match.group(),
+                                type=etype,
+                                start=match.start(),
+                                end=match.end(),
+                            )
+                        )
 
         # 2. 词典匹配
         for etype, words in self._custom_dict.items():
@@ -109,12 +111,14 @@ class EntityExtractor(BaseQueryUnderstandingProvider):
                     key = (match.group(), etype)
                     if key not in seen:
                         seen.add(key)
-                        entities.append(ExtractedEntity(
-                            text=word,
-                            type=etype,
-                            start=match.start(),
-                            end=match.end(),
-                        ))
+                        entities.append(
+                            ExtractedEntity(
+                                text=word,
+                                type=etype,
+                                start=match.start(),
+                                end=match.end(),
+                            )
+                        )
 
         # 按起始位置排序
         entities.sort(key=lambda e: e.start)

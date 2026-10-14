@@ -44,7 +44,9 @@ async def lifespan(app: FastAPI):
     # 自动扫描开放平台路由的 scope 声明，同步到 openapi_scopes 表
     # scope 元数据（含描述 / 排序号）全部来自 OpenApiScopeCode 统一目录
     active_count, deprecated_count = sync_scopes_to_db(app)
-    logger.info(f"OpenAPI scopes synchronized successfully: {active_count} active, {deprecated_count} deprecated")
+    logger.info(
+        f"OpenAPI scopes synchronized successfully: {active_count} active, {deprecated_count} deprecated"
+    )
     # 初始化种子数据
     init_seed_data()
     logger.info("Seed data initialized successfully")
@@ -122,7 +124,6 @@ async def lifespan(app: FastAPI):
             yield
     else:
         yield
-
 
     # 关闭服务
     rag_service = getattr(app.state, "rag_service", None)

@@ -41,6 +41,7 @@ class BaseLLMProvider(ABC):
     def _get_settings() -> Settings:
         """延迟加载 settings 以避免循环导入"""
         from src.core.config import settings
+
         return settings
 
     def _get_config(self, **overrides: Any) -> dict[str, Any]:
@@ -292,9 +293,7 @@ class MockProvider(BaseLLMProvider):
         logger.info("[Mock] 返回模拟响应")
         last_message = messages[-1] if messages else {}
         content = (
-            last_message.get("content", "")
-            if isinstance(last_message, dict)
-            else str(last_message)
+            last_message.get("content", "") if isinstance(last_message, dict) else str(last_message)
         )
 
         if "天气" in content:
@@ -338,9 +337,7 @@ def get_llm_provider(provider_name: str) -> BaseLLMProvider:
 
     if provider_name not in _PROVIDER_REGISTRY:
         available = ", ".join(_PROVIDER_REGISTRY.keys())
-        raise ValueError(
-            f"不支持的 LLM 提供者: {provider_name}。支持的提供者: {available}"
-        )
+        raise ValueError(f"不支持的 LLM 提供者: {provider_name}。支持的提供者: {available}")
 
     logger.info(f"Getting LLM provider: {provider_name}")
     return _PROVIDER_REGISTRY[provider_name]()

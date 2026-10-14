@@ -122,12 +122,14 @@ class BM25RetrievalProvider(BaseRetrievalProvider):
 
         formatted = []
         for r in results:
-            formatted.append({
-                "id": r.get("id"),
-                "text": r.get("text", ""),
-                "score": r.get("score", 0.0),
-                "metadata": r.get("metadata", {}),
-            })
+            formatted.append(
+                {
+                    "id": r.get("id"),
+                    "text": r.get("text", ""),
+                    "score": r.get("score", 0.0),
+                    "metadata": r.get("metadata", {}),
+                }
+            )
 
         logger.debug(f"BM25RetrievalProvider: found {len(formatted)} results")
         return formatted

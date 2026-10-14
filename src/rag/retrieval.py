@@ -70,10 +70,10 @@ class Retrieval:
         # ── 构建检索流水线 ──────────────────────────
         # Stage 1: 查询理解
         understanding_providers = [
-            QueryPreprocessor(),    # 预处理
-            IntentClassifier(),     # 意图识别
-            EntityExtractor(),      # 实体抽取
-            SynonymExpander(),      # 同义词扩展
+            QueryPreprocessor(),  # 预处理
+            IntentClassifier(),  # 意图识别
+            EntityExtractor(),  # 实体抽取
+            SynonymExpander(),  # 同义词扩展
             SimpleQueryRewriter(),  # 简单规则重写
         ]
 
@@ -186,12 +186,14 @@ class Retrieval:
 
         formatted = []
         for result in results[:top_k]:
-            formatted.append({
-                "id": result.get("id"),
-                "text": result.get("text"),
-                "score": result.get("score", 0),
-                "metadata": result.get("metadata", {}),
-            })
+            formatted.append(
+                {
+                    "id": result.get("id"),
+                    "text": result.get("text"),
+                    "score": result.get("score", 0),
+                    "metadata": result.get("metadata", {}),
+                }
+            )
 
         return formatted
 

@@ -38,9 +38,7 @@ from src.utils.openapi import build_auth_context_from_request
 
 # ── 操作人上下文（MCP 工具层读取）────────────────────────────
 # contextvar 主通道：认证中间件设置，同 task 的工具执行可读。
-current_mcp_operator: ContextVar[dict[str, Any] | None] = ContextVar(
-    "mcp_operator", default=None
-)
+current_mcp_operator: ContextVar[dict[str, Any] | None] = ContextVar("mcp_operator", default=None)
 # headers 反查兜底缓存：app_id → operator（认证通过时写入，工具经 X-App-Id 反查）。
 _authed_operators: dict[str, dict[str, Any]] = {}
 

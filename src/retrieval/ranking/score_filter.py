@@ -61,10 +61,7 @@ class ScoreFilter(BaseFilterProvider):
         effective_threshold = threshold if threshold is not None else self._threshold
         score_field = kwargs.get("score_field", self._score_field)
 
-        filtered = [
-            doc for doc in candidates
-            if doc.get(score_field, 0.0) >= effective_threshold
-        ]
+        filtered = [doc for doc in candidates if doc.get(score_field, 0.0) >= effective_threshold]
 
         filtered.sort(key=lambda x: x.get(score_field, 0.0), reverse=True)
 

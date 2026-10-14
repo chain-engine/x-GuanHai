@@ -124,10 +124,7 @@ class BM25Repository(BaseRepository):
             top_k=10000,
         )
 
-        return [
-            r for r in results
-            if r.get("metadata", {}).get("document_id") == document_id
-        ]
+        return [r for r in results if r.get("metadata", {}).get("document_id") == document_id]
 
     def get_count(self) -> int:
         """获取文档数量"""

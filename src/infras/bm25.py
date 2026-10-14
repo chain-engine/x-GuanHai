@@ -58,11 +58,10 @@ class BM25IndexStore:
         if self._rank_bm25 is None:
             try:
                 from rank_bm25 import BM25Okapi
+
                 self._rank_bm25 = BM25Okapi
             except ImportError as e:
-                raise VectorStoreError(
-                    "rank_bm25 未安装，请运行: uv add rank-bm25"
-                ) from e
+                raise VectorStoreError("rank_bm25 未安装，请运行: uv add rank-bm25") from e
 
     def _tokenize(self, text: str) -> list[str]:
         """
@@ -76,7 +75,8 @@ class BM25IndexStore:
         """
         # 简单按空格和标点分词，转换为小写
         import re
-        tokens = re.findall(r'\w+', text.lower())
+
+        tokens = re.findall(r"\w+", text.lower())
         return tokens
 
     def _ensure_initialized(self) -> None:
@@ -100,7 +100,9 @@ class BM25IndexStore:
 
             if os.path.exists(index_file):
                 self._load_from_disk(index_file)
-                logger.info(f"BM25IndexStore loaded from {index_file}: {len(self._corpus)} documents")
+                logger.info(
+                    f"BM25IndexStore loaded from {index_file}: {len(self._corpus)} documents"
+                )
             else:
                 logger.info("BM25IndexStore initialized (empty index)")
 
@@ -235,12 +237,14 @@ class BM25IndexStore:
                     if not self._matches_filter(metadata, metadata_filter):
                         continue
 
-                results.append({
-                    "id": self._corpus_ids[idx],
-                    "text": self._corpus[idx],
-                    "score": float(score),
-                    "metadata": self._corpus_metadatas[idx],
-                })
+                results.append(
+                    {
+                        "id": self._corpus_ids[idx],
+                        "text": self._corpus[idx],
+                        "score": float(score),
+                        "metadata": self._corpus_metadatas[idx],
+                    }
+                )
 
             logger.debug(f"BM25 search: query='{query}', found {len(results)} results")
             return results
@@ -267,7 +271,9 @@ class BM25IndexStore:
 
         try:
             ids_set = set(ids)
-            indices_to_remove = [i for i, doc_id in enumerate(self._corpus_ids) if doc_id in ids_set]
+            indices_to_remove = [
+                i for i, doc_id in enumerate(self._corpus_ids) if doc_id in ids_set
+            ]
 
             if not indices_to_remove:
                 return

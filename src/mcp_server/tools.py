@@ -110,9 +110,7 @@ def register_tools(
                 metadata_filter=metadata_filter,
                 operator=_resolve_operator(ctx) if ctx is not None else None,
             )
-            return [
-                doc.model_dump() for doc in RetrievedDocument.from_search_results(documents)
-            ]
+            return [doc.model_dump() for doc in RetrievedDocument.from_search_results(documents)]
         except Exception as exc:  # noqa: BLE001 - 统一转换为 MCP 可读错误
             raise _to_mcp_error(exc) from exc
 

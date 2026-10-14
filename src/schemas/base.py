@@ -17,6 +17,7 @@ class BaseSchema(BaseModel):
 
     提供所有Schema的通用配置
     """
+
     model_config = ConfigDict(
         populate_by_name=True,
         validate_assignment=True,
@@ -36,12 +37,11 @@ class BaseRequest(BaseModel):
 
     所有请求模型的基类
     """
+
     model_config = ConfigDict(
         populate_by_name=True,
         validate_assignment=True,
-        json_schema_extra={
-            "example": {}
-        },
+        json_schema_extra={"example": {}},
     )
 
 
@@ -50,6 +50,7 @@ class BaseResponse(BaseModel, Generic[T]):
 
     所有响应模型的基类，包含通用字段
     """
+
     code: int = Field(default=200, description="响应状态码")
     message: str = Field(default="success", description="响应消息")
     data: T | None = Field(default=None, description="响应数据")

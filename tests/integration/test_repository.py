@@ -33,7 +33,7 @@ class TestDocumentRepositoryIntegration:
         doc = {
             "document_id": "test-doc-1",
             "content": "Test content",
-            "metadata": {"source": "test"}
+            "metadata": {"source": "test"},
         }
         repository.save(doc)
         loaded = repository.load("test-doc-1")
@@ -56,10 +56,7 @@ class TestDocumentRepositoryIntegration:
 
     def test_list_all_documents(self, repository):
         """Test listing all documents"""
-        docs = [
-            {"document_id": f"doc-{i}", "content": f"Content {i}"}
-            for i in range(3)
-        ]
+        docs = [{"document_id": f"doc-{i}", "content": f"Content {i}"} for i in range(3)]
         for doc in docs:
             repository.save(doc)
         all_docs = repository.list_all()
@@ -104,10 +101,8 @@ class TestVectorRepositoryIntegration:
     def vector_repo(self, temp_dir):
         """Create vector repository"""
         from src.repositories.vector_repository import VectorRepository
-        repo = VectorRepository(
-            persist_directory=temp_dir,
-            collection_name="test_collection"
-        )
+
+        repo = VectorRepository(persist_directory=temp_dir, collection_name="test_collection")
         repo.initialize()
         yield repo
         repo.shutdown()

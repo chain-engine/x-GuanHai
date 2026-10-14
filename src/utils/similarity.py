@@ -6,7 +6,6 @@ Similarity Search Engine Module
 — 封装多种向量距离和相似度计算算法
 """
 
-
 import numpy as np
 
 from src.constants import (

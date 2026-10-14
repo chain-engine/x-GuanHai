@@ -55,8 +55,7 @@ class MetadataFilterEngine:
             return documents
 
         filtered = [
-            doc for doc in documents
-            if self._matches(doc.get("metadata", {}), metadata_filter)
+            doc for doc in documents if self._matches(doc.get("metadata", {}), metadata_filter)
         ]
 
         logger.debug(

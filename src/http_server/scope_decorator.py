@@ -118,11 +118,15 @@ def sync_scopes_to_db(app: FastAPI) -> tuple[int, int]:
     session = get_session()
     try:
         for sc in collected_scopes:
-            existing = session.execute(
-                select(OpenApiScopeEntity).where(
-                    OpenApiScopeEntity.scope_code == sc["scope_code"]
+            existing = (
+                session.execute(
+                    select(OpenApiScopeEntity).where(
+                        OpenApiScopeEntity.scope_code == sc["scope_code"]
+                    )
                 )
-            ).scalars().first()
+                .scalars()
+                .first()
+            )
             if existing:
                 existing.scope_name = sc["scope_name"]
                 existing.module = sc["module"]
@@ -133,12 +137,16 @@ def sync_scopes_to_db(app: FastAPI) -> tuple[int, int]:
             else:
                 session.add(OpenApiScopeEntity(**sc, is_deprecated=False))
 
-        deprecated = session.execute(
-            select(OpenApiScopeEntity).where(
-                OpenApiScopeEntity.is_deprecated.is_(False),
-                ~OpenApiScopeEntity.scope_code.in_(active_codes),
+        deprecated = (
+            session.execute(
+                select(OpenApiScopeEntity).where(
+                    OpenApiScopeEntity.is_deprecated.is_(False),
+                    ~OpenApiScopeEntity.scope_code.in_(active_codes),
+                )
             )
-        ).scalars().all()
+            .scalars()
+            .all()
+        )
         for d in deprecated:
             d.is_deprecated = True
         session.commit()

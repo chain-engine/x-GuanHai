@@ -23,6 +23,7 @@ from src.retrieval.understanding.base import (
 @dataclass
 class PreprocessMetadata:
     """预处理阶段的元信息"""
+
     original_length: int = 0
     processed_length: int = 0
     removed_punctuations: int = 0

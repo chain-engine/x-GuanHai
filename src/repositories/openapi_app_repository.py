@@ -23,9 +23,11 @@ class OpenApiAppRepository:
     # ── 查询 ──────────────────────────────────────────────
     def get_by_app_id(self, app_id: str) -> OpenApiAppEntity | None:
         """按对外 AppId 查询。"""
-        return self._session.execute(
-            select(OpenApiAppEntity).where(OpenApiAppEntity.app_id == app_id)
-        ).scalars().first()
+        return (
+            self._session.execute(select(OpenApiAppEntity).where(OpenApiAppEntity.app_id == app_id))
+            .scalars()
+            .first()
+        )
 
     def get_by_id(self, entity_id: int) -> OpenApiAppEntity | None:
         """按主键查询。"""

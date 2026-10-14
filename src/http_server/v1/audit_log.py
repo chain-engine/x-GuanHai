@@ -37,12 +37,16 @@ router = APIRouter(prefix="/audit", tags=["审计"])
 @app_scope(OpenApiScopeCode.ADMIN)
 def list_audit_logs(
     request: Request,
-    entity_type: str | None = Query(default=None, description="实体类型过滤，如 document/openapi_app/rag_query"),
+    entity_type: str | None = Query(
+        default=None, description="实体类型过滤，如 document/openapi_app/rag_query"
+    ),
     action: str | None = Query(default=None, description="操作类型过滤，如 upload/delete/create"),
     operator_id: str | None = Query(default=None, description="操作者 AppId 过滤"),
     start_time: datetime | None = Query(default=None, description="开始时间（ISO 格式）"),
     end_time: datetime | None = Query(default=None, description="结束时间（ISO 格式）"),
-    keyword: str | None = Query(default=None, description="关键字（模糊匹配实体类型/操作/实体ID/操作者/IP/备注）"),
+    keyword: str | None = Query(
+        default=None, description="关键字（模糊匹配实体类型/操作/实体ID/操作者/IP/备注）"
+    ),
     page: int = Query(default=1, ge=1, description="页码"),
     page_size: int = Query(default=20, ge=1, le=100, description="每页记录数"),
     service: AuditService = Depends(get_audit_service),

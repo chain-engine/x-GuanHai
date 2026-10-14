@@ -15,6 +15,7 @@ from src.core.logger import logger
 @dataclass
 class IndexConfig:
     """索引配置参数"""
+
     index_type: str
     params: dict[str, Any]
 
@@ -22,6 +23,7 @@ class IndexConfig:
 @dataclass
 class MemoryEstimate:
     """内存估算结果"""
+
     index_type: str
     estimated_bytes: int
     estimated_mb: float
@@ -89,6 +91,7 @@ class VectorIndexOptimizer:
         """
         if nlist_auto and n_vectors is not None:
             import math
+
             nlist = max(1, int(4 * math.sqrt(n_vectors)))
 
         params = {
@@ -159,7 +162,7 @@ class VectorIndexOptimizer:
             total_bytes = int(base_memory + graph_memory + layer_memory)
 
         elif index_type == "ivf":
-            nlist = kwargs.get("nlist", max(1, int(4 * (num_vectors ** 0.5))))
+            nlist = kwargs.get("nlist", max(1, int(4 * (num_vectors**0.5))))
             bytes_per_vector = dimension * bytes_per_float
             center_vectors = nlist * dimension * bytes_per_float
             vector_memory = num_vectors * bytes_per_vector
@@ -213,9 +216,7 @@ class VectorIndexOptimizer:
         Returns:
             str: 推荐的索引类型
         """
-        flat_memory = VectorIndexOptimizer.estimate_memory(
-            num_vectors, dimension, "flat"
-        )
+        flat_memory = VectorIndexOptimizer.estimate_memory(num_vectors, dimension, "flat")
 
         if flat_memory.estimated_mb <= memory_limit_mb:
             logger.info(f"Recommend 'flat' index: {flat_memory.estimated_mb:.2f} MB")
@@ -229,14 +230,10 @@ class VectorIndexOptimizer:
                 logger.info(f"Recommend 'hnsw' index: {hnsw_memory.estimated_mb:.2f} MB")
                 return "hnsw"
 
-        pq_memory = VectorIndexOptimizer.estimate_memory(
-            num_vectors, dimension, "pq", n_bits=8
-        )
+        pq_memory = VectorIndexOptimizer.estimate_memory(num_vectors, dimension, "pq", n_bits=8)
         if pq_memory.estimated_mb <= memory_limit_mb:
             logger.info(f"Recommend 'pq' index: {pq_memory.estimated_mb:.2f} MB")
             return "pq"
 
-        logger.warning(
-            f"No suitable index type found within {memory_limit_mb} MB limit"
-        )
+        logger.warning(f"No suitable index type found within {memory_limit_mb} MB limit")
         return "flat"

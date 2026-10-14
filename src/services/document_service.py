@@ -52,7 +52,9 @@ class DocumentService(BaseService):
             chunk_overlap=chunk_overlap,
             strategy=chunking_strategy,
         )
-        logger.info(f"DocumentService initialized with chunking provider: {chunking_provider}/{chunking_strategy}")
+        logger.info(
+            f"DocumentService initialized with chunking provider: {chunking_provider}/{chunking_strategy}"
+        )
 
     def initialize(self) -> None:
         """初始化服务"""
@@ -153,16 +155,18 @@ class DocumentService(BaseService):
         try:
             # 保存文档元数据（Json格式）
             logger.info(f"Indexing document {document_id}: saving metadata...")
-            self._doc_repo.save({
-                "document_id": document_id,
-                "file_name": file_name,
-                "file_type": file_type,
-                "file_size": file_size,
-                "status": DocStatus.PROCESSING.mark,
-                "created_at": datetime.utcnow().isoformat(),
-                "updated_at": datetime.utcnow().isoformat(),
-                "metadata": metadata,
-            })
+            self._doc_repo.save(
+                {
+                    "document_id": document_id,
+                    "file_name": file_name,
+                    "file_type": file_type,
+                    "file_size": file_size,
+                    "status": DocStatus.PROCESSING.mark,
+                    "created_at": datetime.utcnow().isoformat(),
+                    "updated_at": datetime.utcnow().isoformat(),
+                    "metadata": metadata,
+                }
+            )
             logger.info(f"Document {document_id} metadata saved")
 
             # 切分文本
@@ -203,11 +207,14 @@ class DocumentService(BaseService):
             logger.info(f"Document {document_id}: BM25 index built")
 
             # 更新文档状态
-            self._doc_repo.update(document_id, {
-                "status": DocStatus.COMPLETED.mark,
-                "chunk_count": len(chunks),
-                "updated_at": datetime.utcnow().isoformat(),
-            })
+            self._doc_repo.update(
+                document_id,
+                {
+                    "status": DocStatus.COMPLETED.mark,
+                    "chunk_count": len(chunks),
+                    "updated_at": datetime.utcnow().isoformat(),
+                },
+            )
 
             logger.info(f"Successfully indexed document {document_id}")
 
@@ -234,6 +241,7 @@ class DocumentService(BaseService):
 
         except Exception as e:
             import traceback
+
             logger.error(f"Failed to index document {document_id}: {e}")
             logger.error(f"Traceback: {traceback.format_exc()}")
             self._doc_repo.update(document_id, {"status": DocStatus.FAILED.mark})
@@ -295,7 +303,9 @@ class DocumentService(BaseService):
             logger.error(f"Failed to delete document {document_id}: {e}")
             raise DocumentError(f"Failed to delete document {document_id}: {e}") from e
 
-    def get_document(self, document_id: str, operator: dict[str, Any] | None = None) -> dict[str, Any]:
+    def get_document(
+        self, document_id: str, operator: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """获取文档详情
 
         Args:
@@ -321,11 +331,13 @@ class DocumentService(BaseService):
         chunks = []
         for vec in vectors:
             text = vec.get("text", "")
-            chunks.append({
-                "chunk_id": vec.get("id"),
-                "text": text[:200] + "..." if len(text) > 200 else text,
-                "metadata": vec.get("metadata", {}),
-            })
+            chunks.append(
+                {
+                    "chunk_id": vec.get("id"),
+                    "text": text[:200] + "..." if len(text) > 200 else text,
+                    "metadata": vec.get("metadata", {}),
+                }
+            )
 
         result = {
             "document_id": document.get("document_id"),
@@ -356,7 +368,9 @@ class DocumentService(BaseService):
         )
         return result
 
-    def get_document_status(self, document_id: str, operator: dict[str, Any] | None = None) -> dict[str, Any]:
+    def get_document_status(
+        self, document_id: str, operator: dict[str, Any] | None = None
+    ) -> dict[str, Any]:
         """获取文档状态
 
         Args:

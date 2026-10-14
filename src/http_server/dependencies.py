@@ -41,7 +41,9 @@ from src.utils.openapi import build_auth_context_from_request
 
 # 开放 API 认证方案（Swagger UI 右上角会出现 Authorize 按钮）
 _app_id_scheme = APIKeyHeader(name=OPENAPI_HEADER_APP_ID, scheme_name="OpenAppId", auto_error=False)
-_app_date_scheme = APIKeyHeader(name=OPENAPI_HEADER_DATE, scheme_name="OpenAppDate", auto_error=False)
+_app_date_scheme = APIKeyHeader(
+    name=OPENAPI_HEADER_DATE, scheme_name="OpenAppDate", auto_error=False
+)
 _app_auth_scheme = APIKeyHeader(
     name=OPENAPI_HEADER_AUTHORIZATION, scheme_name="OpenAppAuthorization", auto_error=False
 )
@@ -73,7 +75,9 @@ def get_openapi_app_service(
     return build_openapi_app_service(db_session, audit_service=audit_service)
 
 
-def get_app_operator_context(app: OpenApiCurrentApp, request: Request | None = None) -> dict[str, Any]:
+def get_app_operator_context(
+    app: OpenApiCurrentApp, request: Request | None = None
+) -> dict[str, Any]:
     """构造应用态操作人上下文（供写操作审计 / 日志使用）。"""
     client_ip = None
     if request is not None:

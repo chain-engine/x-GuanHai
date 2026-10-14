@@ -42,6 +42,7 @@ from src.constants import (
 @dataclass
 class ServerConfig:
     """服务器配置"""
+
     host: str = "0.0.0.0"
     port: int = 8000
     debug: bool = True
@@ -52,6 +53,7 @@ class ServerConfig:
 @dataclass
 class LoggingConfig:
     """日志配置"""
+
     level: str = "INFO"
     file_path: str = "./logs/x-GuanHai-{time:YYYYMMDDHHmmss}.log"
     rotation: str = "1 day"
@@ -61,6 +63,7 @@ class LoggingConfig:
 @dataclass
 class RateLimitConfig:
     """限流配置"""
+
     enabled: bool = False
     requests_per_minute: int = 60
     requests_per_hour: int = 1000
@@ -69,15 +72,19 @@ class RateLimitConfig:
 @dataclass
 class CORSConfig:
     """CORS配置"""
+
     enabled: bool = True
     allow_origins: list[str] = field(default_factory=lambda: ["*"])
-    allow_methods: list[str] = field(default_factory=lambda: ["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+    allow_methods: list[str] = field(
+        default_factory=lambda: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+    )
     allow_headers: list[str] = field(default_factory=lambda: ["*"])
 
 
 @dataclass
 class OpenApiConfig:
     """开放 API 认证鉴权配置（AppId + GuanHai-1 签名 + scope）"""
+
     enabled: bool = True
     # 默认 MySQL（生产）；本地开发可切回 sqlite:///./data/openapi.db
     db_url: str = "mysql+pymysql://yeyushilai:123456@localhost:3306/guanhai?charset=utf8mb4"
@@ -89,6 +96,7 @@ class OpenApiConfig:
 @dataclass
 class EmbeddingConfig:
     """向量模型配置"""
+
     model: str = DEFAULT_EMBEDDING_MODEL
     device: str = DEFAULT_EMBEDDING_DEVICE
     batch_size: int = DEFAULT_EMBEDDING_BATCH_SIZE
@@ -99,6 +107,7 @@ class EmbeddingConfig:
 @dataclass
 class VectorStoreConfig:
     """向量存储配置"""
+
     type: str = "chroma"
     persist_directory: str = "./data/chroma"
     collection_name: str = "documents"
@@ -108,6 +117,7 @@ class VectorStoreConfig:
 @dataclass
 class TextSplitterConfig:
     """文本切分配置"""
+
     provider: str = "langchain"
     strategy: str = "recursive"
     chunk_size: int = DEFAULT_CHUNK_SIZE
@@ -118,6 +128,7 @@ class TextSplitterConfig:
 @dataclass
 class RetrievalConfig:
     """检索配置"""
+
     top_k: int = DEFAULT_TOP_K
     similarity_threshold: float = DEFAULT_SIMILARITY_THRESHOLD
     use_mmr: bool = False
@@ -127,6 +138,7 @@ class RetrievalConfig:
 @dataclass
 class GenerationConfig:
     """生成配置"""
+
     provider: str = "deepseek"
     model: str = "deepseek-chat"
     temperature: float = DEFAULT_TEMPERATURE
@@ -137,6 +149,7 @@ class GenerationConfig:
 @dataclass
 class LLMProvidersConfig:
     """LLM 提供商配置"""
+
     # DeepSeek
     deepseek_api_key: str = ""
     deepseek_api_base: str = "https://api.deepseek.com/v1"
@@ -343,7 +356,11 @@ class Settings:
             "OPENAPI_ENABLED": ("openapi", "enabled", lambda v: v.lower() == "true"),
             "OPENAPI_DB_URL": ("openapi", "db_url", str),
             "OPENAPI_SIGNATURE_WINDOW_SECONDS": ("openapi", "signature_window_seconds", int),
-            "OPENAPI_DEFAULT_RATE_LIMIT_PER_MINUTE": ("openapi", "default_rate_limit_per_minute", int),
+            "OPENAPI_DEFAULT_RATE_LIMIT_PER_MINUTE": (
+                "openapi",
+                "default_rate_limit_per_minute",
+                int,
+            ),
             "AUTH_SECRET_KEY": ("openapi", "secret_key", str),
         }
 

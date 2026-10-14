@@ -115,11 +115,7 @@ class SemanticReranker(BaseRerankingProvider):
 
         try:
             response = self._llm_provider.invoke(messages)
-            content = (
-                response.content
-                if hasattr(response, "content")
-                else str(response)
-            )
+            content = response.content if hasattr(response, "content") else str(response)
 
             match = re.search(r"0?\.\d+", content)
             if match:

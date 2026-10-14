@@ -209,7 +209,11 @@ class OpenApiAppService:
         entity = self._repository.get_by_app_id(app_id)
         if entity is None:
             raise NotFoundError(message=f"应用不存在: {app_id}")
-        before_data = {"name": entity.name, "status": entity.status, "scopes": parse_scopes(entity.scopes)}
+        before_data = {
+            "name": entity.name,
+            "status": entity.status,
+            "scopes": parse_scopes(entity.scopes),
+        }
         self._repository.delete(app_id)
         # 业务审计：删除应用
         self._audit(

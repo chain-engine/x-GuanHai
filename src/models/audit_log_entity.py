@@ -23,14 +23,28 @@ class AuditLogEntity(Base):
     __tablename__ = "audit_logs"
     # 主键用 Integer：SQLite 仅 INTEGER PRIMARY KEY 支持自动自增（rowid 别名），
     # BIGINT 主键在 SQLite 下不会自增导致 NOT NULL 失败；MySQL 下 INT AUTO_INCREMENT 等价。
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, comment="审计日志ID")
-    entity_type: Mapped[str] = mapped_column(String(100), nullable=False, comment="实体类型，如 document/openapi_app/rag_query")
+    id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, autoincrement=True, comment="审计日志ID"
+    )
+    entity_type: Mapped[str] = mapped_column(
+        String(100), nullable=False, comment="实体类型，如 document/openapi_app/rag_query"
+    )
     entity_id: Mapped[str | None] = mapped_column(String(100), nullable=True, comment="实体ID")
-    action: Mapped[str] = mapped_column(String(50), nullable=False, comment="操作类型，如 upload/delete/create/revoke/enable/query")
-    operator_id: Mapped[str | None] = mapped_column(String(100), nullable=True, comment="操作者 AppId")
-    operator_name: Mapped[str | None] = mapped_column(String(100), nullable=True, comment="操作者应用名快照")
-    before_data: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True, comment="变更前数据")
-    after_data: Mapped[dict[str, Any] | None] = mapped_column(JSON, nullable=True, comment="变更后数据")
+    action: Mapped[str] = mapped_column(
+        String(50), nullable=False, comment="操作类型，如 upload/delete/create/revoke/enable/query"
+    )
+    operator_id: Mapped[str | None] = mapped_column(
+        String(100), nullable=True, comment="操作者 AppId"
+    )
+    operator_name: Mapped[str | None] = mapped_column(
+        String(100), nullable=True, comment="操作者应用名快照"
+    )
+    before_data: Mapped[dict[str, Any] | None] = mapped_column(
+        JSON, nullable=True, comment="变更前数据"
+    )
+    after_data: Mapped[dict[str, Any] | None] = mapped_column(
+        JSON, nullable=True, comment="变更后数据"
+    )
     ip_address: Mapped[str | None] = mapped_column(String(45), nullable=True, comment="操作IP")
     created_at: Mapped[datetime] = mapped_column(
         DateTime,

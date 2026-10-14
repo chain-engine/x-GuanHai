@@ -15,8 +15,10 @@ from src.constants.base import IntBaseEnum, StrBaseEnum
 # 通用领域
 # ====================================
 
+
 class HttpStatus(IntBaseEnum):
     """HTTP 状态码枚举"""
+
     OK = 200, "成功"
     CREATED = 201, "已创建"
     BAD_REQUEST = 400, "请求错误"
@@ -30,6 +32,7 @@ class HttpStatus(IntBaseEnum):
 
 class HeaderType(StrBaseEnum):
     """HTTP 请求头类型枚举"""
+
     REQUEST_ID = "X-Request-ID", "请求ID"
     AUTHORIZATION = "Authorization", "授权令牌"
     CONTENT_TYPE = "Content-Type", "内容类型"
@@ -39,8 +42,10 @@ class HeaderType(StrBaseEnum):
 # RAG 领域
 # ====================================
 
+
 class DocStatus(StrBaseEnum):
     """文档状态枚举"""
+
     PENDING = "pending", "待处理"
     PROCESSING = "processing", "处理中"
     COMPLETED = "completed", "已完成"
@@ -50,6 +55,7 @@ class DocStatus(StrBaseEnum):
 
 class DocType(StrBaseEnum):
     """文档类型枚举"""
+
     TXT = "txt", "纯文本"
     MD = "md", "Markdown"
     PDF = "pdf", "PDF文档"
@@ -59,6 +65,7 @@ class DocType(StrBaseEnum):
 
 class DistanceType(StrBaseEnum):
     """距离度量类型枚举"""
+
     COSINE = "cosine", "余弦距离"
     EUCLIDEAN = "euclidean", "欧氏距离"
     DOT = "dot", "点积"
@@ -66,6 +73,7 @@ class DistanceType(StrBaseEnum):
 
 class RerankingProviderName(StrBaseEnum):
     """排序 Provider 名称枚举"""
+
     MMR_RERANKER = "mmr_reranker", "MMR重排序"
     RRF_RERANKER = "rrf_reranker", "RRF重排序"
     SEMANTIC_RERANKER = "semantic_reranker", "语义重排序"
@@ -74,6 +82,7 @@ class RerankingProviderName(StrBaseEnum):
 
 class LLMProviderType(StrBaseEnum):
     """LLM 提供者类型枚举"""
+
     DEEPSEEK = "deepseek", "DeepSeek"
     DOUBAO = "doubao", "豆包"
     ALIYUN = "aliyun", "阿里云"
@@ -83,6 +92,7 @@ class LLMProviderType(StrBaseEnum):
 
 class IntentType(StrBaseEnum):
     """查询意图类型枚举"""
+
     FACTUAL = "factual", "事实型"
     OPINION = "opinion", "观点型"
     LIST = "list", "列表型"
@@ -95,6 +105,7 @@ class IntentType(StrBaseEnum):
 
 class EntityType(StrBaseEnum):
     """实体类型枚举"""
+
     PERSON = "PERSON", "人名"
     LOCATION = "LOCATION", "地名"
     ORGANIZATION = "ORG", "组织/公司"

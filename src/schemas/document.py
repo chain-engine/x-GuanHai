@@ -13,6 +13,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 class DocumentUploadRequest(BaseModel):
     """文档上传请求"""
+
     file_type: str = Field(
         ...,
         description="文档类型",
@@ -35,6 +36,7 @@ class DocumentUploadRequest(BaseModel):
 
 class DocumentDeleteRequest(BaseModel):
     """文档删除请求"""
+
     document_id: str = Field(
         ...,
         description="文档ID",
@@ -52,6 +54,7 @@ class DocumentDeleteRequest(BaseModel):
 
 class DocumentQueryRequest(BaseModel):
     """文档查询请求"""
+
     page: int = Field(default=1, ge=1, description="页码")
     page_size: int = Field(default=20, ge=1, le=100, description="每页记录数")
     status: str | None = Field(default=None, description="文档状态")
@@ -71,6 +74,7 @@ class DocumentQueryRequest(BaseModel):
 
 class DocumentInfo(BaseModel):
     """文档信息"""
+
     document_id: str = Field(..., description="文档ID")
     file_name: str = Field(..., description="文件名")
     file_type: str = Field(..., description="文件类型")
@@ -103,6 +107,7 @@ class DocumentInfo(BaseModel):
 
 class DocumentUploadResponse(BaseModel):
     """文档上传响应"""
+
     document_id: str = Field(..., description="文档ID")
     file_name: str = Field(..., description="文件名")
     status: str = Field(..., description="处理状态")
@@ -122,6 +127,7 @@ class DocumentUploadResponse(BaseModel):
 
 class DocumentDeleteResponse(BaseModel):
     """文档删除响应"""
+
     document_id: str = Field(..., description="文档ID")
     status: str = Field(..., description="删除状态")
     message: str = Field(..., description="消息")
@@ -139,6 +145,7 @@ class DocumentDeleteResponse(BaseModel):
 
 class DocumentQueryResponse(BaseModel):
     """文档查询响应"""
+
     total: int = Field(..., description="总记录数")
     page: int = Field(..., description="当前页码")
     page_size: int = Field(..., description="每页记录数")
@@ -160,6 +167,7 @@ class DocumentQueryResponse(BaseModel):
 
 class DocumentStatusResponse(BaseModel):
     """文档状态响应"""
+
     document_id: str = Field(..., description="文档ID")
     file_name: str = Field(..., description="文件名")
     status: str = Field(..., description="文档状态")

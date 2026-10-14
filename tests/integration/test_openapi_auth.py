@@ -29,6 +29,7 @@ from src.utils import security
 # 夹具
 # ──────────────────────────────────────────────────────────
 
+
 @pytest.fixture(scope="module")
 def openapi_enabled():
     """开启鉴权（conftest 默认关闭以保护既有测试）。"""
@@ -76,6 +77,7 @@ def _signed_headers(
 # 签名协议单元测试
 # ──────────────────────────────────────────────────────────
 
+
 class TestSignatureProtocol:
     def test_build_signing_string_structure(self):
         s = signature.build_signing_string(
@@ -87,8 +89,7 @@ class TestSignatureProtocol:
         )
         # Ver + METHOD + URI + Content-Type + Date + (空 body → 空摘要)
         assert s == (
-            "GuanHai-1GET/api/v1/rag/statsapplication/json"
-            "Mon, 13 Oct 2026 00:00:00 GMT"
+            "GuanHai-1GET/api/v1/rag/statsapplication/json" "Mon, 13 Oct 2026 00:00:00 GMT"
         )
 
     def test_build_signing_string_with_body(self):
@@ -150,6 +151,7 @@ class TestSignatureProtocol:
 # 管理面测试
 # ──────────────────────────────────────────────────────────
 
+
 class TestAdminService:
     def test_create_app_stores_hash_not_plaintext(self, admin_service):
         svc, session = admin_service
@@ -193,10 +195,13 @@ class TestAdminService:
 # 网关 authenticate 测试
 # ──────────────────────────────────────────────────────────
 
+
 class TestGatewayAuthenticate:
     async def test_authenticate_ok(self, admin_service):
         svc, session = admin_service
-        created = svc.create_app(OpenApiAppCreateRequest(name="网关成功", scopes=["rag:read", "document:read"]))
+        created = svc.create_app(
+            OpenApiAppCreateRequest(name="网关成功", scopes=["rag:read", "document:read"])
+        )
         session.commit()
         date = formatdate(timeval=None, localtime=False, usegmt=True)
         uri = "/api/v1/rag/query"
@@ -282,6 +287,7 @@ class TestGatewayAuthenticate:
 # FastAPI 集成测试（签名请求全链路）
 # ──────────────────────────────────────────────────────────
 
+
 @pytest.fixture
 def openapi_test_app(openapi_enabled):
     """最小 FastAPI 应用：apps 管理路由 + rag:read 保护路由。"""
@@ -297,7 +303,10 @@ def openapi_test_app(openapi_enabled):
 
     @app.exception_handler(AppException)
     async def app_exception_handler(request, exc):
-        return JSONResponse(status_code=exc.code, content={"code": exc.code, "message": exc.message, "detail": exc.detail})
+        return JSONResponse(
+            status_code=exc.code,
+            content={"code": exc.code, "message": exc.message, "detail": exc.detail},
+        )
 
     @app.get(
         "/api/v1/test/rag",
@@ -316,21 +325,29 @@ class TestFastAPIIntegration:
         admin = svc.create_app(OpenApiAppCreateRequest(name="集成-admin", scopes=["admin"]))
         session.commit()
 
-        create_body = json.dumps({"name": "集成-rag", "scopes": ["rag:read"]}, ensure_ascii=False).encode()
+        create_body = json.dumps(
+            {"name": "集成-rag", "scopes": ["rag:read"]}, ensure_ascii=False
+        ).encode()
         transport = httpx.ASGITransport(app=openapi_test_app)
         async with httpx.AsyncClient(transport=transport, base_url="http://test") as client:
             # 1. 无签名 → 401
-            r = await client.post("/api/v1/apps", content=create_body, headers={"Content-Type": "application/json"})
+            r = await client.post(
+                "/api/v1/apps", content=create_body, headers={"Content-Type": "application/json"}
+            )
             assert r.status_code == 401
 
             # 2. 签名错误 → 401
-            bad_headers = _signed_headers(admin.app_id, "gk_wrong", "POST", "/api/v1/apps", create_body)
+            bad_headers = _signed_headers(
+                admin.app_id, "gk_wrong", "POST", "/api/v1/apps", create_body
+            )
             bad_headers["Content-Type"] = "application/json"
             r = await client.post("/api/v1/apps", content=create_body, headers=bad_headers)
             assert r.status_code == 401
 
             # 3. admin 签名创建 rag 应用 → 201（明文 key 返回一次）
-            ok_headers = _signed_headers(admin.app_id, admin.app_key, "POST", "/api/v1/apps", create_body)
+            ok_headers = _signed_headers(
+                admin.app_id, admin.app_key, "POST", "/api/v1/apps", create_body
+            )
             ok_headers["Content-Type"] = "application/json"
             r = await client.post("/api/v1/apps", content=create_body, headers=ok_headers)
             assert r.status_code == 201, r.text

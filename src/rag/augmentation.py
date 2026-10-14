@@ -13,13 +13,64 @@ from src.core.logger import logger
 
 # 中文停用词集合（常见的无意义词汇，压缩时不作为关键词）
 STOPWORDS = {
-    "的", "了", "在", "是", "我", "有", "和", "就", "不", "人", "都", "一", "一个",
-    "上", "也", "很", "到", "说", "要", "去", "你", "会", "着", "没有", "看", "好",
-    "自己", "这", "那", "他", "她", "它", "们", "这个", "那个", "什么", "怎么",
-    "为什么", "如何", "可以", "能", "应该", "可能", "需要", "为了", "因为", "所以",
-    "但是", "如果", "虽然", "还是", "或者", "而且", "以及", "关于", "通过", "对于",
+    "的",
+    "了",
+    "在",
+    "是",
+    "我",
+    "有",
+    "和",
+    "就",
+    "不",
+    "人",
+    "都",
+    "一",
+    "一个",
+    "上",
+    "也",
+    "很",
+    "到",
+    "说",
+    "要",
+    "去",
+    "你",
+    "会",
+    "着",
+    "没有",
+    "看",
+    "好",
+    "自己",
+    "这",
+    "那",
+    "他",
+    "她",
+    "它",
+    "们",
+    "这个",
+    "那个",
+    "什么",
+    "怎么",
+    "为什么",
+    "如何",
+    "可以",
+    "能",
+    "应该",
+    "可能",
+    "需要",
+    "为了",
+    "因为",
+    "所以",
+    "但是",
+    "如果",
+    "虽然",
+    "还是",
+    "或者",
+    "而且",
+    "以及",
+    "关于",
+    "通过",
+    "对于",
 }
-
 
 
 class Augmentation:
@@ -47,11 +98,11 @@ class Augmentation:
     def clean_context(text: str) -> str:
         """01 上下文清洗：移除多余空白、特殊字符"""
         # 合并连续空白
-        text = re.sub(r'[ \t]+', ' ', text)
+        text = re.sub(r"[ \t]+", " ", text)
         # 移除行首行尾空白
-        text = '\n'.join(line.strip() for line in text.split('\n'))
+        text = "\n".join(line.strip() for line in text.split("\n"))
         # 移除连续空行
-        text = re.sub(r'\n{3,}', '\n\n', text)
+        text = re.sub(r"\n{3,}", "\n\n", text)
         return text.strip()
 
     @staticmethod
@@ -64,7 +115,7 @@ class Augmentation:
         if not query_keywords:
             return Augmentation.smart_truncate(text, max_length)
 
-        sentences = [s.strip() for s in re.split(r'[。！？\n]+', text) if s.strip()]
+        sentences = [s.strip() for s in re.split(r"[。！？\n]+", text) if s.strip()]
         if not sentences:
             return text
 
@@ -116,13 +167,13 @@ class Augmentation:
             return text
 
         truncated = text[:max_length]
-        matches = list(re.finditer(r'[。！？\n]', truncated))
+        matches = list(re.finditer(r"[。！？\n]", truncated))
 
         if matches:
             last_punct = matches[-1]
-            return truncated[:last_punct.end()] + "..."
+            return truncated[: last_punct.end()] + "..."
 
-        space_match = list(re.finditer(r'\s', truncated[::-1]))
+        space_match = list(re.finditer(r"\s", truncated[::-1]))
         if space_match:
             last_space_pos = max_length - space_match[0].start()
             return truncated[:last_space_pos] + "..."
@@ -131,7 +182,7 @@ class Augmentation:
 
     def _extract_query_keywords(self, query: str) -> set[str]:
         """从查询中提取关键词"""
-        words = re.split(r'[\s,，、。！？；;]+', query.lower())
+        words = re.split(r"[\s,，、。！？；;]+", query.lower())
         return {w for w in words if w and w not in STOPWORDS and len(w) > 1}
 
     def augment(
@@ -186,7 +237,9 @@ class Augmentation:
             total_length += text_len
 
             # 03 上下文格式化
-            context_items.append(self.format_context({**doc, "text": compressed_text}, i, include_metadata))
+            context_items.append(
+                self.format_context({**doc, "text": compressed_text}, i, include_metadata)
+            )
 
             if total_length >= self._max_context_length:
                 break

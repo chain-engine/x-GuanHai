@@ -88,7 +88,9 @@ def sign(
     """
     return hmac_sha256_hex(
         app_key,
-        build_signing_string(method=method, uri=uri, content_type=content_type, date=date, body=body),
+        build_signing_string(
+            method=method, uri=uri, content_type=content_type, date=date, body=body
+        ),
     )
 
 
@@ -107,7 +109,9 @@ def verify_signature(
     参数与 build_signing_string / sign 完全同源，调用方务必传入与
     请求头 X-App-Date / 原始 body 一致的值，否则校验必然失败。
     """
-    expected = sign(app_key=app_key, method=method, uri=uri, content_type=content_type, date=date, body=body)
+    expected = sign(
+        app_key=app_key, method=method, uri=uri, content_type=content_type, date=date, body=body
+    )
     return constant_time_equals(expected, signature)
 
 

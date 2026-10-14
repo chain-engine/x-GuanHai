@@ -40,7 +40,9 @@ async def upload_document(
     file: UploadFile = File(..., description="上传的文件"),
     metadata: str = Form("{}", description="文档元数据（JSON字符串）"),
     document_service: DocumentService = Depends(get_document_service),
-    current_app: OpenApiCurrentApp = Depends(require_app_scope(OpenApiScopeCode.DOCUMENT_WRITE.mark)),
+    current_app: OpenApiCurrentApp = Depends(
+        require_app_scope(OpenApiScopeCode.DOCUMENT_WRITE.mark)
+    ),
 ) -> dict[str, Any]:
     """文档上传接口"""
     try:
@@ -98,7 +100,9 @@ async def list_documents(
     status: str | None = None,
     file_type: str | None = None,
     document_service: DocumentService = Depends(get_document_service),
-    current_app: OpenApiCurrentApp = Depends(require_app_scope(OpenApiScopeCode.DOCUMENT_READ.mark)),
+    current_app: OpenApiCurrentApp = Depends(
+        require_app_scope(OpenApiScopeCode.DOCUMENT_READ.mark)
+    ),
 ) -> dict[str, Any]:
     """文档列表接口（支持分页）"""
     try:
@@ -161,7 +165,9 @@ async def get_document(
     request: Request,
     document_id: str,
     document_service: DocumentService = Depends(get_document_service),
-    current_app: OpenApiCurrentApp = Depends(require_app_scope(OpenApiScopeCode.DOCUMENT_READ.mark)),
+    current_app: OpenApiCurrentApp = Depends(
+        require_app_scope(OpenApiScopeCode.DOCUMENT_READ.mark)
+    ),
 ) -> dict[str, Any]:
     """获取文档详情接口"""
     try:
@@ -192,7 +198,9 @@ async def delete_document(
     request: Request,
     document_id: str,
     document_service: DocumentService = Depends(get_document_service),
-    current_app: OpenApiCurrentApp = Depends(require_app_scope(OpenApiScopeCode.DOCUMENT_WRITE.mark)),
+    current_app: OpenApiCurrentApp = Depends(
+        require_app_scope(OpenApiScopeCode.DOCUMENT_WRITE.mark)
+    ),
 ) -> dict[str, Any]:
     """删除文档接口"""
     try:
@@ -227,7 +235,9 @@ async def get_document_status(
     request: Request,
     document_id: str,
     document_service: DocumentService = Depends(get_document_service),
-    current_app: OpenApiCurrentApp = Depends(require_app_scope(OpenApiScopeCode.DOCUMENT_READ.mark)),
+    current_app: OpenApiCurrentApp = Depends(
+        require_app_scope(OpenApiScopeCode.DOCUMENT_READ.mark)
+    ),
 ) -> dict[str, Any]:
     """获取文档状态接口"""
     try:

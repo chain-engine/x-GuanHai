@@ -114,7 +114,9 @@ def sign_request(cfg: ClientConfig, method: str, uri: str, body: bytes) -> dict[
     return headers
 
 
-def request(cfg: ClientConfig, method: str, path: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
+def request(
+    cfg: ClientConfig, method: str, path: str, body: dict[str, Any] | None = None
+) -> dict[str, Any]:
     """发起签名请求（path 需以 / 开头，如 /rag/query）。
 
     URI 归一约定（GuanHai-1 协议）：参与签名的 URI 为「base_url 路径前缀 +
@@ -147,10 +149,18 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="x-GuanHai 开放 API GuanHai-1 签名调用示例")
     parser.add_argument("--app-id", default=os.environ.get(ENV_APP_ID, ""), help="AppId")
     parser.add_argument("--app-key", default=os.environ.get(ENV_APP_KEY, ""), help="AppKey")
-    parser.add_argument("--base-url", default=os.environ.get(ENV_BASE_URL, DEFAULT_BASE_URL), help="服务地址")
-    parser.add_argument("--timeout", default=float(os.environ.get(ENV_TIMEOUT, DEFAULT_TIMEOUT)), help="请求超时（秒）")
+    parser.add_argument(
+        "--base-url", default=os.environ.get(ENV_BASE_URL, DEFAULT_BASE_URL), help="服务地址"
+    )
+    parser.add_argument(
+        "--timeout",
+        default=float(os.environ.get(ENV_TIMEOUT, DEFAULT_TIMEOUT)),
+        help="请求超时（秒）",
+    )
     parser.add_argument("--verbose", action="store_true", help="打印签名串与签名值")
-    parser.add_argument("--with-post", action="store_true", help="演示 POST 全链路（需 document:write scope）")
+    parser.add_argument(
+        "--with-post", action="store_true", help="演示 POST 全链路（需 document:write scope）"
+    )
     args = parser.parse_args()
 
     cfg = load_config(args)

@@ -61,13 +61,15 @@ class RetrievalPipeline:
             default_top_k: 默认召回数量
             default_threshold: 默认相似度阈值
         """
-        self._understanding_providers: list[BaseQueryUnderstandingProvider] = understanding_providers or []
+        self._understanding_providers: list[BaseQueryUnderstandingProvider] = (
+            understanding_providers or []
+        )
         self._candidate_providers: list[BaseRetrievalProvider] = candidate_providers or []
         self._reranking_providers: list[BaseRerankingProvider] = reranking_providers or []
         self._filter_providers: list[BaseFilterProvider] = filter_providers or []
         self._filter_engine: MetadataFilterEngine = filter_engine or MetadataFilterEngine()
-        self._similarity_engine: SimilaritySearchEngine = similarity_engine or SimilaritySearchEngine(
-            distance_type=DistanceType.COSINE
+        self._similarity_engine: SimilaritySearchEngine = (
+            similarity_engine or SimilaritySearchEngine(distance_type=DistanceType.COSINE)
         )
         self._default_top_k: int = default_top_k
         self._default_threshold: float = default_threshold
@@ -139,9 +141,7 @@ class RetrievalPipeline:
 
     # ── Public API ──────────────────────────────────────────
 
-    def add_understanding_provider(
-        self, provider: BaseQueryUnderstandingProvider
-    ) -> None:
+    def add_understanding_provider(self, provider: BaseQueryUnderstandingProvider) -> None:
         """动态添加查询理解 Provider"""
         self._understanding_providers.append(provider)
         logger.debug(f"Added understanding provider: {provider.name}")
@@ -257,9 +257,7 @@ class RetrievalPipeline:
 
     # ── Internal Stages ────────────────────────────────────
 
-    def _stage1_understand(
-        self, query: str, context: dict[str, Any]
-    ) -> QueryUnderstandingResult:
+    def _stage1_understand(self, query: str, context: dict[str, Any]) -> QueryUnderstandingResult:
         """Stage 1: 查询理解（并行执行所有 Provider 后合并结果）"""
         if not self._understanding_providers:
             return QueryUnderstandingResult(
@@ -406,8 +404,7 @@ class RetrievalPipeline:
         # 如果没有配置 filter_providers，使用默认的分数阈值过滤
         if not self._filter_providers:
             filtered = [
-                doc for doc in current_candidates
-                if doc.get("score", 0.0) >= effective_threshold
+                doc for doc in current_candidates if doc.get("score", 0.0) >= effective_threshold
             ]
             filtered.sort(key=lambda x: x.get("score", 0.0), reverse=True)
             current_candidates = filtered

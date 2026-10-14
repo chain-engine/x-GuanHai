@@ -10,6 +10,7 @@ from fastapi.testclient import TestClient
 def client():
     """Create test client"""
     from src.main import app
+
     return TestClient(app)
 
 
@@ -37,19 +38,13 @@ class TestRAGEndpoints:
 
     def test_retrieve_endpoint_validation(self, client):
         """Test retrieve endpoint input validation"""
-        response = client.post(
-            "/api/v1/rag/retrieve",
-            json={"query": ""}
-        )
+        response = client.post("/api/v1/rag/retrieve", json={"query": ""})
         # 项目将 RequestValidationError 统一转为 400（见 main.py validation_exception_handler）
         assert response.status_code == 400
 
     def test_retrieve_endpoint_empty_db(self, client):
         """Test retrieve with empty database"""
-        response = client.post(
-            "/api/v1/rag/retrieve",
-            json={"query": "test query", "top_k": 5}
-        )
+        response = client.post("/api/v1/rag/retrieve", json={"query": "test query", "top_k": 5})
         assert response.status_code == 200
         data = response.json()
         assert data["code"] == 200

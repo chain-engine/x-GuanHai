@@ -135,6 +135,7 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
+pythonpath = "."
 addopts = [
     "-ra",
     "--strict-markers",
@@ -147,4 +148,6 @@ markers = [
     "slow: marks tests as slow",
     "integration: marks tests as integration tests",
     "unit: marks tests as unit tests",
+    "api: marks tests as API tests",
 ]
+asyncio_mode = "auto"

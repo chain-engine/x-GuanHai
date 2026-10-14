@@ -15,17 +15,17 @@ from src.core.config import settings
 
 class HealthCheckRequest(BaseModel):
     """健康检查请求"""
+
     pass
 
     model_config = ConfigDict(
-        json_schema_extra={
-            "example": {}
-        },
+        json_schema_extra={"example": {}},
     )
 
 
 class HealthCheckResponse(BaseModel):
     """健康检查响应"""
+
     status: str = Field(..., description="服务状态", examples=["healthy"])
     version: str = Field(..., description="版本号", examples=["0.1.0"])
     timestamp: datetime = Field(..., description="时间戳")
@@ -51,6 +51,7 @@ class HealthCheckResponse(BaseModel):
 
 class VersionResponse(BaseModel):
     """版本信息响应"""
+
     version: str = Field(..., description="版本号")
     name: str = Field(..., description="项目名称")
     description: str = Field(..., description="项目描述")
@@ -70,6 +71,7 @@ class VersionResponse(BaseModel):
 
 class StatusResponse(BaseModel):
     """系统状态响应"""
+
     status: str = Field(..., description="系统状态")
     uptime: float = Field(..., description="运行时间（秒）")
     memory_usage: dict[str, int] = Field(

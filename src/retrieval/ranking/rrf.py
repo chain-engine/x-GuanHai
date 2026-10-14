@@ -53,9 +53,7 @@ class RRFReranker(BaseRerankingProvider):
             list[dict[str, Any]]: RRF 融合后的文档列表
         """
         if ranked_lists is None or len(ranked_lists) == 0:
-            logger.warning(
-                "RRFReranker: no ranked lists provided, returning candidates as-is"
-            )
+            logger.warning("RRFReranker: no ranked lists provided, returning candidates as-is")
             return candidates[:top_k] if top_k else candidates
 
         rrf_scores: dict[str, float] = {}
@@ -80,8 +78,6 @@ class RRFReranker(BaseRerankingProvider):
         )
 
         result = [doc_map[doc_id] for doc_id, _ in sorted_docs]
-        logger.debug(
-            f"RRFReranker: fused {len(ranked_lists)} lists into {len(result)} docs"
-        )
+        logger.debug(f"RRFReranker: fused {len(ranked_lists)} lists into {len(result)} docs")
 
         return result[:top_k] if top_k else result

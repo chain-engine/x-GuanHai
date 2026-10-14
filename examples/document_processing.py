@@ -29,8 +29,7 @@ async def upload_file(base_url: str, file_path: str) -> dict[str, Any]:
     async with httpx.AsyncClient(timeout=300) as client:
         with open(path, "rb") as f:
             response = await client.post(
-                f"{base_url}/documents/upload",
-                files={"file": (path.name, f, "text/plain")}
+                f"{base_url}/documents/upload", files={"file": (path.name, f, "text/plain")}
             )
             return response.json()
 
@@ -79,7 +78,6 @@ AI的主要应用领域包括：
 而无需明确编程。深度学习是机器学习的一种方法，
 使用多层神经网络来模拟人脑的工作方式。
         """.strip(),
-
         "web_frameworks.txt": """
 Web框架是用于开发Web应用程序的软件框架。
 
@@ -102,7 +100,6 @@ Web框架是用于开发Web应用程序的软件框架。
 
 选择框架时，应考虑项目需求、团队经验和性能要求。
         """.strip(),
-
         "data_science.txt": """
 数据科学是一个跨学科领域，使用科学方法、流程和系统，
 从结构化和非结构化数据中提取知识和洞察。
@@ -126,7 +123,7 @@ Python数据科学生态系统包括：
 
 数据科学流程通常包括：
 数据收集 -> 数据清洗 -> 探索性分析 -> 建模 -> 可视化 -> 部署
-        """.strip()
+        """.strip(),
     }
 
     file_paths = []
@@ -176,7 +173,7 @@ Python数据科学生态系统包括：
         ("Web", "Django和Flask有什么区别？"),
         ("Web", "FastAPI有什么特点？"),
         ("Data", "数据科学生态系统包括哪些库？"),
-        ("Data", "数据科学的流程是什么？")
+        ("Data", "数据科学的流程是什么？"),
     ]
 
     for category, query in test_queries:
@@ -185,11 +182,7 @@ Python数据科学生态系统包括：
         async with httpx.AsyncClient(timeout=120) as client:
             response = await client.post(
                 f"{base_url}/rag/query",
-                json={
-                    "query": query,
-                    "top_k": 3,
-                    "similarity_threshold": 0.4
-                }
+                json={"query": query, "top_k": 3, "similarity_threshold": 0.4},
             )
             result = response.json()
 

@@ -27,6 +27,7 @@ from src.retrieval.understanding.base import (
 @dataclass
 class IntentClassification:
     """意图分类结果"""
+
     primary_intent: IntentType
     confidence: float  # 0.0 - 1.0
     matched_patterns: list[str]  # 匹配到的模式名称
@@ -64,8 +65,7 @@ class IntentClassifier(BaseQueryUnderstandingProvider):
         self._compiled_patterns: dict[IntentType, list[tuple[re.Pattern, float]]] = {}
         for intent, pattern_list in self._patterns.items():
             self._compiled_patterns[intent] = [
-                (re.compile(pattern, re.IGNORECASE), weight)
-                for pattern, weight in pattern_list
+                (re.compile(pattern, re.IGNORECASE), weight) for pattern, weight in pattern_list
             ]
 
     def supports(self) -> list[str]:

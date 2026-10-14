@@ -104,18 +104,13 @@ class BM25Retriever(KeywordRetrievalProvider):
         try:
             from rank_bm25 import BM25Okapi
         except ImportError as e:
-            logger.error(
-                "rank_bm25 not installed. Run: pip install rank-bm25"
-            )
+            logger.error("rank_bm25 not installed. Run: pip install rank-bm25")
             raise ImportError(
-                "rank_bm25 is required for BM25Retriever. "
-                "Install with: pip install rank-bm25"
+                "rank_bm25 is required for BM25Retriever. " "Install with: pip install rank-bm25"
             ) from e
 
         self._document_store = documents
-        self._tokenized_corpus = [
-            self._tokenize(doc.get("text", "")) for doc in documents
-        ]
+        self._tokenized_corpus = [self._tokenize(doc.get("text", "")) for doc in documents]
 
         self._bm25 = BM25Okapi(
             self._tokenized_corpus,
@@ -130,19 +125,20 @@ class BM25Retriever(KeywordRetrievalProvider):
             self.index(documents)
             return
 
-        new_tokenized = [
-            self._tokenize(doc.get("text", "")) for doc in documents
-        ]
+        new_tokenized = [self._tokenize(doc.get("text", "")) for doc in documents]
         self._document_store.extend(documents)
         self._tokenized_corpus.extend(new_tokenized)
 
         from rank_bm25 import BM25Okapi
+
         self._bm25 = BM25Okapi(
             self._tokenized_corpus,
             k1=self._k1,
             b=self._b,
         )
-        logger.info(f"BM25Retriever: added {len(documents)} documents, total {len(self._document_store)}")
+        logger.info(
+            f"BM25Retriever: added {len(documents)} documents, total {len(self._document_store)}"
+        )
 
     def search(
         self,
@@ -180,13 +176,15 @@ class BM25Retriever(KeywordRetrievalProvider):
                 normalized_score = 0.0
 
             doc = self._document_store[idx]
-            results.append({
-                "id": doc.get("id", f"bm25_{idx}"),
-                "text": doc.get("text", ""),
-                "score": float(normalized_score),
-                "metadata": doc.get("metadata", {}),
-                "embedding": None,
-            })
+            results.append(
+                {
+                    "id": doc.get("id", f"bm25_{idx}"),
+                    "text": doc.get("text", ""),
+                    "score": float(normalized_score),
+                    "metadata": doc.get("metadata", {}),
+                    "embedding": None,
+                }
+            )
 
         logger.debug(f"BM25Retriever: found {len(results)} results")
         return results

@@ -39,7 +39,9 @@ class OpenApiAuthContext(BaseModel):
         default=None,
         description="X-App-Authorization：GuanHai-1 签名，格式 'GuanHai-1 {app_id}:{signature}'",
     )
-    date: str | None = Field(default=None, description="X-App-Date：RFC1123 GMT 时间（签名时间窗校验）")
+    date: str | None = Field(
+        default=None, description="X-App-Date：RFC1123 GMT 时间（签名时间窗校验）"
+    )
     method: str = Field(description="HTTP 方法（GET/POST/PUT/PATCH/DELETE）")
     uri: str = Field(description="完整路径 + 查询串（不含域名，含 /api/v1 前缀）")
     body: bytes = Field(default=b"", description="请求体字节流（参与签名串 SHA256 计算）")

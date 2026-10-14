@@ -18,12 +18,16 @@ class OpenApiScopeEntity(Base):
 
     __tablename__ = "openapi_scopes"
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, comment="主键ID")
-    scope_code: Mapped[str] = mapped_column(String(100), nullable=False, comment="Scope 编码，如 rag:read")
+    scope_code: Mapped[str] = mapped_column(
+        String(100), nullable=False, comment="Scope 编码，如 rag:read"
+    )
     scope_name: Mapped[str] = mapped_column(String(100), nullable=False, comment="Scope 中文名")
     module: Mapped[str] = mapped_column(String(50), nullable=False, comment="所属模块")
     operation: Mapped[str] = mapped_column(String(20), nullable=False, comment="操作类型")
     description: Mapped[str | None] = mapped_column(String(255), nullable=True, comment="说明")
-    sort_order: Mapped[int] = mapped_column(Integer, nullable=False, server_default="0", comment="排序序号")
+    sort_order: Mapped[int] = mapped_column(
+        Integer, nullable=False, server_default="0", comment="排序序号"
+    )
     is_deprecated: Mapped[bool] = mapped_column(
         Boolean, nullable=False, server_default="0", comment="是否已废弃（路由中不再使用）"
     )

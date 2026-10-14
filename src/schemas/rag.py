@@ -21,6 +21,7 @@ from src.constants import (
 
 class RAGQueryRequest(BaseModel):
     """RAG查询请求"""
+
     query: str = Field(
         ...,
         min_length=1,
@@ -56,7 +57,7 @@ class RAGQueryRequest(BaseModel):
     )
     metadata_filter: dict[str, Any] | None = Field(
         default=None,
-        description="元数据过滤条件，如 {\"file_type\": \"pdf\"}",
+        description='元数据过滤条件，如 {"file_type": "pdf"}',
         examples=[None],
     )
     provider: str | None = Field(
@@ -98,6 +99,7 @@ class RAGQueryRequest(BaseModel):
 
 class RetrievalRequest(BaseModel):
     """检索请求"""
+
     query: str = Field(
         ...,
         min_length=1,
@@ -144,6 +146,7 @@ class RetrievalRequest(BaseModel):
 
 class EmbeddingRequest(BaseModel):
     """向量化请求"""
+
     texts: list[str] = Field(
         ...,
         min_length=1,
@@ -166,6 +169,7 @@ class EmbeddingRequest(BaseModel):
 
 class GenerationRequest(BaseModel):
     """生成请求"""
+
     prompt: str = Field(
         ...,
         min_length=1,
@@ -202,6 +206,7 @@ class GenerationRequest(BaseModel):
 
 class RetrievedDocument(BaseModel):
     """检索到的文档"""
+
     chunk_id: str = Field(..., description="分块ID")
     document_id: str = Field(..., description="文档ID")
     text: str = Field(..., description="文本内容")
@@ -240,6 +245,7 @@ class RetrievedDocument(BaseModel):
 
 class RAGQueryResponse(BaseModel):
     """RAG查询响应"""
+
     query: str = Field(..., description="查询内容")
     answer: str = Field(..., description="生成的答案")
     retrieved_docs: list[RetrievedDocument] = Field(
@@ -269,6 +275,7 @@ class RAGQueryResponse(BaseModel):
 
 class EmbeddingResponse(BaseModel):
     """向量化响应"""
+
     embeddings: list[list[float]] = Field(..., description="向量列表")
     dimension: int = Field(..., description="向量维度")
     model: str = Field(..., description="使用的模型")
@@ -286,6 +293,7 @@ class EmbeddingResponse(BaseModel):
 
 class RetrievalResponse(BaseModel):
     """检索响应"""
+
     query: str = Field(..., description="查询内容")
     documents: list[RetrievedDocument] = Field(..., description="检索到的文档")
     total: int = Field(..., description="检索到的文档总数")
@@ -303,6 +311,7 @@ class RetrievalResponse(BaseModel):
 
 class GenerationResponse(BaseModel):
     """生成响应"""
+
     text: str = Field(..., description="生成的文本")
     provider: str = Field(..., description="使用的LLM提供商")
     model: str = Field(..., description="使用的模型")

@@ -211,7 +211,9 @@ def setup_logging(
     # middleware 的 contextualize 会在请求作用域内注入真实 ID，
     # 非请求上下文的日志使用默认 "-"
     # ----------------------------------------------------------
-    _logger.configure(patcher=lambda record: record["extra"].setdefault("request_id", _DEFAULT_REQUEST_ID))
+    _logger.configure(
+        patcher=lambda record: record["extra"].setdefault("request_id", _DEFAULT_REQUEST_ID)
+    )
     _configured = True
 
 

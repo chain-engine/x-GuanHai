@@ -157,7 +157,9 @@ class VectorRepository(BaseRepository):
             where={"document_id": document_id},
         )
 
-        ids_to_delete = [r["id"] for r in results if r.get("metadata", {}).get("document_id") == document_id]
+        ids_to_delete = [
+            r["id"] for r in results if r.get("metadata", {}).get("document_id") == document_id
+        ]
 
         if ids_to_delete:
             self._store.delete(ids_to_delete)

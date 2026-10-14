@@ -42,9 +42,13 @@ def init_seed_data() -> None:
     """
     session = get_session()
     try:
-        existing = session.execute(
-            select(OpenApiAppEntity).where(OpenApiAppEntity.app_id == SEED_ADMIN_APP_ID)
-        ).scalars().first()
+        existing = (
+            session.execute(
+                select(OpenApiAppEntity).where(OpenApiAppEntity.app_id == SEED_ADMIN_APP_ID)
+            )
+            .scalars()
+            .first()
+        )
         if existing is not None:
             return
         # 启动即校验，scope 目录漂移时在启动期立即暴露，而非等到网关鉴权失败

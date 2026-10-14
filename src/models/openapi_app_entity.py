@@ -26,7 +26,9 @@ class OpenApiAppEntity(Base):
     # BIGINT 主键在 SQLite 下不会自增导致 NOT NULL 失败；MySQL 下 INT AUTO_INCREMENT 等价。
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True, comment="主键ID")
     # ── 身份标识 ──────────────────────────────────────────
-    app_id: Mapped[str] = mapped_column(String(64), nullable=False, comment="对外应用ID，明文，带前缀 gh_live_xxx")
+    app_id: Mapped[str] = mapped_column(
+        String(64), nullable=False, comment="对外应用ID，明文，带前缀 gh_live_xxx"
+    )
     app_key_hash: Mapped[str] = mapped_column(
         String(128), nullable=False, comment="AppKey 的 SHA256 哈希（明文模式预留，签名模式不读取）"
     )
@@ -35,32 +37,42 @@ class OpenApiAppEntity(Base):
     )
     # ── 元信息 ──────────────────────────────────────────
     name: Mapped[str] = mapped_column(String(100), nullable=False, comment="应用名")
-    description: Mapped[str] = mapped_column(String(255), nullable=False, server_default="", comment="应用描述")
+    description: Mapped[str] = mapped_column(
+        String(255), nullable=False, server_default="", comment="应用描述"
+    )
     # ── 授权状态 ──────────────────────────────────────────
     scopes: Mapped[str] = mapped_column(
-        String(500), nullable=False, server_default="", comment="逗号分隔的权限范围，如 rag:read,document:write"
+        String(500),
+        nullable=False,
+        server_default="",
+        comment="逗号分隔的权限范围，如 rag:read,document:write",
     )
     status: Mapped[str] = mapped_column(
         String(20), nullable=False, server_default="active", comment="状态：active/disabled"
     )
     auth_mode: Mapped[str] = mapped_column(
-        String(10), nullable=False, server_default="hmac", comment="鉴权模式：hmac（GuanHai-1 签名）"
+        String(10),
+        nullable=False,
+        server_default="hmac",
+        comment="鉴权模式：hmac（GuanHai-1 签名）",
     )
     # ── 限流 ────────────────────────────────────────────
     rate_limit_per_minute: Mapped[int] = mapped_column(
         Integer, nullable=False, server_default="60", comment="每分钟限流次数"
     )
-    last_used_at: Mapped[datetime | None] = mapped_column(DateTime, nullable=True, comment="最近一次成功鉴权时间")
-    created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
+    last_used_at: Mapped[datetime | None] = mapped_column(
+        DateTime, nullable=True, comment="最近一次成功鉴权时间"
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
+    )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime,
         nullable=False,
         server_default=text("CURRENT_TIMESTAMP"),
         onupdate=func.current_timestamp(),
     )
-    __table_args__ = (
-        Index("uk_app_id", "app_id", unique=True),
-    )
+    __table_args__ = (Index("uk_app_id", "app_id", unique=True),)
 
 
 __all__ = ["OpenApiAppEntity"]

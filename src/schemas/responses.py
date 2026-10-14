@@ -19,6 +19,7 @@ class ResponseModel(BaseModel, Generic[T]):
 
     标准API响应结构
     """
+
     code: int = Field(default=HttpStatus.OK.value, description="响应状态码", examples=[200])
     message: str = Field(default="success", description="响应消息", examples=["success"])
     data: T | None = Field(default=None, description="响应数据")
@@ -42,6 +43,7 @@ class PageModel(BaseModel, Generic[T]):
 
     用于列表数据的分页响应
     """
+
     total: int = Field(..., description="总记录数", examples=[100])
     page: int = Field(..., description="当前页码", examples=[1])
     page_size: int = Field(..., description="每页记录数", examples=[20])
@@ -64,6 +66,7 @@ class PageModel(BaseModel, Generic[T]):
 
 class ErrorDetail(BaseModel):
     """错误详情模型"""
+
     field: str | None = Field(default=None, description="错误字段", examples=["email"])
     message: str = Field(..., description="错误消息", examples=["Invalid email format"])
     type: str = Field(..., description="错误类型", examples=["ValueError"])
@@ -71,6 +74,7 @@ class ErrorDetail(BaseModel):
 
 class ErrorResponse(BaseModel):
     """错误响应模型"""
+
     code: int = Field(..., description="错误状态码", examples=[400])
     message: str = Field(..., description="错误消息", examples=["Bad Request"])
     errors: list[ErrorDetail] | None = Field(default=None, description="错误详情列表")

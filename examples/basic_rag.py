@@ -51,7 +51,7 @@ async def main():
     async with httpx.AsyncClient(timeout=300) as client:
         response = await client.post(
             f"{base_url}/documents/upload",
-            files={"file": ("python_intro.txt", sample_text.encode("utf-8"), "text/plain")}
+            files={"file": ("python_intro.txt", sample_text.encode("utf-8"), "text/plain")},
         )
         result = response.json()
         print(f"上传结果: {result}")
@@ -78,7 +78,7 @@ async def main():
         "Python是什么时候发布的？",
         "Python的设计哲学是什么？",
         "Python有哪些应用领域？",
-        "什么是Python的'batteries included'特性？"
+        "什么是Python的'batteries included'特性？",
     ]
 
     for query in queries:
@@ -88,11 +88,7 @@ async def main():
         async with httpx.AsyncClient(timeout=120) as client:
             response = await client.post(
                 f"{base_url}/rag/query",
-                json={
-                    "query": query,
-                    "top_k": 3,
-                    "similarity_threshold": 0.5
-                }
+                json={"query": query, "top_k": 3, "similarity_threshold": 0.5},
             )
             result = response.json()
 
@@ -115,11 +111,7 @@ async def main():
     async with httpx.AsyncClient() as client:
         response = await client.post(
             f"{base_url}/rag/retrieve",
-            json={
-                "query": "Python的应用领域",
-                "top_k": 3,
-                "similarity_threshold": 0.3
-            }
+            json={"query": "Python的应用领域", "top_k": 3, "similarity_threshold": 0.3},
         )
         result = response.json()
 

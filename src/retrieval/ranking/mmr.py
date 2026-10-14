@@ -70,9 +70,7 @@ class MMRReranker(BaseRerankingProvider):
 
         query_vector = self._resolve_query_vector(query, candidates, kwargs)
         if query_vector is None:
-            logger.warning(
-                "MMRReranker: cannot resolve query vector, returning original order"
-            )
+            logger.warning("MMRReranker: cannot resolve query vector, returning original order")
             return candidates[:top_k] if top_k else candidates
 
         doc_vectors = []
@@ -120,8 +118,7 @@ class MMRReranker(BaseRerankingProvider):
 
         reranked = [candidates[i] for i in selected_indices]
         logger.debug(
-            f"MMRReranker: reranked {len(candidates)} candidates "
-            f"(lambda={lambda_param})"
+            f"MMRReranker: reranked {len(candidates)} candidates " f"(lambda={lambda_param})"
         )
         return reranked
 

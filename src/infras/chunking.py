@@ -15,6 +15,7 @@ from src.core.logger import logger
 @dataclass
 class TextChunk:
     """文本分块"""
+
     content: str
     chunk_id: str
     start_index: int = 0
@@ -103,7 +104,11 @@ class BaseChunkingProvider(ABC):
                     content=chunk_content,
                     chunk_id=f"{document_id}_chunk_{idx}",
                     start_index=text.find(chunk_content) if chunk_content in text else 0,
-                    end_index=text.find(chunk_content) + len(chunk_content) if chunk_content in text else len(chunk_content),
+                    end_index=(
+                        text.find(chunk_content) + len(chunk_content)
+                        if chunk_content in text
+                        else len(chunk_content)
+                    ),
                     metadata=chunk_metadata,
                 )
             )
@@ -163,6 +168,7 @@ class LangchainProvider(BaseChunkingProvider):
 
         if self.strategy == "recursive":
             from langchain_text_splitters import RecursiveCharacterTextSplitter
+
             self._splitter = RecursiveCharacterTextSplitter(
                 chunk_size=self.chunk_size,
                 chunk_overlap=self.chunk_overlap,
@@ -170,6 +176,7 @@ class LangchainProvider(BaseChunkingProvider):
             )
         elif self.strategy == "character":
             from langchain_text_splitters import CharacterTextSplitter
+
             self._splitter = CharacterTextSplitter(
                 separator="\n",
                 chunk_size=self.chunk_size,
@@ -177,6 +184,7 @@ class LangchainProvider(BaseChunkingProvider):
             )
         elif self.strategy == "token":
             from langchain_text_splitters import TokenTextSplitter
+
             self._splitter = TokenTextSplitter(
                 chunk_size=self.chunk_size,
                 chunk_overlap=self.chunk_overlap,
@@ -197,7 +205,9 @@ class LangchainProvider(BaseChunkingProvider):
         else:
             raise ValueError(f"不支持的切分策略: {self.strategy}")
 
-        logger.info(f"创建 LangChain 切分器: strategy={self.strategy}, chunk_size={self.chunk_size}")
+        logger.info(
+            f"创建 LangChain 切分器: strategy={self.strategy}, chunk_size={self.chunk_size}"
+        )
         return self._splitter
 
     def chunk_text(self, text: str, **kwargs) -> list[str]:
@@ -243,7 +253,11 @@ class LangchainProvider(BaseChunkingProvider):
             if isinstance(doc, LCDocument):
                 lc_documents.append(doc)
             elif isinstance(doc, dict):
-                lc_documents.append(LCDocument(page_content=doc.get("content", ""), metadata=doc.get("metadata", {})))
+                lc_documents.append(
+                    LCDocument(
+                        page_content=doc.get("content", ""), metadata=doc.get("metadata", {})
+                    )
+                )
             elif isinstance(doc, str):
                 lc_documents.append(LCDocument(page_content=doc))
             else:
@@ -305,6 +319,7 @@ class LlamaIndexProvider(BaseChunkingProvider):
 
         if self.strategy == "sentence":
             from llama_index.core.node_parser import SentenceSplitter
+
             self._splitter = SentenceSplitter(
                 chunk_size=self.chunk_size,
                 chunk_overlap=self.chunk_overlap,
@@ -312,6 +327,7 @@ class LlamaIndexProvider(BaseChunkingProvider):
             )
         elif self.strategy == "token":
             from llama_index.core.node_parser import TokenTextSplitter
+
             self._splitter = TokenTextSplitter(
                 chunk_size=self.chunk_size,
                 chunk_overlap=self.chunk_overlap,
@@ -329,11 +345,14 @@ class LlamaIndexProvider(BaseChunkingProvider):
             )
         elif self.strategy == "markdown":
             from llama_index.core.node_parser import MarkdownNodeParser
+
             self._splitter = MarkdownNodeParser()
         else:
             raise ValueError(f"不支持的切分策略: {self.strategy}")
 
-        logger.info(f"创建 LlamaIndex 切分器: strategy={self.strategy}, chunk_size={self.chunk_size}")
+        logger.info(
+            f"创建 LlamaIndex 切分器: strategy={self.strategy}, chunk_size={self.chunk_size}"
+        )
         return self._splitter
 
     def chunk_text(self, text: str, **kwargs) -> list[str]:
@@ -383,7 +402,9 @@ class LlamaIndexProvider(BaseChunkingProvider):
             if hasattr(doc, "text"):
                 li_documents.append(doc)
             elif isinstance(doc, dict):
-                li_documents.append(LIDocument(text=doc.get("content", ""), metadata=doc.get("metadata", {})))
+                li_documents.append(
+                    LIDocument(text=doc.get("content", ""), metadata=doc.get("metadata", {}))
+                )
             elif isinstance(doc, str):
                 li_documents.append(LIDocument(text=doc))
             else:
@@ -433,10 +454,7 @@ def get_chunking_provider(provider_name: str = "langchain", **kwargs) -> BaseChu
 
 def list_chunking_providers() -> list[dict[str, str]]:
     """列出所有可用的切分提供者"""
-    return [
-        {"name": name, "description": cls.description}
-        for name, cls in _PROVIDERS.items()
-    ]
+    return [{"name": name, "description": cls.description} for name, cls in _PROVIDERS.items()]
 
 
 __all__ = [

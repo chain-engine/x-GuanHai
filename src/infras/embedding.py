@@ -155,9 +155,7 @@ class BGEEmbeddingModel(EmbeddingModelBase):
         """确保模型已加载"""
         if self._model is None:
             try:
-                logger.info(
-                    f"Loading embedding model: {self._model_name} on {self._device}"
-                )
+                logger.info(f"Loading embedding model: {self._model_name} on {self._device}")
                 self._model = SentenceTransformer(self._model_name, device=self._device)
                 self._dimension = self._model.get_embedding_dimension()
                 logger.info(f"Loaded embedding model with dimension {self._dimension}")

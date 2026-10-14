@@ -93,7 +93,9 @@ class TestLangchainProvider:
     """LangChain recursive 切分（依赖 langchain_text_splitters，已安装）"""
 
     def test_basic_split(self):
-        provider = get_chunking_provider("langchain", chunk_size=50, chunk_overlap=0, strategy="recursive")
+        provider = get_chunking_provider(
+            "langchain", chunk_size=50, chunk_overlap=0, strategy="recursive"
+        )
         text = "这是第一段内容，用于测试递归字符切分。\n\n这是第二段内容，独立成块。"
         chunks = provider.chunk_text(text)
         assert len(chunks) >= 1
@@ -105,7 +107,9 @@ class TestLangchainProvider:
         assert provider.chunk_text("   ") == []
 
     def test_with_metadata(self):
-        provider = get_chunking_provider("langchain", chunk_size=100, chunk_overlap=10, strategy="recursive")
+        provider = get_chunking_provider(
+            "langchain", chunk_size=100, chunk_overlap=10, strategy="recursive"
+        )
         chunks = provider.chunk_text_with_metadata(
             "第一句话。第二句话。第三句话。", document_id="doc_x"
         )

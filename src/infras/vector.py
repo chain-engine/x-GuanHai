@@ -132,17 +132,13 @@ class ChromaVectorStore(VectorStoreBase):
                 settings=ChromaSettings(
                     anonymized_telemetry=False,
                     allow_reset=True,
-                )
+                ),
             )
 
-            distance_metric = self.DISTANCE_MAP.get(
-                self.distance_type,
-                "cosine"
-            )
+            distance_metric = self.DISTANCE_MAP.get(self.distance_type, "cosine")
 
             self._collection = self._client.get_or_create_collection(
-                name=self.collection_name,
-                metadata={"hnsw:space": distance_metric}
+                name=self.collection_name, metadata={"hnsw:space": distance_metric}
             )
 
             self._initialized = True
@@ -179,7 +175,7 @@ class ChromaVectorStore(VectorStoreBase):
                 embeddings=embeddings,
                 documents=documents,
                 # Chroma 要求 metadata 为非空 dict，None / 空 dict 都会报错
-                metadatas=metadatas or [{"source": "x-guanhai"} for _ in ids]
+                metadatas=metadatas or [{"source": "x-guanhai"} for _ in ids],
             )
             logger.debug(f"Added {len(ids)} vectors to collection")
         except Exception as e:
@@ -217,12 +213,14 @@ class ChromaVectorStore(VectorStoreBase):
             distances_list = results.get("distances", [[]])[0]
 
             for i in range(len(ids_list)):
-                formatted_results.append({
-                    "id": ids_list[i],
-                    "text": documents_list[i] if i < len(documents_list) else "",
-                    "metadata": metadatas_list[i] if i < len(metadatas_list) else {},
-                    "distance": distances_list[i] if i < len(distances_list) else 0.0,
-                })
+                formatted_results.append(
+                    {
+                        "id": ids_list[i],
+                        "text": documents_list[i] if i < len(documents_list) else "",
+                        "metadata": metadatas_list[i] if i < len(metadatas_list) else {},
+                        "distance": distances_list[i] if i < len(distances_list) else 0.0,
+                    }
+                )
 
             return formatted_results
 

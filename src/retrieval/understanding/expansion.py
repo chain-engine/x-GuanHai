@@ -109,9 +109,7 @@ class SynonymExpander(QueryExpansionProvider):
                         expanded_terms.append(syn)
                         expanded_query += f" {syn}"
 
-        logger.debug(
-            f"SynonymExpander expanded {len(expanded_terms)} terms: {expanded_terms}"
-        )
+        logger.debug(f"SynonymExpander expanded {len(expanded_terms)} terms: {expanded_terms}")
         return expanded_query, expanded_terms
 
 
@@ -163,9 +161,7 @@ class EmbeddingExpander(QueryExpansionProvider):
             top_terms = [term for _, term in indexed[: self._top_k]]
             expanded_query = f"{query} {' '.join(top_terms)}"
 
-            logger.debug(
-                f"EmbeddingExpander expanded with: {top_terms}"
-            )
+            logger.debug(f"EmbeddingExpander expanded with: {top_terms}")
             return expanded_query, top_terms
         except Exception as e:
             logger.warning(f"EmbeddingExpander failed: {e}")

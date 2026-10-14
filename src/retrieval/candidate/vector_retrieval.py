@@ -153,13 +153,15 @@ class ChromaVectorRetrieval(VectorRetrievalProvider):
 
         formatted = []
         for r in results:
-            formatted.append({
-                "id": r.get("id"),
-                "text": r.get("document", r.get("text", "")),
-                "score": r.get("score", 0.0),
-                "metadata": r.get("metadata", {}),
-                "embedding": r.get("embedding"),
-            })
+            formatted.append(
+                {
+                    "id": r.get("id"),
+                    "text": r.get("document", r.get("text", "")),
+                    "score": r.get("score", 0.0),
+                    "metadata": r.get("metadata", {}),
+                    "embedding": r.get("embedding"),
+                }
+            )
 
         logger.debug(f"ChromaVectorRetrieval: found {len(formatted)} results")
         return formatted
