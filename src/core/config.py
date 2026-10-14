@@ -139,8 +139,8 @@ class RetrievalConfig:
 class GenerationConfig:
     """生成配置"""
 
-    provider: str = "deepseek"
-    model: str = "deepseek-chat"
+    provider: str = "mimo"
+    model: str = "mimo-v2.6-pro"
     temperature: float = DEFAULT_TEMPERATURE
     max_tokens: int = DEFAULT_MAX_TOKENS
     timeout: int = DEFAULT_TIMEOUT
@@ -172,8 +172,8 @@ class LLMProvidersConfig:
     aliyun_model_name: str = "qwen-plus"
     # 小米 Mimo
     mimo_api_key: str = ""
-    mimo_api_base: str = ""
-    mimo_model_name: str = "mimo-v2.5-pro"
+    mimo_api_base: str = "https://api.xiaomimimo.com/v1"
+    mimo_model_name: str = "mimo-v2.6-pro"
 
 
 class Settings:
@@ -252,8 +252,8 @@ class Settings:
                 "mmr_lambda": DEFAULT_MMR_LAMBDA,
             },
             "generation": {
-                "provider": "deepseek",
-                "model": "deepseek-chat",
+                "provider": "mimo",
+                "model": "mimo-v2.6-pro",
                 "temperature": DEFAULT_TEMPERATURE,
                 "max_tokens": DEFAULT_MAX_TOKENS,
                 "timeout": DEFAULT_TIMEOUT,
@@ -273,8 +273,8 @@ class Settings:
                 "aliyun_api_base": "",
                 "aliyun_model_name": "qwen-plus",
                 "mimo_api_key": "",
-                "mimo_api_base": "",
-                "mimo_model_name": "mimo-v2.5-pro",
+                "mimo_api_base": "https://api.xiaomimimo.com/v1",
+                "mimo_model_name": "mimo-v2.6-pro",
             },
         }
 

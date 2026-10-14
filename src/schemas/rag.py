@@ -265,8 +265,8 @@ class RAGQueryResponse(BaseModel):
                 "query": "什么是RAG？",
                 "answer": "RAG是检索增强生成...",
                 "retrieved_docs": [],
-                "provider": "deepseek",
-                "model": "deepseek-chat",
+                "provider": "mimo",
+                "model": "mimo-v2.6-pro",
                 "tokens_used": 500,
             }
         },
@@ -328,8 +328,8 @@ class GenerationResponse(BaseModel):
         json_schema_extra={
             "example": {
                 "text": "这是生成的文本...",
-                "provider": "deepseek",
-                "model": "deepseek-chat",
+                "provider": "mimo",
+                "model": "mimo-v2.6-pro",
                 "tokens_used": 500,
                 "finish_reason": "stop",
             }

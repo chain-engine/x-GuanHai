@@ -86,8 +86,8 @@ cp config.yaml.example config.yaml
 | `EMBEDDING_DEVICE` | 嵌入模型运行设备 | `cpu` |
 | `VECTOR_STORE_PERSIST_DIR` | 向量数据库持久化目录 | `./data/chroma` |
 | `TEXT_SPLITTER_STRATEGY` | 文本切分策略 | `recursive` |
-| `GENERATION_PROVIDER` | LLM 生成提供商 | `deepseek` |
-| `GENERATION_MODEL` | LLM 生成模型 | `deepseek-chat` |
+| `GENERATION_PROVIDER` | LLM 生成提供商 | `mimo` |
+| `GENERATION_MODEL` | LLM 生成模型 | `mimo-v2.6-pro` |
 | `OPENAPI_ENABLED` | 开放 API 鉴权开关（AppId + GuanHai-1 签名） | `true` |
 | `OPENAPI_DB_URL` | 开放 API 认证数据库连接（默认 MySQL，本地可切 SQLite） | `mysql+pymysql://...` |
 | `AUTH_SECRET_KEY` | 签名密钥加密密钥，**生产必须设置随机值** | 空（开发兜底） |

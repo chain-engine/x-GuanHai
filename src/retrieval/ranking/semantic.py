@@ -43,7 +43,7 @@ class SemanticReranker(BaseRerankingProvider):
     def __init__(
         self,
         llm_provider: BaseLLMProvider | None = None,
-        provider_name: str = "deepseek",
+        provider_name: str = "mimo",
         system_prompt: str | None = None,
     ) -> None:
         """

@@ -244,7 +244,7 @@ class MimoProvider(BaseLLMProvider):
     小米 Mimo LLM 提供者
 
     支持的模型：
-    - mimo-v2.5-pro
+    - mimo-v2.6-pro
     """
 
     provider_type = LLMProviderType.MIMO
@@ -344,7 +344,7 @@ def get_llm_provider(provider_name: str) -> BaseLLMProvider:
 
 
 def create_chat_model(
-    provider_name: str = "deepseek",
+    provider_name: str = "mimo",
     model_name: str | None = None,
     temperature: float | None = None,
     **kwargs: Any,

@@ -18,8 +18,8 @@ class LLMGeneration:
 
     def __init__(
         self,
-        default_provider: str = "deepseek",
-        default_model: str = "deepseek-chat",
+        default_provider: str = "mimo",
+        default_model: str = "mimo-v2.6-pro",
         default_temperature: float = 0.7,
         default_max_tokens: int = 2000,
         default_timeout: int = 30,

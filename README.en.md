@@ -86,8 +86,8 @@ cp config.yaml.example config.yaml
 | `EMBEDDING_DEVICE` | Embedding model device | `cpu` |
 | `VECTOR_STORE_PERSIST_DIR` | Vector store persistence directory | `./data/chroma` |
 | `TEXT_SPLITTER_STRATEGY` | Text splitting strategy | `recursive` |
-| `GENERATION_PROVIDER` | LLM generation provider | `deepseek` |
-| `GENERATION_MODEL` | LLM generation model | `deepseek-chat` |
+| `GENERATION_PROVIDER` | LLM generation provider | `mimo` |
+| `GENERATION_MODEL` | LLM generation model | `mimo-v2.6-pro` |
 | `OPENAPI_ENABLED` | Open API authentication switch (AppId + GuanHai-1 signature) | `true` |
 | `OPENAPI_DB_URL` | Open API auth database URL (MySQL default; SQLite for local) | `mysql+pymysql://...` |
 | `AUTH_SECRET_KEY` | Encryption key for app keys, **must be set to a random value in production** | empty (dev fallback) |
