@@ -1,7 +1,5 @@
 # x-GuanHai
 
-一个支持 HTTP 与 MCP 双挂载的 RAG（检索增强生成）一体化工程框架 —— 分层清晰、模块化、可扩展的通用服务架构，一套代码同时对外提供 HTTP API 与 MCP 服务。
-
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.104%2B-009688?logo=fastapi&logoColor=white)
 ![ChromaDB](https://img.shields.io/badge/ChromaDB-0.4.18%2B-6C3A5A?logo=chroma&logoColor=white)

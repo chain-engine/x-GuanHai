@@ -1,7 +1,5 @@
 # x-GuanHai
 
-A RAG (Retrieval-Augmented Generation) integrated engineering framework with dual HTTP and MCP mounting — a layered, modular, extensible general-purpose service architecture exposing both HTTP APIs and MCP services from a single codebase.
-
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.104%2B-009688?logo=fastapi&logoColor=white)
 ![ChromaDB](https://img.shields.io/badge/ChromaDB-0.4.18%2B-6C3A5A?logo=chroma&logoColor=white)
