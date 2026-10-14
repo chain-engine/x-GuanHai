@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Semantic Reranking Module
 
@@ -10,13 +9,13 @@ Semantic Reranking Module
 from __future__ import annotations
 
 import re
-from typing import Any, Optional
+from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
 
-from src.retrieval.ranking.base import BaseRerankingProvider
-from src.infras.llm import get_llm_provider, BaseLLMProvider
 from src.core.logger import logger
+from src.infras.llm import BaseLLMProvider, get_llm_provider
+from src.retrieval.ranking.base import BaseRerankingProvider
 
 
 class SemanticReranker(BaseRerankingProvider):
@@ -43,9 +42,9 @@ class SemanticReranker(BaseRerankingProvider):
 
     def __init__(
         self,
-        llm_provider: Optional[BaseLLMProvider] = None,
+        llm_provider: BaseLLMProvider | None = None,
         provider_name: str = "deepseek",
-        system_prompt: Optional[str] = None,
+        system_prompt: str | None = None,
     ) -> None:
         """
         初始化语义重排序器
@@ -55,7 +54,7 @@ class SemanticReranker(BaseRerankingProvider):
             provider_name: LLM 提供者名称
             system_prompt: 评分系统提示词
         """
-        self._llm_provider: Optional[BaseLLMProvider] = llm_provider
+        self._llm_provider: BaseLLMProvider | None = llm_provider
         self._provider_name: str = provider_name
         self._system_prompt: str = system_prompt or self.DEFAULT_SYSTEM_PROMPT
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Score Filter Module
 
@@ -11,8 +10,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.retrieval.ranking.base import BaseFilterProvider
 from src.core.logger import logger
+from src.retrieval.ranking.base import BaseFilterProvider
 
 
 class ScoreFilter(BaseFilterProvider):

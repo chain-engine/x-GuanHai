@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Generation Module
 
 生成模块 - 基于 infras.llm 模块的统一 LLM 调用封装
 """
 
-from typing import Any, AsyncIterator
+from collections.abc import AsyncIterator
+from typing import Any
 
-from src.core.logger import logger
 from src.core.exceptions import GenerationError
-from src.infras.llm import get_llm_provider, BaseLLMProvider
+from src.core.logger import logger
+from src.infras.llm import BaseLLMProvider, get_llm_provider
 
 
 class LLMGeneration:

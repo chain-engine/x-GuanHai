@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """x-GuanHai 开放 API GuanHai-1 签名调用示例客户端（演示 / 对接参考）。
 
 签名协议（与服务端 src/core/signature.py 严格对齐）：
@@ -30,10 +29,10 @@ import hmac
 import json
 import os
 import sys
-import time
 from dataclasses import dataclass
 from email.utils import formatdate
 from typing import Any, Final
+from urllib.parse import urlparse
 
 import requests
 
@@ -86,8 +85,12 @@ def load_config(args: argparse.Namespace) -> ClientConfig:
 
 
 def build_signing_string(method: str, uri: str, date: str, body: bytes) -> str:
-    """构造 GuanHai-1 待签名串（与服务端 build_signing_string 同源）。"""
-    body_hash = hashlib.sha256(body.decode("utf-8")).hexdigest() if body else ""
+    """构造 GuanHai-1 待签名串（与服务端 build_signing_string 同源）。
+
+    body 为原始请求体 bytes；SHA256 对 bytes 直接摘要，
+    与服务端 sha256_hex(body.decode('utf-8')) 的摘要结果等价。
+    """
+    body_hash = hashlib.sha256(body).hexdigest() if body else ""
     return "".join([ALGORITHM, method.upper(), uri, SIGN_CONTENT_TYPE, date, body_hash])
 
 
@@ -114,15 +117,19 @@ def sign_request(cfg: ClientConfig, method: str, uri: str, body: bytes) -> dict[
 def request(cfg: ClientConfig, method: str, path: str, body: dict[str, Any] | None = None) -> dict[str, Any]:
     """发起签名请求（path 需以 / 开头，如 /rag/query）。
 
-    URI 归一约定（GuanHai-1 协议）：参与签名的 path 统一去除尾部斜杠
-    （/rag/query 与 /rag/query/ 视为同一资源），与服务端剥离逻辑
-    （utils.build_auth_context_from_request）同源，否则签名必然不匹配。
+    URI 归一约定（GuanHai-1 协议）：参与签名的 URI 为「base_url 路径前缀 +
+    path」且统一去除尾部斜杠（/rag/query 与 /rag/query/ 视为同一资源），
+    与服务端剥离逻辑（utils.build_auth_context_from_request）同源，
+    否则签名必然不匹配。
     """
     if path.startswith("?"):
-        uri = path
+        norm_path = path
     else:
         base, _, query = path.partition("?")
-        uri = (base.rstrip("/") or "/") + (f"?{query}" if query else "")
+        norm_path = (base.rstrip("/") or "/") + (f"?{query}" if query else "")
+    # 参与签名的 URI 必须包含 base_url 的路径前缀（如 /api/v1），与服务端完整路径一致
+    api_prefix = urlparse(cfg.base_url).path.rstrip("/")
+    uri = f"{api_prefix}{norm_path}"
     payload = b""
     if body is not None:
         payload = json.dumps(body, ensure_ascii=False).encode("utf-8")

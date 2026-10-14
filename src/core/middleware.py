@@ -1,24 +1,22 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Middleware Module
 
 中间件模块：实现CORS、限流、请求ID追踪等
 """
 
-import uuid
 import time
-from typing import Callable
+import uuid
+from collections.abc import Callable
+
 from fastapi import Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
-from slowapi.errors import RateLimitExceeded
 
-from src.core.logger import logger
-from src.core.config import settings
 from src.constants import HeaderType
-
+from src.core.config import settings
+from src.core.logger import logger
 
 # 限流器实例
 limiter = Limiter(

@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 文档处理流程示例
 演示文档处理流程和批量处理
 """
 
 import asyncio
-import httpx
 from pathlib import Path
+from typing import Any
+
+import httpx
 
 
 async def upload_file(base_url: str, file_path: str) -> dict[str, Any]:
@@ -143,7 +144,7 @@ Python数据科学生态系统包括：
     results = await batch_upload(base_url, file_paths)
 
     document_ids = []
-    for filename, result in zip(sample_docs.keys(), results):
+    for filename, result in zip(sample_docs.keys(), results, strict=False):
         if result.get("code") == 201:
             doc_id = result["data"]["document_id"]
             document_ids.append(doc_id)

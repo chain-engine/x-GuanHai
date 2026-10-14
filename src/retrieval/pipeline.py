@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Retrieval Pipeline Module
 
@@ -7,28 +6,23 @@ Retrieval Pipeline Module
 
 from __future__ import annotations
 
-from typing import Any, ClassVar
+from typing import Any
 
-from src.core.logger import logger
+from src.constants import (
+    RerankingProviderName,
+)
 from src.core.exceptions import RetrievalError
+from src.core.logger import logger
+from src.infras.embedding import EmbeddingModelBase
+from src.infras.llm import BaseLLMProvider
+from src.retrieval.candidate.base import BaseRetrievalProvider
+from src.retrieval.ranking.base import BaseFilterProvider, BaseRerankingProvider
 from src.retrieval.understanding.base import (
     BaseQueryUnderstandingProvider,
     QueryUnderstandingResult,
 )
-from src.retrieval.candidate.base import BaseRetrievalProvider
-from src.retrieval.ranking.base import BaseRerankingProvider, BaseFilterProvider
-from src.constants import (
-    RerankingProviderName,
-    DEFAULT_TOP_K,
-    DEFAULT_SIMILARITY_THRESHOLD,
-    DEFAULT_MMR_LAMBDA,
-    DISTANCE_COSINE,
-    DISTANCE_EUCLIDEAN,
-)
-from src.infras.embedding import EmbeddingModelBase
-from src.infras.llm import BaseLLMProvider
 from src.utils.filters import MetadataFilterEngine
-from src.utils.similarity import SimilaritySearchEngine, DistanceType
+from src.utils.similarity import DistanceType, SimilaritySearchEngine
 
 
 class RetrievalPipeline:

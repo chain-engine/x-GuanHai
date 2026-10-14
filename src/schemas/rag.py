@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 RAG Schema Module
 
@@ -7,15 +6,16 @@ RAG相关接口的请求和响应模型
 """
 
 from typing import Any
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field
 
 from src.constants import (
-    DEFAULT_TOP_K,
-    DEFAULT_SIMILARITY_THRESHOLD,
-    DEFAULT_MMR_LAMBDA,
-    DEFAULT_TEMPERATURE,
     DEFAULT_MAX_TOKENS,
+    DEFAULT_MMR_LAMBDA,
+    DEFAULT_SIMILARITY_THRESHOLD,
+    DEFAULT_TEMPERATURE,
     DEFAULT_TIMEOUT,
+    DEFAULT_TOP_K,
 )
 
 

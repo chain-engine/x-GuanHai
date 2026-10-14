@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Document Schema Module
 
 文档管理相关接口的请求和响应模型
 """
 
-from typing import Any
 from datetime import datetime
-from pydantic import BaseModel, Field, ConfigDict
+from typing import Any
 
-from src.constants import SUPPORTED_DOC_TYPES
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class DocumentUploadRequest(BaseModel):

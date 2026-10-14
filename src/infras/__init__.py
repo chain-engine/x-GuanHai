@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Infras Package
 
@@ -10,9 +9,6 @@ llm.py（LLM 提供者抽象基类 + 多提供商实现）、
 chunking.py（文本切分抽象基类 + LangChain / LlamaIndex 实现）。
 """
 
-from src.infras.storage import DocumentStoreBase, JSONDocumentStore
-from src.infras.embedding import EmbeddingModelBase, BGEEmbeddingModel
-from src.infras.vector import VectorStoreBase, ChromaVectorStore
 from src.infras.bm25 import BM25IndexStore
 from src.infras.chunking import (
     BaseChunkingProvider,
@@ -22,17 +18,20 @@ from src.infras.chunking import (
     get_chunking_provider,
     list_chunking_providers,
 )
+from src.infras.embedding import BGEEmbeddingModel, EmbeddingModelBase
 from src.infras.llm import (
+    AliyunProvider,
     BaseLLMProvider,
     DeepSeekProvider,
     DoubaoProvider,
-    AliyunProvider,
     MimoProvider,
     MockProvider,
-    get_llm_provider,
     create_chat_model,
+    get_llm_provider,
     list_providers,
 )
+from src.infras.storage import DocumentStoreBase, JSONDocumentStore
+from src.infras.vector import ChromaVectorStore, VectorStoreBase
 
 __all__ = [
     "DocumentStoreBase",

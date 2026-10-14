@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Query Expansion Module
 
@@ -8,13 +7,13 @@ Query Expansion Module
 """
 
 from abc import abstractmethod
-from typing import Any, Optional
+from typing import Any
 
+from src.core.logger import logger
 from src.retrieval.understanding.base import (
     BaseQueryUnderstandingProvider,
     QueryUnderstandingResult,
 )
-from src.core.logger import logger
 
 
 class QueryExpansionProvider(BaseQueryUnderstandingProvider):
@@ -46,7 +45,7 @@ class QueryExpansionProvider(BaseQueryUnderstandingProvider):
     def process(
         self,
         query: str,
-        context: Optional[dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
     ) -> QueryUnderstandingResult:
         """扩展查询并返回结果"""
         expanded_query, expanded_terms = self.expand(query)
@@ -70,7 +69,7 @@ class SynonymExpander(QueryExpansionProvider):
 
     def __init__(
         self,
-        synonym_dict: Optional[dict[str, list[str]]] = None,
+        synonym_dict: dict[str, list[str]] | None = None,
         max_expansions: int = 5,
     ):
         """
@@ -130,7 +129,7 @@ class EmbeddingExpander(QueryExpansionProvider):
         self,
         embedding_model: Any,
         top_k: int = 5,
-        vocabulary: Optional[list[str]] = None,
+        vocabulary: list[str] | None = None,
     ):
         """
         初始化向量空间扩展器
@@ -153,12 +152,12 @@ class EmbeddingExpander(QueryExpansionProvider):
             query_embedding = self._embedding_model.encode_single(query)
             vocab_embeddings = self._embedding_model.encode(self._vocabulary)
 
-            from src.utils.similarity import SimilaritySearchEngine, DistanceType
+            from src.utils.similarity import DistanceType, SimilaritySearchEngine
 
             engine = SimilaritySearchEngine(distance_type=DistanceType.COSINE)
             similarities = engine.compute_batch(query_embedding, vocab_embeddings)
 
-            indexed = list(zip(similarities, self._vocabulary))
+            indexed = list(zip(similarities, self._vocabulary, strict=False))
             indexed.sort(reverse=True)
 
             top_terms = [term for _, term in indexed[: self._top_k]]

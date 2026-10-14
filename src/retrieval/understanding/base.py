@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Query Understanding Base Module
 
@@ -7,7 +6,7 @@ Stage 1 — 查询理解抽象基类
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 
 
 @dataclass
@@ -16,9 +15,9 @@ class QueryUnderstandingResult:
 
     original_query: str
     processed_query: str
-    intent: Optional[str] = None
+    intent: str | None = None
     sub_queries: list[str] = field(default_factory=list)
-    hypothetical_doc: Optional[str] = None
+    hypothetical_doc: str | None = None
     expanded_terms: list[str] = field(default_factory=list)
     metadata: dict[str, Any] = field(default_factory=dict)
 
@@ -45,8 +44,8 @@ class QueryUnderstandingResult:
         Returns:
             QueryUnderstandingResult: 合并后的结果
         """
-        merged_sub_queries = list({q: None for q in self.sub_queries + other.sub_queries})
-        merged_terms = list({t: None for t in self.expanded_terms + other.expanded_terms})
+        merged_sub_queries = list(dict.fromkeys(self.sub_queries + other.sub_queries))
+        merged_terms = list(dict.fromkeys(self.expanded_terms + other.expanded_terms))
 
         hyde_docs = []
         if self.hypothetical_doc:
@@ -91,7 +90,7 @@ class BaseQueryUnderstandingProvider(ABC):
     def process(
         self,
         query: str,
-        context: Optional[dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
     ) -> QueryUnderstandingResult:
         """
         对查询进行处理

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Keyword Retrieval Module
 
@@ -8,10 +7,10 @@ Keyword Retrieval Module
 """
 
 from abc import abstractmethod
-from typing import Any, Optional
+from typing import Any
 
-from src.retrieval.candidate.base import BaseRetrievalProvider
 from src.core.logger import logger
+from src.retrieval.candidate.base import BaseRetrievalProvider
 
 
 class KeywordRetrievalProvider(BaseRetrievalProvider):
@@ -62,7 +61,7 @@ class BM25Retriever(KeywordRetrievalProvider):
         top_k: int = 10,
         k1: float = 1.5,
         b: float = 0.75,
-        document_store: Optional[list[dict[str, Any]]] = None,
+        document_store: list[dict[str, Any]] | None = None,
     ):
         """
         初始化 BM25 检索器
@@ -104,14 +103,14 @@ class BM25Retriever(KeywordRetrievalProvider):
         """
         try:
             from rank_bm25 import BM25Okapi
-        except ImportError:
+        except ImportError as e:
             logger.error(
                 "rank_bm25 not installed. Run: pip install rank-bm25"
             )
             raise ImportError(
                 "rank_bm25 is required for BM25Retriever. "
                 "Install with: pip install rank-bm25"
-            )
+            ) from e
 
         self._document_store = documents
         self._tokenized_corpus = [

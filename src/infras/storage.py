@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Storage Module
 
@@ -11,8 +10,8 @@ from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any
 
-from src.core.logger import logger
 from src.core.exceptions import DocumentError
+from src.core.logger import logger
 
 
 class DocumentStoreBase(ABC):
@@ -132,7 +131,7 @@ class JSONDocumentStore(DocumentStoreBase):
             if not file_path.exists():
                 return None
 
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 return json.load(f)
         except json.JSONDecodeError as e:
             logger.error(f"文档 {document_id} 解析失败：无效的JSON格式: {e}")
@@ -166,7 +165,7 @@ class JSONDocumentStore(DocumentStoreBase):
         try:
             for file_path in self.storage_path.glob("*.json"):
                 try:
-                    with open(file_path, "r", encoding="utf-8") as f:
+                    with open(file_path, encoding="utf-8") as f:
                         documents.append(json.load(f))
                 except json.JSONDecodeError as e:
                     logger.warning(f"跳过无效的JSON文件 {file_path}: {e}")

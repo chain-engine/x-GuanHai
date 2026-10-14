@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Query Preprocess Module
 
@@ -11,7 +10,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 from src.constants import DEFAULT_QUERY_STOPWORDS
 from src.core.logger import logger
@@ -46,8 +45,8 @@ class QueryPreprocessor(BaseQueryUnderstandingProvider):
         lowercase: bool = True,
         remove_punctuation: bool = False,
         strip_whitespace: bool = True,
-        stopwords: Optional[set[str]] = None,
-        custom_normalizations: Optional[list[tuple[str, str]]] = None,
+        stopwords: set[str] | None = None,
+        custom_normalizations: list[tuple[str, str]] | None = None,
     ):
         """
         初始化预处理器
@@ -115,7 +114,7 @@ class QueryPreprocessor(BaseQueryUnderstandingProvider):
     def process(
         self,
         query: str,
-        context: Optional[dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
     ) -> QueryUnderstandingResult:
         processed, meta = self._preprocess(query)
 

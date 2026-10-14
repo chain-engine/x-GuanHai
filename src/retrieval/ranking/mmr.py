@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 MMR Reranking Module
 
@@ -9,10 +8,10 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.retrieval.ranking.base import BaseRerankingProvider
-from src.utils.similarity import SimilaritySearchEngine, DistanceType
 from src.core.logger import logger
 from src.infras.embedding import EmbeddingModelBase
+from src.retrieval.ranking.base import BaseRerankingProvider
+from src.utils.similarity import DistanceType, SimilaritySearchEngine
 
 
 class MMRReranker(BaseRerankingProvider):

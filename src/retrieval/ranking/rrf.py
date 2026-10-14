@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 RRF Reranking Module
 
@@ -9,8 +8,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from src.retrieval.ranking.base import BaseRerankingProvider
 from src.core.logger import logger
+from src.retrieval.ranking.base import BaseRerankingProvider
 
 
 class RRFReranker(BaseRerankingProvider):

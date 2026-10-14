@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """开放 API 应用管理 CLI（内部管理面的主要通道）。
 
 用法（在项目根目录执行）：

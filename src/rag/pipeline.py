@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 RAG Pipeline Module
 
@@ -7,10 +6,10 @@ RAG管道 — 编排检索、增强、生成三个环节
 
 from typing import Any
 
-from src.rag.retrieval import Retrieval
+from src.core.logger import logger
 from src.rag.augmentation import Augmentation
 from src.rag.generation import LLMGeneration
-from src.core.logger import logger
+from src.rag.retrieval import Retrieval
 
 
 class RAGPipeline:

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Embedding Module
 
@@ -16,13 +15,13 @@ os.environ.setdefault("HF_ENDPOINT", "https://hf-mirror.com")
 
 from sentence_transformers import SentenceTransformer
 
-from src.core.logger import logger
-from src.core.exceptions import EmbeddingError
 from src.constants import (
-    DEFAULT_EMBEDDING_MODEL,
-    DEFAULT_EMBEDDING_DEVICE,
     DEFAULT_EMBEDDING_BATCH_SIZE,
+    DEFAULT_EMBEDDING_DEVICE,
+    DEFAULT_EMBEDDING_MODEL,
 )
+from src.core.exceptions import EmbeddingError
+from src.core.logger import logger
 
 
 class EmbeddingModelBase(ABC):

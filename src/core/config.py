@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Settings Configuration Module
 
@@ -10,9 +9,10 @@ NOTE: 默认值统一从 constants/ 模块引用，避免重复定义
 """
 
 import os
-from typing import Final, Any
-from pathlib import Path
 from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Final
+
 import yaml
 from dotenv import load_dotenv
 
@@ -268,7 +268,7 @@ class Settings:
         config_file: Path = Path(self.CONFIG_FILE_PATH)
         if config_file.exists():
             try:
-                with open(config_file, "r", encoding="utf-8") as f:
+                with open(config_file, encoding="utf-8") as f:
                     file_config: dict[str, Any] = yaml.safe_load(f) or {}
                 self._merge_config(config, file_config)
             except Exception as e:

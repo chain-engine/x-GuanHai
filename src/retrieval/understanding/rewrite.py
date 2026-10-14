@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Query Rewrite Module
 
@@ -8,16 +7,16 @@ Query Rewrite Module
 """
 
 from abc import abstractmethod
-from typing import Any, Optional
+from typing import Any
 
 from langchain_core.messages import HumanMessage, SystemMessage
 
+from src.core.logger import logger
+from src.infras.llm import BaseLLMProvider, get_llm_provider
 from src.retrieval.understanding.base import (
     BaseQueryUnderstandingProvider,
     QueryUnderstandingResult,
 )
-from src.infras.llm import get_llm_provider, BaseLLMProvider
-from src.core.logger import logger
 
 
 class QueryRewriteProvider(BaseQueryUnderstandingProvider):
@@ -41,7 +40,7 @@ class QueryRewriteProvider(BaseQueryUnderstandingProvider):
     def process(
         self,
         query: str,
-        context: Optional[dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
     ) -> QueryUnderstandingResult:
         """重写查询并返回结果"""
         rewritten = self.rewrite(query)
@@ -64,9 +63,9 @@ class LLMQueryRewriter(QueryRewriteProvider):
 
     def __init__(
         self,
-        llm_provider: Optional[BaseLLMProvider] = None,
+        llm_provider: BaseLLMProvider | None = None,
         provider_name: str = "deepseek",
-        system_prompt: Optional[str] = None,
+        system_prompt: str | None = None,
     ):
         """
         初始化 LLM 查询重写器
@@ -120,8 +119,8 @@ class SimpleQueryRewriter(QueryRewriteProvider):
 
     def __init__(
         self,
-        synonym_map: Optional[dict[str, list[str]]] = None,
-        expansion_patterns: Optional[list[tuple[str, str]]] = None,
+        synonym_map: dict[str, list[str]] | None = None,
+        expansion_patterns: list[tuple[str, str]] | None = None,
     ):
         """
         初始化简单查询重写器

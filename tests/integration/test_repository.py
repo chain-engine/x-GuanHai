@@ -1,12 +1,11 @@
-# -*- coding: utf-8 -*-
 """
 Document Repository Integration Tests
 """
 
-import pytest
-from pathlib import Path
-import tempfile
 import shutil
+import tempfile
+
+import pytest
 
 from src.repositories.document_repository import DocumentRepository
 

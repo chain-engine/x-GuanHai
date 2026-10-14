@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 BM25 Retrieval Module
 
@@ -7,12 +6,12 @@ BM25 稀疏检索召回
 — 基于倒排索引的关键词召回
 """
 
-from typing import Any, Optional
+from typing import Any
 
-from src.retrieval.candidate.base import BaseRetrievalProvider
+from src.core.logger import logger
 from src.infras.bm25 import BM25IndexStore
 from src.repositories.bm25_repository import BM25Repository
-from src.core.logger import logger
+from src.retrieval.candidate.base import BaseRetrievalProvider
 
 
 class BM25RetrievalProvider(BaseRetrievalProvider):
@@ -28,7 +27,7 @@ class BM25RetrievalProvider(BaseRetrievalProvider):
 
     def __init__(
         self,
-        bm25_repo: Optional[BM25Repository] = None,
+        bm25_repo: BM25Repository | None = None,
         persist_directory: str = "./data/bm25",
         index_name: str = "default",
         k1: float = 1.5,
@@ -98,7 +97,7 @@ class BM25RetrievalProvider(BaseRetrievalProvider):
         self,
         query: str,
         top_k: int = 10,
-        metadata_filter: Optional[dict[str, Any]] = None,
+        metadata_filter: dict[str, Any] | None = None,
         **kwargs,
     ) -> list[dict[str, Any]]:
         """

@@ -22,7 +22,7 @@ from src.services.rag_service import RAGService
 # MCP 服务实例
 # ---------------------------------------------------------------------------
 
-mcp = MCPServer(
+mcp_server = MCPServer(
     name="x-guanhai",
     title="观海（GuanHai）",
     description="支持 HTTP 与 MCP 双挂载的 RAG 检索增强生成服务：管理知识库文档，"
@@ -68,12 +68,12 @@ def _register_all() -> None:
     - 新资源 → resources.register_resources 内启用 @server.resource()。
     保持"只读 + 复用 services"原则：写操作继续走 HTTP 管理面。
     """
-    tools.register_tools(mcp, get_rag_service)
-    prompts.register_prompts(mcp)
-    resources.register_resources(mcp)
+    tools.register_tools(mcp_server, get_rag_service)
+    prompts.register_prompts(mcp_server)
+    resources.register_resources(mcp_server)
 
 
 _register_all()
 
 
-__all__ = ["mcp", "bind_rag_service", "get_rag_service"]
+__all__ = ["mcp_server", "bind_rag_service", "get_rag_service"]

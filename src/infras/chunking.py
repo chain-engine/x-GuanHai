@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Chunking Module
 
@@ -8,7 +7,7 @@ Chunking Module
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 
 from src.core.logger import logger
 
@@ -155,7 +154,7 @@ class LangchainProvider(BaseChunkingProvider):
         """
         super().__init__(chunk_size, chunk_overlap, separators, **kwargs)
         self.strategy = strategy
-        self._splitter: Optional[Any] = None
+        self._splitter: Any | None = None
 
     def _get_splitter(self) -> Any:
         """获取或创建切分器实例（懒加载）"""
@@ -183,8 +182,8 @@ class LangchainProvider(BaseChunkingProvider):
                 chunk_overlap=self.chunk_overlap,
             )
         elif self.strategy == "semantic":
-            from langchain_text_splitters import SemanticChunker
             from langchain_community.embeddings import HuggingFaceEmbeddings
+            from langchain_text_splitters import SemanticChunker
 
             embeddings = HuggingFaceEmbeddings(
                 model_name="sentence-transformers/all-MiniLM-L6-v2",
@@ -296,7 +295,7 @@ class LlamaIndexProvider(BaseChunkingProvider):
         """
         super().__init__(chunk_size, chunk_overlap, separators, **kwargs)
         self.strategy = strategy
-        self._splitter: Optional[Any] = None
+        self._splitter: Any | None = None
         self._extra_kwargs = kwargs
 
     def _get_splitter(self) -> Any:
@@ -318,8 +317,8 @@ class LlamaIndexProvider(BaseChunkingProvider):
                 chunk_overlap=self.chunk_overlap,
             )
         elif self.strategy == "semantic":
-            from llama_index.core.node_parser import SemanticSplitterNodeParser
             from llama_index.core.embeddings import MockEmbedding
+            from llama_index.core.node_parser import SemanticSplitterNodeParser
 
             # 使用 MockEmbedding 作为默认值，如需真实语义切分请传入自定义 embeddings
             embeddings = self._extra_kwargs.get("embeddings") or MockEmbedding(embed_dim=384)

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 相似度计算单元测试
 
@@ -10,9 +9,9 @@ compute / compute_batch / 距离类型切换 / 边界（零向量、空列表、
 
 import pytest
 
-from src.utils.similarity import SimilaritySearchEngine
 from src.constants import DistanceType
 from src.core.exceptions import RetrievalError
+from src.utils.similarity import SimilaritySearchEngine
 
 
 class TestSimilaritySearchEngine:

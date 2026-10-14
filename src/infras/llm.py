@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 LLM Provider Module
 
@@ -18,9 +17,9 @@ from typing import Any, ClassVar
 from langchain_core.language_models import BaseChatModel
 from langchain_openai import ChatOpenAI
 
-from src.core.logger import logger
-from src.core.config import Settings
 from src.constants import LLMProviderType
+from src.core.config import Settings
+from src.core.logger import logger
 
 
 class BaseLLMProvider(ABC):

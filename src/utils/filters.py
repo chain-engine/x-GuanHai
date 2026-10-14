@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Metadata Filter Engine Module
 

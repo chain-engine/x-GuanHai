@@ -106,9 +106,19 @@ class OpenApiAuthMiddleware:
         current_mcp_operator.set(operator)
         _authed_operators[current_app.app_id] = operator
 
-        # 恢复 body 流并转发下游 MCP 应用
+        # 恢复 body 流并转发下游 MCP 应用。
+        # 注意：只能注入一次 http.request（body），后续 receive 必须继续走原始
+        # receive 通道——MCP 2.x 的 SSE 响应阶段会再次调用 receive() 等待客户端
+        # 断开/新消息，若重复返回 http.request 会触发
+        # "Unexpected message received: http.request"。
+        sent_body = False
+
         async def receive_with_body():
-            return {"type": "http.request", "body": body, "more_body": False}
+            nonlocal sent_body
+            if not sent_body:
+                sent_body = True
+                return {"type": "http.request", "body": body, "more_body": False}
+            return await receive()
 
         await self.app(scope, receive_with_body, send)
 

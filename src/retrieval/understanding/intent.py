@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Intent Classification Module
 
@@ -11,12 +10,12 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 from src.constants import (
-    IntentType,
-    INTENT_PATTERNS,
     DEFAULT_INTENT_MIN_CONFIDENCE,
+    INTENT_PATTERNS,
+    IntentType,
 )
 from src.core.logger import logger
 from src.retrieval.understanding.base import (
@@ -46,7 +45,7 @@ class IntentClassifier(BaseQueryUnderstandingProvider):
 
     def __init__(
         self,
-        intent_patterns: Optional[dict[IntentType, list[tuple[str, float]]]] = None,
+        intent_patterns: dict[IntentType, list[tuple[str, float]]] | None = None,
         default_intent: IntentType = IntentType.UNKNOWN,
         min_confidence: float = DEFAULT_INTENT_MIN_CONFIDENCE,
     ):
@@ -106,7 +105,7 @@ class IntentClassifier(BaseQueryUnderstandingProvider):
     def process(
         self,
         query: str,
-        context: Optional[dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
     ) -> QueryUnderstandingResult:
         classification = self._classify(query)
 

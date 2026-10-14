@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Response Schema Module
 
@@ -7,7 +6,8 @@ Response Schema Module
 """
 
 from typing import Any, Generic, TypeVar
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field
 
 from src.constants import HttpStatus
 

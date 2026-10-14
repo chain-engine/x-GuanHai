@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Similarity Search Engine Module
 
@@ -7,17 +6,13 @@ Similarity Search Engine Module
 — 封装多种向量距离和相似度计算算法
 """
 
-from typing import List, Optional
 
 import numpy as np
 
-from src.core.exceptions import RetrievalError
 from src.constants import (
-    DISTANCE_COSINE,
-    DISTANCE_EUCLIDEAN,
-    DISTANCE_DOT,
     DistanceType,
 )
+from src.core.exceptions import RetrievalError
 
 
 class SimilaritySearchEngine:
@@ -55,9 +50,9 @@ class SimilaritySearchEngine:
 
     def compute(
         self,
-        query_vector: List[float],
-        doc_vector: List[float],
-        distance_type: Optional[DistanceType] = None,
+        query_vector: list[float],
+        doc_vector: list[float],
+        distance_type: DistanceType | None = None,
     ) -> float:
         """
         计算单个相似度
@@ -75,10 +70,10 @@ class SimilaritySearchEngine:
 
     def compute_batch(
         self,
-        query_vector: List[float],
-        doc_vectors: List[List[float]],
-        distance_type: Optional[DistanceType] = None,
-    ) -> List[float]:
+        query_vector: list[float],
+        doc_vectors: list[list[float]],
+        distance_type: DistanceType | None = None,
+    ) -> list[float]:
         """
         批量计算相似度
 
@@ -97,8 +92,8 @@ class SimilaritySearchEngine:
 
     def _compute_impl(
         self,
-        query_vector: List[float],
-        doc_vector: List[float],
+        query_vector: list[float],
+        doc_vector: list[float],
         distance_type: DistanceType,
     ) -> float:
         """内部实现：单条相似度计算"""
@@ -120,10 +115,10 @@ class SimilaritySearchEngine:
 
     def _compute_batch_impl(
         self,
-        query_vector: List[float],
-        doc_vectors: List[List[float]],
+        query_vector: list[float],
+        doc_vectors: list[list[float]],
         distance_type: DistanceType,
-    ) -> List[float]:
+    ) -> list[float]:
         """内部实现：批量相似度计算"""
         if not doc_vectors:
             return []

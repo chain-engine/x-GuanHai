@@ -234,7 +234,7 @@ def get_cached_database_provider() -> DatabaseProvider:
 # ============================================================
 def init_database() -> Engine:
     """初始化 MySQL 数据库，创建所有表。"""
- 
+
     from src.models.audit_log_entity import AuditLogEntity  # noqa: F401
     from src.models.openapi_app_entity import OpenApiAppEntity  # noqa: F401
     from src.models.openapi_scope_entity import OpenApiScopeEntity  # noqa: F401

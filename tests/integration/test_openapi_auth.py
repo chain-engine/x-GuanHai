@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 开放 API 认证鉴权测试
 
@@ -14,11 +13,11 @@ import httpx
 import pytest
 from fastapi import Depends, FastAPI
 
-from src.http_server.dependencies import require_app_scope
 from src.constants.scopes import OpenApiScopeCode
 from src.core import signature
 from src.core.config import settings
 from src.core.exceptions import UnauthorizedError, ValidationError
+from src.http_server.dependencies import require_app_scope
 from src.infras.database import get_session
 from src.repositories.openapi_app_repository import OpenApiAppRepository
 from src.schemas.openapi_app import OpenApiAppCreateRequest, OpenApiAuthContext
@@ -286,9 +285,9 @@ class TestGatewayAuthenticate:
 @pytest.fixture
 def openapi_test_app(openapi_enabled):
     """最小 FastAPI 应用：apps 管理路由 + rag:read 保护路由。"""
-    from src.core.exceptions import AppException
     from fastapi.responses import JSONResponse
 
+    from src.core.exceptions import AppException
     from src.http_server.v1.openapi_app import router as app_router
     from src.services.audit_service import AuditService
 

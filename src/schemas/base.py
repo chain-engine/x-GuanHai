@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Base Schema Module
 
 基础Schema定义，提供通用字段和配置
 """
 
-from datetime import datetime
-from typing import Any, Generic, TypeVar
-from pydantic import BaseModel, Field, ConfigDict
+from typing import Generic, TypeVar
+
+from pydantic import BaseModel, ConfigDict, Field
 
 T = TypeVar("T")
 

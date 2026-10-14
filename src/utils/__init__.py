@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Utils Package
 
@@ -7,9 +6,6 @@ Utils Package
 """
 
 # 相似度计算
-from src.utils.similarity import (
-    SimilaritySearchEngine,
-)
 from src.constants import DistanceType
 
 # 过滤器
@@ -19,9 +15,12 @@ from src.utils.filters import (
 
 # 索引优化
 from src.utils.index_optimizer import (
-    VectorIndexOptimizer,
     IndexConfig,
     MemoryEstimate,
+    VectorIndexOptimizer,
+)
+from src.utils.similarity import (
+    SimilaritySearchEngine,
 )
 
 __all__ = [

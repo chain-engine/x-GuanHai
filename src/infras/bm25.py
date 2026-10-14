@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 BM25 Sparse Index Module
 
@@ -7,12 +6,12 @@ BM25 Sparse Index Module
 用于关键词召回，与稠密向量索引互补实现多路召回
 """
 
-import os
 import json
+import os
 from typing import Any
 
-from src.core.logger import logger
 from src.core.exceptions import VectorStoreError
+from src.core.logger import logger
 
 
 class BM25IndexStore:
@@ -60,10 +59,10 @@ class BM25IndexStore:
             try:
                 from rank_bm25 import BM25Okapi
                 self._rank_bm25 = BM25Okapi
-            except ImportError:
+            except ImportError as e:
                 raise VectorStoreError(
                     "rank_bm25 未安装，请运行: uv add rank-bm25"
-                )
+                ) from e
 
     def _tokenize(self, text: str) -> list[str]:
         """
@@ -120,7 +119,7 @@ class BM25IndexStore:
 
     def _load_from_disk(self, filepath: str) -> None:
         """从磁盘加载索引数据"""
-        with open(filepath, "r", encoding="utf-8") as f:
+        with open(filepath, encoding="utf-8") as f:
             data = json.load(f)
 
         self._corpus = data.get("corpus", [])

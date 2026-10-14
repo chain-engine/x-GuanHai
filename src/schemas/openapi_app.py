@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """开放 API（网关 / 管理面）DTO。
 
 - OpenApiCurrentApp：鉴权通过后注入请求上下文的调用方应用身份（机器身份）；

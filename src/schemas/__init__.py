@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Schemas Package
 
@@ -7,43 +6,43 @@ Schemas Package
 """
 
 from src.schemas.base import (
-    BaseSchema,
     BaseRequest,
     BaseResponse,
-)
-from src.schemas.responses import (
-    ResponseModel,
-    PageModel,
-    ErrorResponse,
-    success_response,
-    error_response,
-)
-from src.schemas.rag import (
-    RAGQueryRequest,
-    RetrievalRequest,
-    EmbeddingRequest,
-    GenerationRequest,
-    RetrievedDocument,
-    RAGQueryResponse,
-    EmbeddingResponse,
-    RetrievalResponse,
-    GenerationResponse,
+    BaseSchema,
 )
 from src.schemas.document import (
-    DocumentUploadRequest,
     DocumentDeleteRequest,
-    DocumentQueryRequest,
-    DocumentInfo,
-    DocumentUploadResponse,
     DocumentDeleteResponse,
+    DocumentInfo,
+    DocumentQueryRequest,
     DocumentQueryResponse,
     DocumentStatusResponse,
+    DocumentUploadRequest,
+    DocumentUploadResponse,
 )
 from src.schemas.health import (
     HealthCheckRequest,
     HealthCheckResponse,
-    VersionResponse,
     StatusResponse,
+    VersionResponse,
+)
+from src.schemas.rag import (
+    EmbeddingRequest,
+    EmbeddingResponse,
+    GenerationRequest,
+    GenerationResponse,
+    RAGQueryRequest,
+    RAGQueryResponse,
+    RetrievalRequest,
+    RetrievalResponse,
+    RetrievedDocument,
+)
+from src.schemas.responses import (
+    ErrorResponse,
+    PageModel,
+    ResponseModel,
+    error_response,
+    success_response,
 )
 
 __all__ = [

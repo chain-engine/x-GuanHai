@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Pytest Configuration
 
 定义测试夹具和配置
 """
 
-import pytest
 import asyncio
-import tempfile
 import shutil
+import tempfile
 from pathlib import Path
 
+import pytest
+
+from src.rag.augmentation import Augmentation
+from src.rag.generation import LLMGeneration
+from src.rag.pipeline import RAGPipeline
+from src.rag.retrieval import Retrieval
 from src.repositories.document_repository import DocumentRepository
 from src.repositories.vector_repository import VectorRepository
 from src.services.document_service import DocumentService
-from src.rag.retrieval import Retrieval
-from src.rag.generation import LLMGeneration
-from src.rag.augmentation import Augmentation
-from src.rag.pipeline import RAGPipeline
 
 
 @pytest.fixture(scope="session", autouse=True)

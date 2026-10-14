@@ -21,7 +21,7 @@ from src.http_server.response import error_response, success_response
 from src.http_server.router import api_router
 from src.http_server.scope_decorator import sync_scopes_to_db
 from src.infras.database import init_database
-from src.mcp_server.server import mcp as mcp_server
+from src.mcp_server.server import bind_rag_service, mcp_server
 from src.rag import Augmentation, LLMGeneration, RAGPipeline, Retrieval
 from src.repositories.bm25_repository import BM25Repository
 from src.repositories.document_repository import DocumentRepository
@@ -48,6 +48,9 @@ async def lifespan(app: FastAPI):
     # 初始化种子数据
     init_seed_data()
     logger.info("Seed data initialized successfully")
+
+    # 初始化审计服务
+    audit_service = AuditService()
 
     # 初始化文档存储 Repository层
     doc_repo = DocumentRepository(storage_path="./data/documents")
@@ -97,16 +100,13 @@ async def lifespan(app: FastAPI):
     )
     rag_service = RAGService(pipeline=pipeline, audit_service=audit_service)
 
-    # 初始化审计服务
-    audit_service = AuditService()
-
     # 直接存储到 app.state
     app.state.rag_service = rag_service
     app.state.document_service = document_service
     app.state.audit_service = audit_service
 
     # 将 RAG 服务注入 MCP server，供 /mcp 工具复用同一实例
-    mcp_server.bind_rag_service(rag_service)
+    bind_rag_service(rag_service)
 
     # 初始化服务
     rag_service.initialize()
@@ -114,7 +114,14 @@ async def lifespan(app: FastAPI):
 
     logger.info("All services initialized successfully")
 
-    yield
+    # 手动驱动 MCP 子应用生命周期（Starlette Mount 不会级联执行子应用 lifespan；
+    # MCP 2.x 的 StreamableHTTPSessionManager 必须经 run() 初始化 task group）
+    mcp_app = getattr(app.state, "mcp_app", None)
+    if mcp_app is not None:
+        async with mcp_app.router.lifespan_context(mcp_app):
+            yield
+    else:
+        yield
 
 
     # 关闭服务
@@ -153,9 +160,14 @@ def create_app() -> FastAPI:
     # 注册路由
     app.include_router(api_router, prefix=settings.API_PREFIX)
 
-    # 挂载 MCP server（streamable HTTP，默认路径 /mcp）
-    # 与现有 HTTP API 同进程同端口，智能体平台可通过标准 MCP 协议动态发现工具
-    app.mount("/mcp", mcp_server.streamable_http_app())
+    # 挂载 MCP server（streamable HTTP，默认路径 /mcp）。
+    # 注意：MCP 2.x 的 streamable_http_app 内部路由已含 streamable_http_path 前缀，
+    # 此处将其置为 "/" 以匹配 Starlette mount 剥离前缀后的子路径 "/"，
+    # 否则挂载后请求会 404（/mcp → 子应用 path="/"，Route("/mcp") 不匹配）。
+    # 子应用 lifespan（session manager run()）由外层 FastAPI lifespan 手动驱动。
+    mcp_app = mcp_server.streamable_http_app(streamable_http_path="/")
+    app.state.mcp_app = mcp_app
+    app.mount("/mcp", mcp_app)
 
     # 全局异常处理：所有错误统一走 error_response 封装
     @app.exception_handler(AppException)

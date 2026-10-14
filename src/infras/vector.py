@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Vector Store Module
 
@@ -8,12 +7,13 @@ Vector Store Module
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
+
 import chromadb
 from chromadb.config import Settings as ChromaSettings
 
-from src.core.logger import logger
 from src.core.exceptions import VectorStoreError
+from src.core.logger import logger
 
 
 class VectorStoreBase(ABC):
@@ -117,7 +117,7 @@ class ChromaVectorStore(VectorStoreBase):
         self.persist_directory = persist_directory
         self.collection_name = collection_name
         self.distance_type = distance_type
-        self._client: Optional[chromadb.PersistentClient] = None
+        self._client: chromadb.PersistentClient | None = None
         self._collection = None
         self._initialized = False
 

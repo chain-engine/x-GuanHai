@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Vector Retrieval Module
 
@@ -7,12 +6,12 @@ Vector Retrieval Module
 — 基于向量相似度的召回算法
 """
 
-from typing import Any, Optional
+from typing import Any
 
-from src.retrieval.candidate.base import BaseRetrievalProvider
-from src.repositories.vector_repository import VectorRepository
-from src.infras.embedding import BGEEmbeddingModel
 from src.core.logger import logger
+from src.infras.embedding import BGEEmbeddingModel
+from src.repositories.vector_repository import VectorRepository
+from src.retrieval.candidate.base import BaseRetrievalProvider
 
 
 class VectorRetrievalProvider(BaseRetrievalProvider):
@@ -54,8 +53,8 @@ class ChromaVectorRetrieval(VectorRetrievalProvider):
 
     def __init__(
         self,
-        vector_repo: Optional[VectorRepository] = None,
-        embedding_model: Optional[BGEEmbeddingModel] = None,
+        vector_repo: VectorRepository | None = None,
+        embedding_model: BGEEmbeddingModel | None = None,
         persist_directory: str = "./data/chroma",
         collection_name: str = "documents",
         distance_type: str = "cosine",
@@ -123,7 +122,7 @@ class ChromaVectorRetrieval(VectorRetrievalProvider):
         self,
         query: str | list[float],
         top_k: int = 10,
-        metadata_filter: Optional[dict[str, Any]] = None,
+        metadata_filter: dict[str, Any] | None = None,
         **kwargs,
     ) -> list[dict[str, Any]]:
         """

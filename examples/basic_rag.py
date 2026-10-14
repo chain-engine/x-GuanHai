@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 基础RAG使用示例
 演示如何使用x-GuanHai进行文档上传、索引构建、查询检索和生成回答
 """
 
 import asyncio
+
 import httpx
 
 
@@ -109,7 +109,7 @@ async def main():
 
     # 5. 纯检索（不生成）
     print("\n[5] 纯检索示例...")
-    print(f"查询: Python的应用领域")
+    print("查询: Python的应用领域")
     print("-" * 60)
 
     async with httpx.AsyncClient() as client:

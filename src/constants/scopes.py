@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """开放 API scope 统一目录（scope 元数据的唯一事实来源）。
 
 Scope 的编码 / 中文名 / 所属模块 / 操作类型 / 描述 / 排序号全部在

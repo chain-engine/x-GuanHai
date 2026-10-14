@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Health Schema Module
 
@@ -8,7 +7,8 @@ Health Schema Module
 
 from datetime import datetime
 from typing import Any
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field
 
 from src.core.config import settings
 

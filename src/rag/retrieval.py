@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Retrieval Module
 
@@ -8,22 +7,21 @@ Retrieval Module
 from typing import Any
 
 from src.core.logger import logger
-from src.core.exceptions import RetrievalError
-from src.repositories.vector_repository import VectorRepository
-from src.repositories.bm25_repository import BM25Repository
 from src.infras.embedding import BGEEmbeddingModel
-from src.retrieval.pipeline import RetrievalPipeline
-from src.retrieval.candidate.vector_retrieval import ChromaVectorRetrieval
+from src.repositories.bm25_repository import BM25Repository
+from src.repositories.vector_repository import VectorRepository
 from src.retrieval.candidate.bm25_retrieval import BM25RetrievalProvider
+from src.retrieval.candidate.vector_retrieval import ChromaVectorRetrieval
+from src.retrieval.pipeline import RetrievalPipeline
 from src.retrieval.ranking.mmr import MMRReranker
 from src.retrieval.ranking.rrf import RRFReranker
 from src.retrieval.ranking.score_filter import ScoreFilter
-from src.retrieval.understanding.expansion import SynonymExpander
-from src.retrieval.understanding.rewrite import SimpleQueryRewriter
-from src.retrieval.understanding.preprocess import QueryPreprocessor
-from src.retrieval.understanding.intent import IntentClassifier
 from src.retrieval.understanding.entity import EntityExtractor
-from src.utils.similarity import SimilaritySearchEngine, DistanceType
+from src.retrieval.understanding.expansion import SynonymExpander
+from src.retrieval.understanding.intent import IntentClassifier
+from src.retrieval.understanding.preprocess import QueryPreprocessor
+from src.retrieval.understanding.rewrite import SimpleQueryRewriter
+from src.utils.similarity import DistanceType, SimilaritySearchEngine
 
 
 class Retrieval:
@@ -33,7 +31,7 @@ class Retrieval:
     本类作为上层 API 入口，委托至 RetrievalPipeline 执行三阶段检索流水线：
     Stage 1 查询理解 → Stage 2 候选召回 → Stage 3 排序筛选
     （增强由 RAGPipeline 的 Augmentation 组件独立完成）
-    
+
     支持多路召回：
     - 稠密向量检索 (Chroma ANN)
     - 稀疏 BM25 检索 (倒排索引)
@@ -42,7 +40,6 @@ class Retrieval:
     - RRF (Reciprocal Rank Fusion) 倒数排名融合 — 融合多路召回结果
     - MMR (Maximum Marginal Relevance) 多样性重排 — 提升结果覆盖率
 
-    
     """
 
     def __init__(
@@ -82,7 +79,7 @@ class Retrieval:
 
         # Stage 2: 候选召回 — 多路召回
         candidate_providers = []
-        
+
         # 稠密向量检索
         vector_retrieval = ChromaVectorRetrieval(
             vector_repo=vector_repo,
@@ -90,7 +87,7 @@ class Retrieval:
             top_k=default_top_k,
         )
         candidate_providers.append(vector_retrieval)
-        
+
         # 稀疏 BM25 检索
         if bm25_repo is not None:
             bm25_retrieval = BM25RetrievalProvider(

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Entity Extraction Module
 
@@ -11,9 +10,9 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 
-from src.constants import EntityType, ENTITY_PATTERNS
+from src.constants import ENTITY_PATTERNS, EntityType
 from src.core.logger import logger
 from src.retrieval.understanding.base import (
     BaseQueryUnderstandingProvider,
@@ -56,8 +55,8 @@ class EntityExtractor(BaseQueryUnderstandingProvider):
 
     def __init__(
         self,
-        entity_patterns: Optional[dict[EntityType, list[str]]] = None,
-        custom_entity_dict: Optional[dict[EntityType, set[str]]] = None,
+        entity_patterns: dict[EntityType, list[str]] | None = None,
+        custom_entity_dict: dict[EntityType, set[str]] | None = None,
         case_sensitive: bool = False,
     ):
         """
@@ -124,7 +123,7 @@ class EntityExtractor(BaseQueryUnderstandingProvider):
     def process(
         self,
         query: str,
-        context: Optional[dict[str, Any]] = None,
+        context: dict[str, Any] | None = None,
     ) -> QueryUnderstandingResult:
         extraction = self._extract(query)
 
