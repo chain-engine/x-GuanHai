@@ -70,7 +70,7 @@ dev = [
 ]
 
 [project.scripts]
-x-GuanHai = "src.main:main"
+x-GuanHai = "src.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/chain-engine/x-GuanHai"

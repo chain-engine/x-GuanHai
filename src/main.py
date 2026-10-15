@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """
-观海（GuanHai）应用入口
+观海（GuanHai）应用（FastAPI）入口
 
 一个支持 HTTP 与 MCP 双挂载的 RAG（检索增强生成）一体化工程框架：
 统一开放 API 鉴权（AppId + GuanHai-1 签名），对外提供文档管理与检索问答能力。
+
+启动方式（命令行入口见 src/cli.py）：
+    cd 项目根
+    uv run x-GuanHai                # 等价于 uv run python -m src.cli
+    uv run uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 """
 
 from contextlib import asynccontextmanager
@@ -247,20 +252,3 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
-
-
-def main():
-    """CLI 入口点 (供 uv run x-GuanHai 调用)"""
-    import uvicorn
-
-    uvicorn.run(
-        "src.main:app",
-        host=settings.SERVER_HOST,
-        port=settings.SERVER_PORT,
-        reload=settings.DEBUG,
-        log_level="debug",
-    )
-
-
-if __name__ == "__main__":
-    main()

@@ -241,7 +241,8 @@ result = client.call_tool("rag_query", {"query": "什么是RAG技术？", "top_k
 ```
 x-GuanHai/
 ├── src/                              # 核心源码
-│   ├── main.py                      # 应用入口（HTTP + MCP 双协议统一组装）
+│   ├── main.py                      # 应用入口（FastAPI 应用组装：lifespan / 中间件 / 路由 / MCP 挂载）
+│   ├── cli.py                       # 命令行启动入口（uv run x-GuanHai，参数解析 + uvicorn 启动）
 │   ├── http_server/                 # HTTP 接入层（与 mcp_server 平级对称）
 │   │   ├── router.py                # 路由注册（health/rag/document/audit/openapi_app）
 │   │   ├── dependencies.py          # 依赖管理（业务服务 + 开放 API 鉴权依赖）
